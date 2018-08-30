@@ -1,5 +1,5 @@
 ﻿
-.logo-bar {
+/*.logo-bar {
     color: #ccc;
     width: 100%;
     height: auto;
@@ -16,11 +16,7 @@
     background-color: #fff;
 }
 
-.container {
-    max-width: 1200px;
-    width: 100%;
-    margin: 0 auto;
-}
+
 
 html {
     display: table;
@@ -29,6 +25,12 @@ html {
     overflow: auto;
 
     
+}*/
+
+.container {
+    width: 100% !important;
+    margin: 0 auto;
+    padding: 0px !important;
 }
 
 body {

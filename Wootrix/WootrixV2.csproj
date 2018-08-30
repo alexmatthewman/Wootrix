@@ -17,4 +17,9 @@
     </Content>
   </ItemGroup>
 
+
+  <ItemGroup>
+    <DotNetCliToolReference Include="Amazon.ElasticBeanstalk.Tools" Version="1.1.4" />
+  </ItemGroup>
 </Project>
+
