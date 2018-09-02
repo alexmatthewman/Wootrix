@@ -1,36 +1,45 @@
-﻿
-/*.logo-bar {
-    color: #ccc;
-    width: 100%;
-    height: auto;
-    background-color: #fff;
+﻿@import url("http://fonts.googleapis.com/css?family=Open+Sans:300,400,400italic,600,600italic,700,800,800italic");
+@import url(font-awesome.min.css);
+
+
+
+.navbar-inverse {
+    /*background-color: #fff;*/
 }
 
-.logo-container {
-    margin: 7px 0 0 20px;
-    float: left;
-    width: 180px;
-    height: 50px;
-    overflow: hidden;
-    border-radius: 15px;
-    background-color: #fff;
+.logo-container img {
+    height :auto !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: #fff !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.225em !important;
+    line-height: 1em !important;
+    margin: 0 0 1em 0 !important;
+    text-transform: uppercase !important;
+}
+
+h2 {
+    font-size: 1.35em;
+    line-height: 1.75em;
 }
 
 
-
-html {
-    display: table;
-    width: 100%;
-    min-height: 100%;
-    overflow: auto;
-
-    
-}*/
-
-.container {
+.headerbar {
+    max-width: none !important;
     width: 100% !important;
-    margin: 0 auto;
-    padding: 0px !important;
+}
+
+header.major h2, header.major h3, header.major h4, header.major h5, header.major h6 {
+    border-bottom: solid 2px #fff;
+    display: inline-block;
+    padding-bottom: 1em;
+    position: relative;
+}
+
+.major {
+    background: none;
 }
 
 body {
@@ -44,6 +53,19 @@ body {
 }
 
 
+.body-landing {
+    padding: 12em 0 10em 0;
+    background-image: -moz-linear-gradient(top, rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url("~/images/banner.jpg");
+    background-image: -webkit-linear-gradient(top, rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url("~/images/banner.jpg");
+    background-image: -ms-linear-gradient(top, rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url("~/images/banner.jpg");
+    background-image: linear-gradient(top, rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url("~/images/banner.jpg");
+    background-attachment: fixed;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    text-align: center;
+}
+
 
 /* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification\ 
 for details on configuring this project to bundle and minify static web assets. */
@@ -56,8 +78,8 @@ body {
 /* Wrapping element */
 /* Set some basic padding to keep content from hitting the edges */
 .body-content {
-    padding-left: 15px;
-    padding-right: 15px;
+    /*padding-left: 15px;
+    padding-right: 15px;*/
 }
 
 /* Carousel */
