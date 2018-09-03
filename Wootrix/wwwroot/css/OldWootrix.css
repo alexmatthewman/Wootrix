@@ -8617,13 +8617,22 @@ input[type=checkbox]:checked + label {
 .news-container2 .grid1 {
 }
 
+#footer .icons a {
+    color: rgba(255, 255, 255, 0.5);
+}
 
 
 /*21-dec-2014*/
-.social-login-cont {
+/*.social-login-cont {
     width: 261px;
     margin: auto;
+}*/
+
+#cta header {
+    background:none;
+    border:none;
 }
+
 /*contact us*/
 .form_cont {
     margin: 10px 0;

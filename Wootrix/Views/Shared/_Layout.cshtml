@@ -6,52 +6,64 @@
     <title>@ViewData["Title"] - Wootrix</title>
 
 
+    <link rel="icon" href="~/favicon.png" type="image/png">
 
     <meta name="apple-itunes-app" content="app-id=1034925784" />
-    
+    <link href="~/css/OldWootrix.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    @*<link href="~/css/font-awesome.min.css" rel="stylesheet" />*@ @*Pretty much only for icons so far - can delete*@
     <environment include="Development">
-        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-        <link rel="stylesheet" href="~/css/site.css" />
-        <link href="~/css/OldWootrix.css" rel="stylesheet" />
+
+
     </environment>
     <environment exclude="Development">
-        <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
-              asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
-              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
-        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+        @*<link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
+                  asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
+                  asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+            <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />*@
     </environment>
 </head>
 <body>
     @*<nav class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">z
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Wootrix</a>
+            <div class="container">
+                <div class="navbar-header">z
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Wootrix</a>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+                        <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
+                        <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+                    </ul>
+                    <partial name="_LoginPartial" />
+                </div>
             </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
-                </ul>
-                <partial name="_LoginPartial" />
-            </div>
-        </div>
-    </nav>*@
+        </nav>*@
 
     <partial name="_CookieConsentPartial" />
 
     <div class="body-content">
- 
+
         @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; 2018 - Wootrix</p>
+        <!-- Footer -->
+        <footer id="footer">
+            <ul class="icons">
+                <li><a href="https://twitter.com/wootrixoficial" class="icon f-twitter"><img src="~/images/footicon-twitter.png" alt="Twitter" /></a></li>
+                <li><a href="https://www.facebook.com/wootrix/" class="icon f-facebook"><img src="~/images/footicon-facebook.png" alt="Faceboook" /></a></li>
+                <li><a href="https://plus.google.com/109310151849035195482" class="icon f-google"><img src="~/images/footicon-google.png" alt="Google+" /></a></li>
+                <li><a href="https://www.linkedin.com/company/wootrix/" class="icon f-linkedin"><img src="~/images/footicon-linkedin.png" alt="LinkedIn" /></a></li>
+                <li><a href="mailto:wootrix@wootrix.com" class="icon f-envelope-o"><img src="~/images/footicon-email.png" alt="Email" /></a></li>
+            </ul>
+            <ul class="copyright">
+                <li>&copy;<a href="#">WOOTRIX</a></li>
+            </ul>
         </footer>
     </div>
 
