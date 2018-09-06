@@ -2,7 +2,43 @@
 @import url(font-awesome.min.css);
 
 .navbar-inverse {
-    /*background-color: #fff;*/
+    background-color: #fff !important;
+}
+
+.navbar {
+    margin-bottom: 0px;
+    border: none;
+}
+
+#logoutForm {
+    margin: 0 0 0 0 !important;
+}
+
+.navbar-fixed-top {
+    position: relative;
+}
+
+.nav a, .nav .btn {
+    color: #00a1e5 !important;
+    font-size: 16px !important;
+    font-weight: bold !important;
+    font-style: italic !important;
+    padding: 0 25px 0 0;
+    cursor: pointer;
+    margin: 15px 0 0;
+}
+
+.nav .btn {
+    height: 2.5em;
+    letter-spacing: 1.5px;
+}
+
+.navbar-nav > li > a {
+    padding-top: 10px !important;
+}
+
+.sign-in {
+    background: url(../images/website_images/sprite-image.png) no-repeat 49px -238px !important;
 }
 
 .login-divider span {
@@ -13,6 +49,10 @@
 
 .logo-container img {
     height: auto !important;
+}
+
+.logo-container {
+    margin-top: 15px;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -95,7 +135,6 @@ body {
 
 
 #banner {
-   
     -webkit-animation: fadein 3s; /* Safari, Chrome and Opera > 12.1 */
     -moz-animation: fadein 3s; /* Firefox < 16 */
     -ms-animation: fadein 3s; /* Internet Explorer */

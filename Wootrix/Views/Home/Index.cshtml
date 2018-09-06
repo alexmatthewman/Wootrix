@@ -1,129 +1,60 @@
 ﻿@{
     ViewData["Title"] = "Wootrix 2.0 Home Page";
 }
+@using Microsoft.AspNetCore.Identity
 
-<!-- Header 1st section -->
-<header class="top clearfix">
-    <div class="container clearfix">
-        <div class="logo-bar">
-            <figure class="logo-container">
-                <a href="#">
-                    <img src="~/images/logo.png" alt="Wootrix Logo" class="img-responsive" />
-                </a>
-            </figure>
-        </div>
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
 
-        <div class="span6 right">
-            <div class="login-box clearfix">
-                <p class="msgError"></p>
-                <span class="sign-in">Entrar</span>
-                <form name="userLogin" id="userLogin" action="http://wootrix.com/index.php/wootrix-user-login" method="POST">
-                    <div id="login-detail-box" class="login-detail-box">
-                        <div class="input-box">
-                            <input type="email" placeholder="Email" name="userEmailLogin" />
-                        </div>
-                        <div class="input-box">
-                            <input type="password" placeholder="Password" name="passwordLogin" />
-                            <a id="forgotPass" class="forgot-password" href="#"></a>
-                            <input type="hidden" name="loginHidden" value="saveLoginHidden" />
 
-                            <input type="hidden" name="deepMagazineCode" id="deepMagazineCode" />
-                            <input type="hidden" name="deepMagazineId" id="deepMagazineId" />
-                            <input type="hidden" name="deepArticleId" id="deepArticleId" />
-                            <input type="hidden" name="deepAdId" id="deepAdId" />
-                            <input type="hidden" name="deepShowInputDialog" id="deepShowInputDialog" />
-
-                            <input type="submit" value="OK" />
-                        </div>
-
-                        <div class="arrow-up"></div>
-                    </div>
-                </form>
-
-                <div id="forgotBox" class="login-detail-box">
-                    <div class="input-box">
-                        <form action="http://wootrix.com/index.php/forgotPassword" method="POST">
-                            <input class="forgotEmail" type="email" placeholder="Email" name="forgetEmail" />
-
-                            <input type="hidden" name="loginHidden" value="websiteForm" />
-                            <input type="submit" value="OK" />
-                        </form>
-                    </div>
-                    <div class="arrow-up"></div>
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</header>
 
 <!-- Banner -->
 <section id="banner">
 
-    <!-- login code Begin -->
-    <div class="container clearfix">
+    @if (SignInManager.IsSignedIn(User))
+    {
         <div class="span7 left">
             <figure class="main-home-image">
                 <img src="~/images/website_images/home-screen.png" alt="" />
             </figure>
         </div>
-        <div class="span5 right">
-            <div class="social-login-cont">
-                <div class="signin-social">
-                    <h3>Entrar com</h3>
-                    <div class="social-icons clearfix">
-                        <ul>
-                            <li class="fb"><a href="https://www.facebook.com/v2.12/dialog/oauth?client_id=1627701464153107&amp;state=f00046d081144491894cf1e6024f52b1&amp;response_type=code&amp;sdk=php-sdk-5.6.2&amp;redirect_uri=http%3A%2F%2Fwww.wootrix.com%2Findex.php%2FfbCallback&amp;scope=email">Facebook</a></li>
-                            <li class="twitter"><a href="http://wootrix.com/index.php/website/login_twitter/index">Twitter</a></li>
-                            <li class="linkedin"><a href="http://wootrix.com/index.php/website/loginWithLinkedIn">linkedin</a></li>
-                            <li class="google"><a href="https://accounts.google.com/o/oauth2/auth?response_type=code&redirect_uri=http%3A%2F%2Fwootrix.com%2Findex.php%2FgCallback&client_id=181469443324-j5neoccka33afjuvm4gnu2itnn07oo0n.apps.googleusercontent.com&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email&access_type=offline&approval_prompt=force&state=+-++-++-++-+">google</a></li>
-                        </ul>
-                    </div>
-                    <div class="login-divider">
-                        <span>ou</span>
-                    </div>
-                </div>
-
-                <form name="userReg" id="userReg" action="http://wootrix.com/index.php/wootrix-user-registration" method="POST">
-                    <div class="register-form">
-                        <h4>Welcome</h4>
-                        <span id="errorValue"></span>
-                        <span style="text-align: center;display: block;color: green;"></span>
-                        <div class="input-box">
-                            <input type="text" placeholder="Name" name="userName" value="" />
+    }
+    else
+    {
+        <div class="container clearfix">
+            <div class="span7 left">
+                <figure class="main-home-image">
+                    <img src="~/images/website_images/home-screen.png" alt="" />
+                </figure>
+            </div>
+            <div class="span5 right">
+                <div class="social-login-cont">
+                    <div class="signin-social">
+                        <h3>Entrar com</h3>
+                        <div class="social-icons clearfix">
+                            <ul>
+                                <li class="fb"><a href="https://www.facebook.com/v2.12/dialog/oauth?client_id=1627701464153107&amp;state=f00046d081144491894cf1e6024f52b1&amp;response_type=code&amp;sdk=php-sdk-5.6.2&amp;redirect_uri=http%3A%2F%2Fwww.wootrix.com%2Findex.php%2FfbCallback&amp;scope=email">Facebook</a></li>
+                                <li class="twitter"><a href="http://wootrix.com/index.php/website/login_twitter/index">Twitter</a></li>
+                                <li class="linkedin"><a href="http://wootrix.com/index.php/website/loginWithLinkedIn">linkedin</a></li>
+                                <li class="google"><a href="https://accounts.google.com/o/oauth2/auth?response_type=code&redirect_uri=http%3A%2F%2Fwootrix.com%2Findex.php%2FgCallback&client_id=181469443324-j5neoccka33afjuvm4gnu2itnn07oo0n.apps.googleusercontent.com&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email&access_type=offline&approval_prompt=force&state=+-++-++-++-+">google</a></li>
+                            </ul>
                         </div>
-                        <div class="input-box">
-                            <input type="email" placeholder="Email" name="userEmail" value="" />
-                        </div>
-                        <div class="input-box">
-                            <input type="password" placeholder="Password" name="password" id="password" />
-                        </div>
-                        <div class="input-box">
-                            <input type="password" placeholder="Confirm Password" name="confirmPass" />
+                        <div class="login-divider">
+                            <span>ou</span>
                         </div>
                     </div>
-
                     <div class="btn-box clearfix">
-                        @*<input type="hidden" name="userRegHidden" value="saveReg" />
-                            <input type="submit" value="Sign up">*@
-                        <a class="register-bttn" href="#">Registrar</a>
+                        <a asp-area="Identity" class="register-bttn" asp-page="/Account/Register">Register</a>
                     </div>
-                </form>
-
-                <div class="register-form condition">
-                    <div class="input-box">
-                        <small>By Signing up, you are agreeing to Wootrix <a href="http://wootrix.com/index.php/wootrix-terms-services" target="_blank">Terms and Privacy</a></small>
+                    <div class="register-form condition">
+                        <div class="input-box">
+                            <small>By Signing up, you are agreeing to Wootrix <a href="http://wootrix.com/index.php/wootrix-terms-services" target="_blank">Terms and Privacy</a></small>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-
-    <!-- login code End -->
-    <!-- <a href="#one" class="more scrolly">Learn More</a>	-->
+    }
 </section>
 
 <!-- One -->
