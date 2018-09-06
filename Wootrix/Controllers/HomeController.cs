@@ -15,6 +15,16 @@ namespace Wootrix.Controllers
             return View();
         }
 
+        public IActionResult IndexLogin()
+        {
+            return View();
+        }
+
+        public IActionResult IndexOriginal()
+        {
+            return View();
+        }
+
         public IActionResult About()
         {
             ViewData["Message"] = "Your application description page.";
