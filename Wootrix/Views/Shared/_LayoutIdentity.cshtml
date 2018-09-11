@@ -1,9 +1,9 @@
 ﻿
 @using Microsoft.AspNetCore.Identity
+@using WootrixV2.Data;
 
-@inject SignInManager<IdentityUser> SignInManager
-@inject UserManager<IdentityUser> UserManager
-
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
 @*IDENTITY LAYOUT*@
 
 <!DOCTYPE html>

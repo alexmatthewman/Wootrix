@@ -2,9 +2,10 @@
     ViewData["Title"] = "Wootrix 2.0 Home Page";
 }
 @using Microsoft.AspNetCore.Identity
+@using WootrixV2.Data;
 
-@inject SignInManager<IdentityUser> SignInManager
-@inject UserManager<IdentityUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
 
 
 

@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Wootrix.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using WootrixV2.Data;
 
 namespace Wootrix
 {
@@ -37,13 +38,18 @@ namespace Wootrix
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseMySql(
                     Configuration.GetConnectionString("IdentityConnection")));
-            services.AddDefaultIdentity<IdentityUser>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+
+
+            //services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+            //services.AddIdentity<ApplicationUser, IdentityRole>().AddDefaultUI().AddDefaultTokenProviders().AddEntityFrameworkStores<ApplicationDbContext>();
+
+            //This allows for custom Identity attributes
+            services.AddDefaultIdentity<ApplicationUser>().AddDefaultUI().AddRoles<IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+
+            //services.AddScoped<SignInManager<IdentityUser>, SignInManager<IdentityUser>>();
+            services.AddScoped<SignInManager<ApplicationUser>, SignInManager<ApplicationUser>>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-
-
-
             services.Configure<IdentityOptions>(options =>
             {
                 // Password settings.
@@ -76,7 +82,7 @@ namespace Wootrix
                 options.SlidingExpiration = true;
             });
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);            
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -105,6 +111,64 @@ namespace Wootrix
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            CreateUserRoles(services).Wait();
+        }
+
+        /// <summary>
+        /// This creates the roles (if they don't exist) and adds some people to them 
+        /// </summary>
+        /// <param name="serviceProvider"></param>
+        /// <returns></returns>
+        private async Task CreateUserRoles(IServiceProvider serviceProvider)
+        {
+            var RoleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var UserManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+           
+            var roleCheck = true;
+
+            IdentityResult roleResult;
+
+            //Create the roles and seed them to the database 
+
+            //Adding Super Admin Role  
+            roleCheck = await RoleManager.RoleExistsAsync("Admin");
+            if (!roleCheck)
+            { 
+                roleResult = await RoleManager.CreateAsync(new IdentityRole("Admin"));
+            }
+            
+            //Adding Company Admin Role  
+            roleCheck = await RoleManager.RoleExistsAsync("CompanyAdmin");
+            if (!roleCheck)
+            {
+                roleResult = await RoleManager.CreateAsync(new IdentityRole("CompanyAdmin"));
+            }
+
+            //Adding User Role  
+            roleCheck = await RoleManager.RoleExistsAsync("User");
+            if (!roleCheck)
+            { 
+                roleResult = await RoleManager.CreateAsync(new IdentityRole("User"));
+            }
+
+            //Assign Super Admin role to the main User for Admin management  
+            try
+            {
+                // Main user has all roles
+                await UserManager.AddToRoleAsync(await UserManager.FindByEmailAsync("amazon@wootrix.com"), "Admin");
+                await UserManager.AddToRoleAsync(await UserManager.FindByEmailAsync("amazon@wootrix.com"), "CompanyAdmin");
+                await UserManager.AddToRoleAsync(await UserManager.FindByEmailAsync("amazon@wootrix.com"), "User");
+
+                await UserManager.AddToRoleAsync(await UserManager.FindByEmailAsync("companyadmin@wootrix.com"), "CompanyAdmin");
+                await UserManager.AddToRoleAsync(await UserManager.FindByEmailAsync("alex.matthewman@gmail.com"), "User");
+            }
+            catch (Exception e)
+            {
+                //Maybe the users have been deleted or something wierd - shouldn't crash in any case                             
+            }
+
+            
 
         }
     }

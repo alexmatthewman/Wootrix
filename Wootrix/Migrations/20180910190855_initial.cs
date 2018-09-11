@@ -2,9 +2,9 @@
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Wootrix.Data.Migrations
+namespace WootrixV2.Migrations
 {
-    public partial class CreateIdentitySchema : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -40,7 +40,35 @@ namespace Wootrix.Data.Migrations
                     TwoFactorEnabled = table.Column<bool>(nullable: false),
                     LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
                     LockoutEnabled = table.Column<bool>(nullable: false),
-                    AccessFailedCount = table.Column<int>(nullable: false)
+                    AccessFailedCount = table.Column<int>(nullable: false),
+                    name = table.Column<string>(nullable: true),
+                    companyName = table.Column<string>(nullable: true),
+                    companyID = table.Column<string>(nullable: true),
+                    gender = table.Column<string>(nullable: true),
+                    categories = table.Column<string>(nullable: true),
+                    photoUrl = table.Column<string>(nullable: true),
+                    registrationType = table.Column<string>(nullable: true),
+                    linkedInID = table.Column<string>(nullable: true),
+                    facebookID = table.Column<string>(nullable: true),
+                    twitterID = table.Column<string>(nullable: true),
+                    googleID = table.Column<string>(nullable: true),
+                    socialAccountToken = table.Column<string>(nullable: true),
+                    token = table.Column<string>(nullable: true),
+                    location = table.Column<string>(nullable: true),
+                    latitude = table.Column<string>(nullable: true),
+                    logitude = table.Column<string>(nullable: true),
+                    articleLanguageID = table.Column<string>(nullable: true),
+                    websiteLanguage = table.Column<string>(nullable: true),
+                    websiteLanguageID = table.Column<string>(nullable: true),
+                    deviceType = table.Column<string>(nullable: true),
+                    osType = table.Column<string>(nullable: true),
+                    deviceIosID = table.Column<string>(nullable: true),
+                    deviceAndroidID = table.Column<string>(nullable: true),
+                    deviceWebID = table.Column<string>(nullable: true),
+                    modifiedBy = table.Column<string>(nullable: true),
+                    createdBy = table.Column<string>(nullable: true),
+                    moditfiedOn = table.Column<DateTime>(nullable: false),
+                    createdOn = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -52,7 +80,7 @@ namespace Wootrix.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     RoleId = table.Column<string>(nullable: false),
                     ClaimType = table.Column<string>(nullable: true),
                     ClaimValue = table.Column<string>(nullable: true)
@@ -73,7 +101,7 @@ namespace Wootrix.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     UserId = table.Column<string>(nullable: false),
                     ClaimType = table.Column<string>(nullable: true),
                     ClaimValue = table.Column<string>(nullable: true)
@@ -162,8 +190,7 @@ namespace Wootrix.Data.Migrations
                 name: "RoleNameIndex",
                 table: "AspNetRoles",
                 column: "NormalizedName",
-                unique: true,
-                filter: "[NormalizedName] IS NOT NULL");
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUserClaims_UserId",
@@ -189,8 +216,7 @@ namespace Wootrix.Data.Migrations
                 name: "UserNameIndex",
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
-                unique: true,
-                filter: "[NormalizedUserName] IS NOT NULL");
+                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
