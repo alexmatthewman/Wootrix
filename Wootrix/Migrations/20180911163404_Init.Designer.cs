@@ -9,14 +9,14 @@ using Wootrix.Data;
 namespace WootrixV2.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20180910190855_initial")]
-    partial class initial
+    [Migration("20180911163404_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.2-rtm-30932")
+                .HasAnnotation("ProductVersion", "2.1.3-rtm-32065")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -234,6 +234,28 @@ namespace WootrixV2.Migrations
                         .HasName("UserNameIndex");
 
                     b.ToTable("AspNetUsers");
+                });
+
+            modelBuilder.Entity("WootrixV2.Models.Company", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("CompanyBackgroundColor");
+
+                    b.Property<string>("CompanyLogoUrl");
+
+                    b.Property<string>("CompanyMessage");
+
+                    b.Property<string>("CompanyName");
+
+                    b.Property<string>("CompanyPrimaryHighlightColor");
+
+                    b.Property<string>("CompanySecondaryHighlightColor");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Company");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

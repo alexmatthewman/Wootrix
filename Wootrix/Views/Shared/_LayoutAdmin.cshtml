@@ -1,6 +1,5 @@
 ﻿
 @using Microsoft.AspNetCore.Identity
-@using System.Security.Claims
 @using WootrixV2.Data;
 
 @inject SignInManager<ApplicationUser> SignInManager
@@ -81,23 +80,7 @@
                     @if (SignInManager.IsSignedIn(User))
                     {
                         <li><a asp-area="" asp-controller="Magazine" asp-action="Index">Magazine</a></li>
-                        // //var um = UserManager.GetRolesAsync(User);
-                        // var isAdmin = User.IsInRole("Admin");
-                        // var role = User.HasClaim(ClaimTypes.Role, "Admin");
-                        // var isCompany = User.IsInRole("CompanyAdmin");
-                        //// var isUser = User.IsInRoleAsync("User");
-                        ///
-                        //So apparently you can't find the user's roles but you can find their claims to specific roles...
-                        //That or they need to document this shit a bit better....definitely they do in any case...sigh
-
-                        @if (User.HasClaim(ClaimTypes.Role, "Admin"))
-                        {
-                            <li><a asp-area="" asp-controller="Companies" asp-action="Index">Companies</a></li>
-                        }
                     }
-                    }
-
-
 
                 </ul>
 

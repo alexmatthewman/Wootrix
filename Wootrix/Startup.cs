@@ -13,6 +13,7 @@ using Wootrix.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WootrixV2.Data;
+using System.Security.Claims;
 
 namespace Wootrix
 {
@@ -39,14 +40,11 @@ namespace Wootrix
                 options.UseMySql(
                     Configuration.GetConnectionString("IdentityConnection")));
 
-
-            //services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
-            //services.AddIdentity<ApplicationUser, IdentityRole>().AddDefaultUI().AddDefaultTokenProviders().AddEntityFrameworkStores<ApplicationDbContext>();
-
             //This allows for custom Identity attributes
-            services.AddDefaultIdentity<ApplicationUser>().AddDefaultUI().AddRoles<IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
-
-            //services.AddScoped<SignInManager<IdentityUser>, SignInManager<IdentityUser>>();
+            //services.AddDefaultIdentity<ApplicationUser>().AddDefaultUI().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+            //services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+            //services.AddDefaultIdentity<ApplicationUser>().AddDefaultUI().AddRoles<IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+            services.AddDefaultIdentity<ApplicationUser>().AddRoles<IdentityRole>().AddDefaultUI().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
             services.AddScoped<SignInManager<ApplicationUser>, SignInManager<ApplicationUser>>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
@@ -124,7 +122,7 @@ namespace Wootrix
         {
             var RoleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var UserManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-           
+
             var roleCheck = true;
 
             IdentityResult roleResult;
@@ -133,11 +131,27 @@ namespace Wootrix
 
             //Adding Super Admin Role  
             roleCheck = await RoleManager.RoleExistsAsync("Admin");
+            
             if (!roleCheck)
-            { 
-                roleResult = await RoleManager.CreateAsync(new IdentityRole("Admin"));
+            {
+
+                var adminRole = await RoleManager.FindByNameAsync("Admin");
+                var claimCheck = await RoleManager.GetClaimsAsync(adminRole);
+                if (adminRole == null)
+                {
+                    adminRole = new IdentityRole("Admin");
+                    await RoleManager.CreateAsync(adminRole);
+                    var clm = new Claim("Role", "Admin");
+                    if (!claimCheck.Contains(clm))
+                    {
+                        await RoleManager.AddClaimAsync(adminRole, new Claim("Role", "Admin"));
+                    }
+                    
+                }
+                
             }
             
+
             //Adding Company Admin Role  
             roleCheck = await RoleManager.RoleExistsAsync("CompanyAdmin");
             if (!roleCheck)
@@ -148,7 +162,7 @@ namespace Wootrix
             //Adding User Role  
             roleCheck = await RoleManager.RoleExistsAsync("User");
             if (!roleCheck)
-            { 
+            {
                 roleResult = await RoleManager.CreateAsync(new IdentityRole("User"));
             }
 
@@ -157,18 +171,26 @@ namespace Wootrix
             {
                 // Main user has all roles
                 await UserManager.AddToRoleAsync(await UserManager.FindByEmailAsync("amazon@wootrix.com"), "Admin");
-                await UserManager.AddToRoleAsync(await UserManager.FindByEmailAsync("amazon@wootrix.com"), "CompanyAdmin");
-                await UserManager.AddToRoleAsync(await UserManager.FindByEmailAsync("amazon@wootrix.com"), "User");
 
-                await UserManager.AddToRoleAsync(await UserManager.FindByEmailAsync("companyadmin@wootrix.com"), "CompanyAdmin");
-                await UserManager.AddToRoleAsync(await UserManager.FindByEmailAsync("alex.matthewman@gmail.com"), "User");
+                ApplicationUser user = await UserManager.FindByEmailAsync("amazon@wootrix.com");
+                var User = new ApplicationUser();
+                await UserManager.AddToRoleAsync(user, "Admin");
+                await UserManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, "Admin"));
+                //await UserManager.AddToRoleAsync(await UserManager.FindByEmailAsync("amazon@wootrix.com"), "CompanyAdmin");
+                //await UserManager.AddToRoleAsync(await UserManager.FindByEmailAsync("amazon@wootrix.com"), "User");
+
+                //await UserManager.AddToRoleAsync(await UserManager.FindByEmailAsync("companyadmin@wootrix.com"), "CompanyAdmin");
+                //await UserManager.AddToRoleAsync(await UserManager.FindByEmailAsync("alex.matthewman@gmail.com"), "User");
+
+
             }
             catch (Exception e)
             {
+                System.Diagnostics.Debug.WriteLine(e);
                 //Maybe the users have been deleted or something wierd - shouldn't crash in any case                             
             }
 
-            
+
 
         }
     }
