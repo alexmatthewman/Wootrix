@@ -20,6 +20,7 @@
     <link href="~/css/OldWootrix.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+    <link href="~/css/IdentityStyles.css" rel="stylesheet" />
     @*<link href="~/css/font-awesome.min.css" rel="stylesheet" />*@ @*Pretty much only for icons so far - can delete*@
     <environment include="Development">
 
@@ -74,12 +75,13 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     @*<li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                        <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-                        <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>*@
+        <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
+        <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>*@
 
                     @if (SignInManager.IsSignedIn(User))
                     {
                         <li><a asp-area="" asp-controller="Magazine" asp-action="Index">Magazine</a></li>
+                        <li><a asp-area="" asp-controller="Companies" asp-action="Home/wootrix">Home</a></li>
                     }
 
                 </ul>

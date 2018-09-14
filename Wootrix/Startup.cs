@@ -106,8 +106,12 @@ namespace Wootrix
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
+                    name: "companyHome",
+                    template: "{controller=Company}/{action=Home}/{id}");
+                routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
+                
             });
 
             CreateUserRoles(services).Wait();

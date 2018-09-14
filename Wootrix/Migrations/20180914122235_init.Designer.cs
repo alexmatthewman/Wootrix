@@ -9,8 +9,8 @@ using Wootrix.Data;
 namespace WootrixV2.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20180911163404_Init")]
-    partial class Init
+    [Migration("20180914122235_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -243,11 +243,15 @@ namespace WootrixV2.Migrations
 
                     b.Property<string>("CompanyBackgroundColor");
 
-                    b.Property<string>("CompanyLogoUrl");
+                    b.Property<string>("CompanyHeaderBackgroundColor");
+
+                    b.Property<string>("CompanyLogoUrl")
+                        .IsRequired();
 
                     b.Property<string>("CompanyMessage");
 
-                    b.Property<string>("CompanyName");
+                    b.Property<string>("CompanyName")
+                        .IsRequired();
 
                     b.Property<string>("CompanyPrimaryHighlightColor");
 

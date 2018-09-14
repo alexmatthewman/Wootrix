@@ -5,7 +5,7 @@
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h2>Index</h2>
+<h2>Wootrix Companies</h2>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -31,6 +31,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.CompanyBackgroundColor)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CompanyHeaderBackgroundColor)
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -54,6 +57,9 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.CompanyBackgroundColor)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CompanyHeaderBackgroundColor)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |

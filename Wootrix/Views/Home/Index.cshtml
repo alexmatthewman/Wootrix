@@ -7,17 +7,20 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
-
-
 <!-- Banner -->
 <section id="banner">
 
     @if (SignInManager.IsSignedIn(User))
     {
-        <div class="span7 left">
-            <figure class="main-home-image">
-                <img src="~/images/website_images/home-screen.png" alt="" />
-            </figure>
+        <div class="container clearfix">
+            <div class="span7 left">
+                <figure class="main-home-image">
+                    <img src="~/images/website_images/home-screen.png" alt="" />
+                </figure>
+            </div>
+            <div class="span5 right welcomeMessage">
+                <h3>Welcome to Wootrix</h3>
+            </div>
         </div>
     }
     else

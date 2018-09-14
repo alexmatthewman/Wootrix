@@ -21,6 +21,9 @@
     <link href="~/css/OldWootrix.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+
+
+    
     @*<link href="~/css/font-awesome.min.css" rel="stylesheet" />*@ @*Pretty much only for icons so far - can delete*@
     <environment include="Development">
 
@@ -57,10 +60,10 @@
         </nav>*@
     <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
-            <div class="logo-bar">
+            <div id="companyHighlight1" class="logo-bar">
                 <figure class="logo-container">
-                    <a href="#">
-                        <img src="~/images/logo.png" alt="Company Logo" class="img-responsive" />
+                    <a href="~/">
+                        <img id="companyLogo" src="~/images/logo.png" alt="Company Logo" class="img-responsive" />
                     </a>
                 </figure>
             </div>
@@ -74,19 +77,13 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    @*<li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                        <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-                        <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>*@
+                 
 
                     @if (SignInManager.IsSignedIn(User))
                     {
                         <li><a asp-area="" asp-controller="Magazine" asp-action="Index">Magazine</a></li>
-                        // //var um = UserManager.GetRolesAsync(User);
-                        // var isAdmin = User.IsInRole("Admin");
-                        // var role = User.HasClaim(ClaimTypes.Role, "Admin");
-                        // var isCompany = User.IsInRole("CompanyAdmin");
-                        //// var isUser = User.IsInRoleAsync("User");
-                        ///
+                        <li><a asp-area="" asp-controller="Companies" asp-action="Home">Home</a></li>
+
                         //So apparently you can't find the user's roles but you can find their claims to specific roles...
                         //That or they need to document this shit a bit better....definitely they do in any case...sigh
 
@@ -113,16 +110,18 @@
         @RenderBody()
         <!-- Footer -->
         <footer id="footer">
-            <ul class="icons">
-                <li><a href="https://twitter.com/wootrixoficial" class="icon f-twitter"><img src="~/images/footicon-twitter.png" alt="Twitter" /></a></li>
-                <li><a href="https://www.facebook.com/wootrix/" class="icon f-facebook"><img src="~/images/footicon-facebook.png" alt="Faceboook" /></a></li>
-                <li><a href="https://plus.google.com/109310151849035195482" class="icon f-google"><img src="~/images/footicon-google.png" alt="Google+" /></a></li>
-                <li><a href="https://www.linkedin.com/company/wootrix/" class="icon f-linkedin"><img src="~/images/footicon-linkedin.png" alt="LinkedIn" /></a></li>
-                <li><a href="mailto:wootrix@wootrix.com" class="icon f-envelope-o"><img src="~/images/footicon-email.png" alt="Email" /></a></li>
-            </ul>
-            <ul class="copyright">
-                <li>&copy;<a href="#">WOOTRIX</a></li>
-            </ul>
+            <div id="companyHighlight2">
+                <ul class="icons">
+                    <li><a href="https://twitter.com/wootrixoficial" class="icon f-twitter"><img src="~/images/footicon-twitter.png" alt="Twitter" /></a></li>
+                    <li><a href="https://www.facebook.com/wootrix/" class="icon f-facebook"><img src="~/images/footicon-facebook.png" alt="Faceboook" /></a></li>
+                    <li><a href="https://plus.google.com/109310151849035195482" class="icon f-google"><img src="~/images/footicon-google.png" alt="Google+" /></a></li>
+                    <li><a href="https://www.linkedin.com/company/wootrix/" class="icon f-linkedin"><img src="~/images/footicon-linkedin.png" alt="LinkedIn" /></a></li>
+                    <li><a href="mailto:wootrix@wootrix.com" class="icon f-envelope-o"><img src="~/images/footicon-email.png" alt="Email" /></a></li>
+                </ul>
+                <ul class="copyright">
+                    <li>&copy;<a href="#">WOOTRIX</a></li>
+                </ul>
+            </div>
         </footer>
     </div>
 

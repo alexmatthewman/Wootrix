@@ -21,10 +21,23 @@ namespace WootrixV2.Controllers
         }
 
         // GET: Companies
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Company.ToListAsync());
+        }
+
+        public async Task<IActionResult> Home(string id)
+        {
+            var company = await _context.Company
+                .FirstOrDefaultAsync(m => m.CompanyName == id);
+            if (company == null)
+            {
+                return NotFound();
+            }
+
+            return View(company);
+            //return View(await _context.Company.ToListAsync());
         }
 
         // GET: Companies/Details/5
@@ -56,7 +69,7 @@ namespace WootrixV2.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,CompanyName,CompanyLogoUrl,CompanyMessage,CompanyPrimaryHighlightColor,CompanySecondaryHighlightColor,CompanyBackgroundColor")] Company company)
+        public async Task<IActionResult> Create([Bind("ID,CompanyName,CompanyLogoUrl,CompanyMessage,CompanyPrimaryHighlightColor,CompanySecondaryHighlightColor,CompanyBackgroundColor,CompanyHeaderBackgroundColor")] Company company)
         {
             if (ModelState.IsValid)
             {
@@ -66,6 +79,23 @@ namespace WootrixV2.Controllers
             }
             return View(company);
         }
+
+        //public async Task<IActionResult> Create([Bind("ID,CompanyName,CompanyLogoUrl,CompanyMessage,CompanyPrimaryHighlightColor,CompanySecondaryHighlightColor,CompanyBackgroundColor")] CompanyFileUpload company)
+        //{
+        //    // Perform an initial check to catch FileUpload class attribute violations.
+        //    if (ModelState.IsValid)
+        //    {
+        //        var filePath = "<PATH-AND-FILE-NAME>";
+        //        filePath = "~/images/" + company.CompanyName + "_" + company.CompanyLogoUrl.FileName;
+
+
+        //        using (var fileStream = new FileStream(filePath, FileMode.Create))
+        //        {
+        //            await company.CompanyLogoUrl.CopyToAsync(fileStream);
+        //        }
+        //    }
+        //    return View(company);
+        //}
 
         // GET: Companies/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -88,7 +118,7 @@ namespace WootrixV2.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,CompanyName,CompanyLogoUrl,CompanyMessage,CompanyPrimaryHighlightColor,CompanySecondaryHighlightColor,CompanyBackgroundColor")] Company company)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,CompanyName,CompanyLogoUrl,CompanyMessage,CompanyPrimaryHighlightColor,CompanySecondaryHighlightColor,CompanyBackgroundColor,CompanyHeaderBackgroundColor")] Company company)
         {
             if (id != company.ID)
             {

@@ -1,15 +1,25 @@
 ﻿@model WootrixV2.Models.Company
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Home";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h2>Delete</h2>
+<h2>
+    Company home page - Normally this will show a login interface 
+</h2>
 
-<h3>Are you sure you want to delete this?</h3>
 <div>
-    <h4>Company</h4>
+    <!--I'm putting the company attributes in hidden tags so the page can be customised at runtime by js -->
+    <div id="thisComanyName" val="@Html.DisplayFor(model => model.CompanyName)" style="visibility:hidden"></div>
+    <div id="thisCompanyLogoUrl" val="@Html.DisplayFor(model => model.CompanyLogoUrl)" style="visibility:hidden"></div>
+    <div id="thisCompanyMessage" val="@Html.DisplayFor(model => model.CompanyMessage)" style="visibility:hidden"></div>
+    <div id="thisCompanyPrimaryHighlightColor" val="@Html.DisplayFor(model => model.CompanyPrimaryHighlightColor)" style="visibility:hidden"></div>
+    <div id="thisCompanySecondaryHighlightColor" val="@Html.DisplayFor(model => model.CompanySecondaryHighlightColor)" style="visibility:hidden"></div>
+    <div id="thisCompanyBackgroundColor" val="@Html.DisplayFor(model => model.CompanyBackgroundColor)" style="visibility:hidden"></div>
+    <div id="thisCompanyHeaderBackgroundColor" val="@Html.DisplayFor(model => model.CompanyHeaderBackgroundColor)" style="visibility:hidden"></div>
+
+    <h4>Details</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
@@ -55,10 +65,6 @@
             @Html.DisplayFor(model => model.CompanyHeaderBackgroundColor)
         </dd>
     </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="ID" />
-        <input type="submit" value="Delete" class="btn btn-default" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
 </div>
+
+

@@ -4,27 +4,31 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace WootrixV2.Migrations
 {
-    public partial class initial : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Company");
+
             migrationBuilder.CreateTable(
-                name: "Company",
-                columns: table => new
-                {
-                    ID = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    CompanyName = table.Column<string>(nullable: true),
-                    CompanyLogoUrl = table.Column<string>(nullable: true),
-                    CompanyMessage = table.Column<string>(nullable: true),
-                    CompanyPrimaryHighlightColor = table.Column<string>(nullable: true),
-                    CompanySecondaryHighlightColor = table.Column<string>(nullable: true),
-                    CompanyBackgroundColor = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Company", x => x.ID);
-                });
+               name: "Company",
+               columns: table => new
+               {
+                   ID = table.Column<int>(nullable: false)
+                       .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                   CompanyName = table.Column<string>(nullable: false),
+                   CompanyLogoUrl = table.Column<string>(nullable: false),
+                   CompanyMessage = table.Column<string>(nullable: true),
+                   CompanyPrimaryHighlightColor = table.Column<string>(nullable: true),
+                   CompanySecondaryHighlightColor = table.Column<string>(nullable: true),
+                   CompanyBackgroundColor = table.Column<string>(nullable: true),
+                   CompanyHeaderBackgroundColor = table.Column<string>(nullable: true)
+               },
+               constraints: table =>
+               {
+                   table.PrimaryKey("PK_Company", x => x.ID);
+               });
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
@@ -92,7 +96,24 @@ namespace WootrixV2.Migrations
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
                 });
 
-            
+            migrationBuilder.CreateTable(
+                name: "Company",
+                columns: table => new
+                {
+                    ID = table.Column<int>(nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    CompanyName = table.Column<string>(nullable: false),
+                    CompanyLogoUrl = table.Column<string>(nullable: false),
+                    CompanyMessage = table.Column<string>(nullable: true),
+                    CompanyPrimaryHighlightColor = table.Column<string>(nullable: true),
+                    CompanySecondaryHighlightColor = table.Column<string>(nullable: true),
+                    CompanyBackgroundColor = table.Column<string>(nullable: true),
+                    CompanyHeaderBackgroundColor = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Company", x => x.ID);
+                });
 
             migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",

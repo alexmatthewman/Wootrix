@@ -241,11 +241,15 @@ namespace WootrixV2.Migrations
 
                     b.Property<string>("CompanyBackgroundColor");
 
-                    b.Property<string>("CompanyLogoUrl");
+                    b.Property<string>("CompanyHeaderBackgroundColor");
+
+                    b.Property<string>("CompanyLogoUrl")
+                        .IsRequired();
 
                     b.Property<string>("CompanyMessage");
 
-                    b.Property<string>("CompanyName");
+                    b.Property<string>("CompanyName")
+                        .IsRequired();
 
                     b.Property<string>("CompanyPrimaryHighlightColor");
 

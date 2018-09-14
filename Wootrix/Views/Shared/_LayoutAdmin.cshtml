@@ -1,5 +1,6 @@
 ﻿
 @using Microsoft.AspNetCore.Identity
+@using System.Security.Claims
 @using WootrixV2.Data;
 
 @inject SignInManager<ApplicationUser> SignInManager
@@ -9,6 +10,10 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <!-- jQUERY -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js" type="text/javascript"></script>
+
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Wootrix</title>
@@ -16,11 +21,14 @@
 
     <link rel="icon" href="~/favicon.png" type="image/png">
 
+
+
     <meta name="apple-itunes-app" content="app-id=1034925784" />
     <link href="~/css/OldWootrix.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
     <link rel="stylesheet" href="~/css/site.css" />
-    @*<link href="~/css/font-awesome.min.css" rel="stylesheet" />*@ @*Pretty much only for icons so far - can delete*@
+    <link href="~/css/IdentityStyles.css" rel="stylesheet" />
+
     <environment include="Development">
 
 
@@ -32,34 +40,13 @@
             <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />*@
     </environment>
 </head>
-<body>
-    @*<nav class="navbar navbar-inverse navbar-fixed-top">
-            <div class="container">
-                <div class="navbar-header">z
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Wootrix</a>
-                </div>
-                <div class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav">
-                        <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                        <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-                        <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
-                    </ul>
-                    <partial name="_LoginPartial" />
-                </div>
-            </div>
-        </nav>*@
-    <nav class="navbar navbar-inverse navbar-fixed-top">
+<body id="companyBackground">
+    <nav id="companyHeaderBackground" class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="logo-bar">
                 <figure class="logo-container">
-                    <a href="#">
-                        <img src="~/images/logo.png" alt="Company Logo" class="img-responsive" />
+                    <a href="~/">
+                        <img id="companyLogo" src="~/images/logo.png" alt="Company Logo" class="img-responsive" />
                     </a>
                 </figure>
             </div>
@@ -73,22 +60,26 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    @*<li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                        <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-                        <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>*@
+
 
                     @if (SignInManager.IsSignedIn(User))
                     {
                         <li><a asp-area="" asp-controller="Magazine" asp-action="Index">Magazine</a></li>
+                        <li><a asp-area="" asp-controller="Companies" asp-action="Home/wootrix">Home</a></li>
+                        //So apparently you can't find the user's roles but you can find their claims to specific roles...
+                        //That or they need to document this shit a bit better....definitely they do in any case...sigh
+
+                        @if (User.HasClaim(ClaimTypes.Role, "Admin"))
+                        {
+                            <li><a asp-area="" asp-controller="Companies" asp-action="Index">Companies</a></li>
+                        }
                     }
-
+                    
                 </ul>
-
                 <partial name="_LoginPartial" />
             </div>
         </div>
     </nav>
-
     <partial name="_CookieConsentPartial" />
 
     <div class="body-content">
@@ -110,11 +101,17 @@
     </div>
 
     <environment include="Development">
+        <!-- jQUERY -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js" type="text/javascript"></script>
+
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
         <script src="~/js/site.js" asp-append-version="true"></script>
+
     </environment>
     <environment exclude="Development">
+
         <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js"
                 asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
                 asp-fallback-test="window.jQuery"
@@ -129,6 +126,36 @@
         </script>
         <script src="~/js/site.min.js" asp-append-version="true"></script>
     </environment>
+    <script>
+        $(document).ready(function () {
+
+            //var highlight1 = document.getElementById('thisCompanyPrimaryHighlightColor').val;
+            //var elSuccess = document.getElementById('companyHighlight1');
+            //elSuccess.style.backgroundColor = highlight1;
+
+            //var name = $("#thisComanyName").attr("val");
+            //var logo = $("#thisCompanyLogoUrl").attr("val");
+            //var message = $("#thisCompanyMessage").attr("val");
+            var highlight1 = $("#thisCompanyPrimaryHighlightColor").attr("val");
+            var highlight2 = $("#thisCompanySecondaryHighlightColor").attr("val");
+            var background = $("#thisCompanyBackgroundColor").attr("val");
+            var headerBackground = $("#thisCompanyHeaderBackgroundColor").attr("val");
+
+
+            var sheet = document.createElement('style');
+            //sheet.innerHTML += "#companyHighlight1 { background-color: " + name + "; }";
+            //sheet.innerHTML += "#companyHighlight1 { background-color: " + highlight1 + "; }";
+            //sheet.innerHTML += "#companyHighlight1 { background-color: " + highlight1 + "; }";
+            sheet.innerHTML = "#companyHighlight1 { background-color: " + highlight1 + "; } ";
+            sheet.innerHTML += "#companyHighlight2 { background-color: " + highlight2 + "; } ";
+            sheet.innerHTML += "#companyBackground { background-color: " + background + "; } ";
+            sheet.innerHTML += "#companyHeaderBackground { background-color: " + headerBackground + "; } ";
+
+
+            document.body.appendChild(sheet);
+        });
+    </script>
+
 
     @RenderSection("Scripts", required: false)
 </body>
