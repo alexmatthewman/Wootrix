@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -11,36 +10,22 @@ using WootrixV2.Models;
 
 namespace WootrixV2.Controllers
 {
-    public class CompaniesController : Controller
+    public class CompanyController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public CompaniesController(ApplicationDbContext context)
+        public CompanyController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Companies
-        [Authorize(Roles = "Admin")]
+        // GET: Company
         public async Task<IActionResult> Index()
         {
             return View(await _context.Company.ToListAsync());
         }
 
-        public async Task<IActionResult> Home(string id)
-        {
-            var company = await _context.Company
-                .FirstOrDefaultAsync(m => m.CompanyName == id);
-            if (company == null)
-            {
-                return NotFound();
-            }
-
-            return View(company);
-            //return View(await _context.Company.ToListAsync());
-        }
-
-        // GET: Companies/Details/5
+        // GET: Company/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -58,18 +43,18 @@ namespace WootrixV2.Controllers
             return View(company);
         }
 
-        // GET: Companies/Create
+        // GET: Company/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Companies/Create
+        // POST: Company/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,CompanyName,CompanyLogoUrl,CompanyMessage,CompanyPrimaryHighlightColor,CompanySecondaryHighlightColor,CompanyBackgroundColor,CompanyHeaderBackgroundColor")] Company company)
+        public async Task<IActionResult> Create([Bind("ID,CompanyName,CompanyLogoImage,CompanyBackgroundColor,CompanyBackgroundImage,CompanyFocusImage,CompanyTextMain,CompanyTextSecondary,CompanyHighlightColor,CompanyHeaderBackgroundColor")] Company company)
         {
             if (ModelState.IsValid)
             {
@@ -80,24 +65,7 @@ namespace WootrixV2.Controllers
             return View(company);
         }
 
-        //public async Task<IActionResult> Create([Bind("ID,CompanyName,CompanyLogoUrl,CompanyMessage,CompanyPrimaryHighlightColor,CompanySecondaryHighlightColor,CompanyBackgroundColor")] CompanyFileUpload company)
-        //{
-        //    // Perform an initial check to catch FileUpload class attribute violations.
-        //    if (ModelState.IsValid)
-        //    {
-        //        var filePath = "<PATH-AND-FILE-NAME>";
-        //        filePath = "~/images/" + company.CompanyName + "_" + company.CompanyLogoUrl.FileName;
-
-
-        //        using (var fileStream = new FileStream(filePath, FileMode.Create))
-        //        {
-        //            await company.CompanyLogoUrl.CopyToAsync(fileStream);
-        //        }
-        //    }
-        //    return View(company);
-        //}
-
-        // GET: Companies/Edit/5
+        // GET: Company/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -113,12 +81,12 @@ namespace WootrixV2.Controllers
             return View(company);
         }
 
-        // POST: Companies/Edit/5
+        // POST: Company/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,CompanyName,CompanyLogoUrl,CompanyMessage,CompanyPrimaryHighlightColor,CompanySecondaryHighlightColor,CompanyBackgroundColor,CompanyHeaderBackgroundColor")] Company company)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,CompanyName,CompanyLogoImage,CompanyBackgroundColor,CompanyBackgroundImage,CompanyFocusImage,CompanyTextMain,CompanyTextSecondary,CompanyHighlightColor,CompanyHeaderBackgroundColor")] Company company)
         {
             if (id != company.ID)
             {
@@ -148,7 +116,7 @@ namespace WootrixV2.Controllers
             return View(company);
         }
 
-        // GET: Companies/Delete/5
+        // GET: Company/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -166,7 +134,7 @@ namespace WootrixV2.Controllers
             return View(company);
         }
 
-        // POST: Companies/Delete/5
+        // POST: Company/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

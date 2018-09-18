@@ -66,15 +66,15 @@ namespace Wootrix
                 // User settings.
                 options.User.AllowedUserNameCharacters =
                 "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
-                options.User.RequireUniqueEmail = false;
+                options.User.RequireUniqueEmail = true;
             });
 
             services.ConfigureApplicationCookie(options =>
             {
                 // Cookie settings
                 options.Cookie.HttpOnly = true;
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
-
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+                
                 options.LoginPath = "/Identity/Account/Login";
                 options.AccessDeniedPath = "/Identity/Account/AccessDenied";
                 options.SlidingExpiration = true;
@@ -149,10 +149,8 @@ namespace Wootrix
                     if (!claimCheck.Contains(clm))
                     {
                         await RoleManager.AddClaimAsync(adminRole, new Claim("Role", "Admin"));
-                    }
-                    
-                }
-                
+                    }                    
+                }                
             }
             
 

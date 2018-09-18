@@ -2,10 +2,10 @@
 
 @{
     ViewData["Title"] = "Index";
-    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Wootrix Companies</h2>
+<h2>Index</h2>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -17,25 +17,32 @@
                 @Html.DisplayNameFor(model => model.CompanyName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CompanyLogoUrl)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CompanyMessage)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CompanyPrimaryHighlightColor)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CompanySecondaryHighlightColor)
+                @Html.DisplayNameFor(model => model.CompanyLogoImage)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.CompanyBackgroundColor)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CompanyBackgroundImage)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CompanyFocusImage)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CompanyTextMain)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CompanyTextSecondary)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CompanyHighlightColor)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.CompanyHeaderBackgroundColor)
             </th>
             <th></th>
         </tr>
+
     </thead>
     <tbody>
 @foreach (var item in Model) {
@@ -44,19 +51,25 @@
                 @Html.DisplayFor(modelItem => item.CompanyName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.CompanyLogoUrl)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CompanyMessage)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CompanyPrimaryHighlightColor)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CompanySecondaryHighlightColor)
+                @Html.DisplayFor(modelItem => item.CompanyLogoImage)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.CompanyBackgroundColor)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CompanyBackgroundImage)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CompanyFocusImage)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CompanyTextMain)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CompanyTextSecondary)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CompanyHighlightColor)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.CompanyHeaderBackgroundColor)

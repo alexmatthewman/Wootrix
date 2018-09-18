@@ -1,0 +1,76 @@
+﻿@model WootrixV2.Models.Company
+
+@{
+    ViewData["Title"] = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Company</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.CompanyName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CompanyName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CompanyLogoImage)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CompanyLogoImage)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CompanyBackgroundColor)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CompanyBackgroundColor)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CompanyBackgroundImage)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CompanyBackgroundImage)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CompanyFocusImage)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CompanyFocusImage)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CompanyTextMain)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CompanyTextMain)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CompanyTextSecondary)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CompanyTextSecondary)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CompanyHighlightColor)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CompanyHighlightColor)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CompanyHeaderBackgroundColor)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CompanyHeaderBackgroundColor)
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="ID" />
+        <input type="submit" value="Delete" class="btn btn-default" /> |
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>

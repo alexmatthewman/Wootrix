@@ -1,0 +1,74 @@
+﻿@model WootrixV2.Models.Company
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Create</h2>
+
+<h4>Company</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="CompanyName" class="control-label"></label>
+                <input asp-for="CompanyName" class="form-control" />
+                <span asp-validation-for="CompanyName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CompanyLogoImage" class="control-label"></label>
+                <input asp-for="CompanyLogoImage" class="form-control" />
+                <span asp-validation-for="CompanyLogoImage" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CompanyBackgroundColor" class="control-label"></label>
+                <input asp-for="CompanyBackgroundColor" class="form-control" />
+                <span asp-validation-for="CompanyBackgroundColor" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CompanyBackgroundImage" class="control-label"></label>
+                <input asp-for="CompanyBackgroundImage" class="form-control" />
+                <span asp-validation-for="CompanyBackgroundImage" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CompanyFocusImage" class="control-label"></label>
+                <input asp-for="CompanyFocusImage" class="form-control" />
+                <span asp-validation-for="CompanyFocusImage" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CompanyTextMain" class="control-label"></label>
+                <input asp-for="CompanyTextMain" class="form-control" />
+                <span asp-validation-for="CompanyTextMain" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CompanyTextSecondary" class="control-label"></label>
+                <input asp-for="CompanyTextSecondary" class="form-control" />
+                <span asp-validation-for="CompanyTextSecondary" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CompanyHighlightColor" class="control-label"></label>
+                <input asp-for="CompanyHighlightColor" class="form-control" />
+                <span asp-validation-for="CompanyHighlightColor" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CompanyHeaderBackgroundColor" class="control-label"></label>
+                <input asp-for="CompanyHeaderBackgroundColor" class="form-control" />
+                <span asp-validation-for="CompanyHeaderBackgroundColor" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

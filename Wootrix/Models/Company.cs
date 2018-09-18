@@ -12,52 +12,48 @@ namespace WootrixV2.Models
         public int ID { get; set; }
 
         [Required]
-        [Display(Name = "Company Name", Prompt = "Enter the Company name")]
+        [RegularExpression(@"^[A-Z]+[a-zA-Z""'\s-]*$")]
+        [StringLength(100)]
+        [Display(Name = "Company Name", Prompt = "Enter the Company name", Description= "Company Name")]
         public string CompanyName { get; set; }
 
         [Required]
-        [Display(Name = "Company Logo Upload", Prompt = "Please select a logo to upload - less than 500px wide and 100px high")]
-        public string CompanyLogoUrl { get; set; }
+        [Display(Name = "Company Logo", Prompt = "Please select a logo to upload - less than 500px wide and 100px high", Description = "Company Logo")]
+        public byte[] CompanyLogoImage { get; set; }
 
-        [Display(Name = "Company Message", Prompt = "You can set an optional message for all company users to see")]
-        public string CompanyMessage { get; set; }
-
-        [Display(Name = "Company Primary Highlight Color", Prompt = "Must be a hexidecimal color in the format #FFFFFF to #000000")]
-        public string CompanyPrimaryHighlightColor { get; set; }
-
-        [Display(Name = "Company Secondary Highlight Color", Prompt = "Must be a hexidecimal color in the format #FFFFFF to #000000")]
-        public string CompanySecondaryHighlightColor { get; set; }
-
-        [Display(Name = "Company Background Color", Prompt = "Must be a hexidecimal color in the format #FFFFFF to #000000")]
+        [Required]
+        [RegularExpression(@"^#(?:[0-9a-fA-F]{3}){1,2}$")]
+        [StringLength(7, MinimumLength = 4)]
+        [Display(Name = "Company Background Color", Prompt = "Must be a hexidecimal color in the format #FFFFFF to #000000", Description = "Company Background Color")]
         public string CompanyBackgroundColor { get; set; }
 
-        [Display(Name = "Company Header Background Color", Prompt = "Must be a hexidecimal color in the format #FFFFFF to #000000")]
+        [Display(Name = "Company Background Image", Prompt = "Please select a background to upload - best size is 1920px wide and 1080px high", Description = "Company Background Image")]
+        public byte[] CompanyBackgroundImage { get; set; }
+
+        [Display(Name = "Company Focus Image", Prompt = "Please select a focus image to upload - best size is 700px wide and 550px high", Description = "Company Focus Image")]
+        public byte[] CompanyFocusImage { get; set; }
+
+        [RegularExpression(@"^[A-Z]+[a-zA-Z""'\s-]*$")]
+        [StringLength(100)]
+        [Display(Name = "Company Text Main", Prompt = "You can set an optional main message for all company users to see", Description = "Company Text Main")]
+        public string CompanyTextMain { get; set; }
+
+        [RegularExpression(@"^[A-Z]+[a-zA-Z""'\s-]*$")]
+        [StringLength(500)]
+        [Display(Name = "Company Text Secondary", Prompt = "You can set an optional message for all company users to see", Description = "Company Text Secondary")]
+        public string CompanyTextSecondary { get; set; }
+
+        [Required]
+        [RegularExpression(@"^#(?:[0-9a-fA-F]{3}){1,2}$")]
+        [StringLength(7, MinimumLength = 4)]
+        [Display(Name = "Company Highlight Color", Prompt = "Must be a hexidecimal color in the format #FFFFFF to #000000", Description = "Company Highlight Color")]
+        public string CompanyHighlightColor { get; set; }
+
+        [Required]
+        [RegularExpression(@"^#(?:[0-9a-fA-F]{3}){1,2}$")]
+        [StringLength(7, MinimumLength = 4)]
+        [Display(Name = "Company Header Background Color", Prompt = "Must be a hexidecimal color in the format #FFFFFF to #000000", Description = "Company Header Background Color")]
         public string CompanyHeaderBackgroundColor { get; set; }
     }
-
-    //public class CompanyFileUpload
-    //{
-    //    [Required]
-    //    [Display(Name = "Company Name", Prompt = "Enter the Company name")]
-    //    public string CompanyName { get; set; }
-
-    //    [Required]
-    //    [Display(Name = "Company Logo Upload", Prompt = "Please select a logo to upload - less than 500px wide and 100px high")]
-    //    public IFormFile CompanyLogoUrl { get; set; }
-
-    //    [Display(Name = "Company Message", Prompt = "You can set an optional message for all company users to see")]
-    //    public string CompanyMessage { get; set; }
-
-    //    [Display(Name = "Company Primary Highlight Color", Prompt = "Must be a hexidecimal color in the format #FFFFFF to #000000")]
-    //    public string CompanyPrimaryHighlightColor { get; set; }
-
-    //    [Display(Name = "Company Secondary Highlight Color", Prompt = "Must be a hexidecimal color in the format #FFFFFF to #000000")]
-    //    public string CompanySecondaryHighlightColor { get; set; }
-
-    //    [Display(Name = "Company Background Color", Prompt = "Must be a hexidecimal color in the format #FFFFFF to #000000")]
-    //    public string CompanyBackgroundColor { get; set; }
-
-    //    [Display(Name = "Company Header Background Color", Prompt = "Must be a hexidecimal color in the format #FFFFFF to #000000")]
-    //    public string CompanyHeaderBackgroundColor { get; set; }       
-    //}
+    
 }
