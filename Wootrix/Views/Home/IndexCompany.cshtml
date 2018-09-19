@@ -2,7 +2,7 @@
 
 @{
     ViewData["Title"] = "Index";
-    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h2>Index</h2>
@@ -40,77 +40,69 @@
             <th>
                 @Html.DisplayNameFor(model => model.CompanyHeaderBackgroundColor)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CompanyMainFontColor)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CompanyHeaderFontColor)
-            </th>
             <th></th>
         </tr>
+
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.CompanyName)
-            </td>
-            <td>
-                @{
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CompanyName)
+                </td>
+                <td>
+
+                    @{
                         var base64Logo = Convert.ToBase64String(item.CompanyLogoImage);
                         var imgSrcLogo = String.Format("data:image/gif;base64,{0}", base64Logo);
-                }
-                <img src="@imgSrcLogo" height="35" />
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CompanyBackgroundColor)
-            </td>
-            <td>
-                @{
+                    }
+                    <img src="@imgSrcLogo"  height="35"/>
+                    @*@Html.DisplayFor(modelItem => item.CompanyLogoImage)*@
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CompanyBackgroundColor)
+                </td>
+                <td>
+                    @{
                         var imgSrcBack = "";
                         if (item.CompanyBackgroundImage != null)
                         {
                             var base64Back = Convert.ToBase64String(item.CompanyBackgroundImage);
                             imgSrcBack = String.Format("data:image/gif;base64,{0}", base64Back);
                         }
-                }
-                <img src="@imgSrcBack" height="35" />
-            </td>
-            <td>
-                @{
+                    }
+                    <img src="@imgSrcBack" height="35" />
+                </td>
+                <td>
+                    @{
                         var imgSrcFoc = "";
                         if (item.CompanyFocusImage != null)
                         {
                             var base64Foc = Convert.ToBase64String(item.CompanyFocusImage);
                             imgSrcFoc = String.Format("data:image/gif;base64,{0}", base64Foc);
                         }
-                }
-                <img src="@imgSrcFoc" height="35" />
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CompanyTextMain)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CompanyTextSecondary)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CompanyHighlightColor)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CompanyHeaderBackgroundColor)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CompanyMainFontColor)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CompanyHeaderFontColor)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-            </td>
-        </tr>
-}
+                    }
+                    <img src="@imgSrcFoc" height="35" />
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CompanyTextMain)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CompanyTextSecondary)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CompanyHighlightColor)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CompanyHeaderBackgroundColor)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

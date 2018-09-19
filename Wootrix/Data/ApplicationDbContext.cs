@@ -13,7 +13,9 @@ namespace Wootrix.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
+            
         }
+        
         public DbSet<WootrixV2.Models.Company> Company { get; set; }
     }
 }

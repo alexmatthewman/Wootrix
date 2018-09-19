@@ -2,7 +2,7 @@
 
 @{
     ViewData["Title"] = "Delete";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
 <h2>Delete</h2>
@@ -65,6 +65,18 @@
         </dt>
         <dd>
             @Html.DisplayFor(model => model.CompanyHeaderBackgroundColor)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CompanyMainFontColor)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CompanyMainFontColor)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CompanyHeaderFontColor)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CompanyHeaderFontColor)
         </dd>
     </dl>
     

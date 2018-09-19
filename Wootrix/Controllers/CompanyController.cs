@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -24,6 +25,81 @@ namespace WootrixV2.Controllers
         {
             return View(await _context.Company.ToListAsync());
         }
+
+
+        // GET: Comany Home
+        public async Task<IActionResult> Home(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var company = await _context.Company
+                .FirstOrDefaultAsync(m => m.CompanyName == id);
+            if (company == null)
+            {
+                return NotFound();
+            }
+
+            return View(company);
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(CompanyViewModel model)
+        {
+            //Initialise a new company
+            var myCompany = new Company();
+
+            if (ModelState.IsValid)
+            {
+                //Set the simple fields
+                myCompany.CompanyName = model.CompanyName;
+                myCompany.CompanyTextMain = model.CompanyTextMain;
+                myCompany.CompanyTextSecondary = model.CompanyTextSecondary;
+                myCompany.CompanyBackgroundColor = model.CompanyBackgroundColor;
+                myCompany.CompanyHeaderBackgroundColor = model.CompanyHeaderBackgroundColor;
+                myCompany.CompanyHighlightColor = model.CompanyHighlightColor;
+                myCompany.CompanyMainFontColor = model.CompanyMainFontColor;
+                myCompany.CompanyHeaderFontColor = model.CompanyHeaderFontColor;
+
+                //Copy the IFormFiles to stream and save it to the byte arrays
+                using (var memoryStream = new MemoryStream())
+                {
+                    await model.CompanyLogoImage.CopyToAsync(memoryStream);
+                    myCompany.CompanyLogoImage = memoryStream.ToArray();
+                }
+
+                //Optional so check if there first
+                if (model.CompanyFocusImage != null)
+                {
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        await model.CompanyFocusImage.CopyToAsync(memoryStream);
+                        myCompany.CompanyFocusImage = memoryStream.ToArray();
+                    }
+                }
+
+                //Optional so check if there first
+                if (model.CompanyBackgroundImage != null)
+                {
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        await model.CompanyBackgroundImage.CopyToAsync(memoryStream);
+                        myCompany.CompanyBackgroundImage = memoryStream.ToArray();
+                    }
+                }
+
+                _context.Add(myCompany);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(myCompany);
+        }
+
 
         // GET: Company/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -54,7 +130,7 @@ namespace WootrixV2.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,CompanyName,CompanyLogoImage,CompanyBackgroundColor,CompanyBackgroundImage,CompanyFocusImage,CompanyTextMain,CompanyTextSecondary,CompanyHighlightColor,CompanyHeaderBackgroundColor")] Company company)
+        public async Task<IActionResult> Create([Bind("ID,CompanyName,CompanyLogoImage,CompanyBackgroundColor,CompanyBackgroundImage,CompanyFocusImage,CompanyTextMain,CompanyTextSecondary,CompanyHighlightColor,CompanyHeaderBackgroundColor,CompanyMainFontColor,CompanyHeaderFontColor")] Company company)
         {
             if (ModelState.IsValid)
             {
@@ -86,7 +162,7 @@ namespace WootrixV2.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,CompanyName,CompanyLogoImage,CompanyBackgroundColor,CompanyBackgroundImage,CompanyFocusImage,CompanyTextMain,CompanyTextSecondary,CompanyHighlightColor,CompanyHeaderBackgroundColor")] Company company)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,CompanyName,CompanyLogoImage,CompanyBackgroundColor,CompanyBackgroundImage,CompanyFocusImage,CompanyTextMain,CompanyTextSecondary,CompanyHighlightColor,CompanyHeaderBackgroundColor,CompanyMainFontColor,CompanyHeaderFontColor")] Company company)
         {
             if (id != company.ID)
             {

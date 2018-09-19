@@ -1,0 +1,133 @@
+﻿@model WootrixV2.Models.Company
+
+@{
+    ViewData["Title"] = "Wootrix 2.0 Company Home Page";
+}
+@using Microsoft.AspNetCore.Identity
+@using WootrixV2.Data;
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<!-- Banner -->
+<section id="banner">
+
+    @if (SignInManager.IsSignedIn(User))
+    {
+    <div class="container clearfix">
+        <div class="span7 left">
+            <figure class="main-home-image">
+                <!--COMPANY FOCUS IMAGE-->
+                <img id="CompanyFocusImage" src="~/images/website_images/home-screen.png" alt="Home screen image" />
+            </figure>
+        </div>
+        <div class="span5 right">
+            <!--COMPANY TEXT MAIN-->
+            <h3 id="CompanyTextMain">Welcome</h3>
+        </div>
+        <div class="span6 right">
+            <!--COMPANY TEXT SECONDARY-->
+            <h3 id="CompanyTextSecondary">Click on articles to continue</h3>
+        </div>
+    </div>
+    }
+    else
+    {
+        <div class="container clearfix">
+            <div class="span7 left">
+                <figure class="main-home-image">
+                    <!--COMPANY FOCUS IMAGE-->
+                    <img id="CompanyFocusImage" src="~/images/website_images/home-screen.png" alt="Home screen image" />
+                </figure>
+            </div>
+            <div class="span5 right">
+                <div class="social-login-cont">
+                    <div class="signin-social">
+                        <h3>Entrar com</h3>
+                        <div class="social-icons clearfix">
+                            <ul>
+                                <li class="fb"><a href="https://www.facebook.com/v2.12/dialog/oauth?client_id=1627701464153107&amp;state=f00046d081144491894cf1e6024f52b1&amp;response_type=code&amp;sdk=php-sdk-5.6.2&amp;redirect_uri=http%3A%2F%2Fwww.wootrix.com%2Findex.php%2FfbCallback&amp;scope=email">Facebook</a></li>
+                                <li class="twitter"><a href="http://wootrix.com/index.php/website/login_twitter/index">Twitter</a></li>
+                                <li class="linkedin"><a href="http://wootrix.com/index.php/website/loginWithLinkedIn">linkedin</a></li>
+                                <li class="google"><a href="https://accounts.google.com/o/oauth2/auth?response_type=code&redirect_uri=http%3A%2F%2Fwootrix.com%2Findex.php%2FgCallback&client_id=181469443324-j5neoccka33afjuvm4gnu2itnn07oo0n.apps.googleusercontent.com&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email&access_type=offline&approval_prompt=force&state=+-++-++-++-+">google</a></li>
+                            </ul>
+                        </div>
+                        <div class="login-divider">
+                            <span>ou</span>
+                        </div>
+                    </div>
+                    <div class="btn-box clearfix">
+                        <a asp-area="Identity" class="register-bttn" asp-page="/Account/Register">Register</a>
+                    </div>
+                    <div class="register-form condition">
+                        <div class="input-box">
+                            <small>By Signing up, you are agreeing to Wootrix <a href="http://wootrix.com/index.php/wootrix-terms-services" target="_blank">Terms and Privacy</a></small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</section>
+<h2>
+    Company home page - Normally this will show a login interface
+</h2>
+
+<div>
+    <!--I'm putting the company attributes in hidden tags so the page can be customised at runtime by js -->
+    <div id="thisComanyName" val="@Html.DisplayFor(model => model.CompanyName)" style="visibility:hidden"></div>
+    <div id="thisCompanyLogoImage" val="@Html.DisplayFor(model => model.CompanyLogoImage)" style="visibility:hidden"></div>
+    <div id="thisCompanyBackgroundColor" val="@Html.DisplayFor(model => model.CompanyBackgroundColor)" style="visibility:hidden"></div>
+    <div id="thisCompanyBackgroundImage" val="@Html.DisplayFor(model => model.CompanyBackgroundImage)" style="visibility:hidden"></div>
+    <div id="thisCompanyFocusImage" val="@Html.DisplayFor(model => model.CompanyFocusImage)" style="visibility:hidden"></div>
+    <div id="thisCompanyTextMain" val="@Html.DisplayFor(model => model.CompanyTextMain)" style="visibility:hidden"></div>
+    <div id="thisCompanyTextSecondary" val="@Html.DisplayFor(model => model.CompanyTextSecondary)" style="visibility:hidden"></div>
+    <div id="thisCompanyHighlightColor" val="@Html.DisplayFor(model => model.CompanyHighlightColor)" style="visibility:hidden"></div>
+    <div id="thisCompanyHeaderBackgroundColor" val="@Html.DisplayFor(model => model.CompanyHeaderBackgroundColor)" style="visibility:hidden"></div>
+    <div id="thisCompanyMainFontColor" val="@Html.HiddenFor(model => model.CompanyMainFontColor)" style="visibility:hidden"></div>
+    <div id="thisCompanyHeaderFontColor" val="@Html.HiddenFor(model => model.CompanyHeaderFontColor)" style="visibility:hidden"></div>
+
+    <h4>Details</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.CompanyName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CompanyName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CompanyBackgroundColor)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CompanyBackgroundColor)
+        </dd>
+
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CompanyTextMain)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CompanyTextMain)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CompanyTextSecondary)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CompanyTextSecondary)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CompanyHighlightColor)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CompanyHighlightColor)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CompanyHeaderBackgroundColor)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CompanyHeaderBackgroundColor)
+        </dd>
+    </dl>
+</div>

@@ -14,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WootrixV2.Data;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Http.Features;
 
 namespace Wootrix
 {
@@ -24,6 +25,8 @@ namespace Wootrix
             Configuration = configuration;
         }
 
+
+        
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.

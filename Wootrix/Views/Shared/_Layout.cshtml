@@ -16,7 +16,7 @@
     <title>@ViewData["Title"] - Wootrix</title>
     <meta name="apple-itunes-app" content="app-id=1034925784" />
 
-    <link rel="icon" href="~/favicon.png" type="image/png">
+    @*<link rel="icon" href="~/favicon.png" type="image/png">*@
 
     <environment include="Development">
         <link href="~/css/OldWootrix.css" rel="stylesheet" />
@@ -67,7 +67,7 @@
                     @if (SignInManager.IsSignedIn(User))
                     {
                         <li><a asp-area="" asp-controller="Magazine" asp-action="Index">Magazine</a></li>
-                        <li><a asp-area="" asp-controller="Companies" asp-action="Home">Home</a></li>
+                        <li><a asp-area="" asp-controller="Company" asp-action="Home/Kumon">Home</a></li>
 
                         //So apparently you can't find the user's roles but you can find their claims to specific roles...
                         //That or they need to document this shit a bit better....definitely they do in any case...sigh

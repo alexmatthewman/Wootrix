@@ -10,11 +10,10 @@ namespace WootrixV2.Models
     public class Company
     {
         public int ID { get; set; }
-
         [Required]
-        [RegularExpression(@"^[A-Z]+[a-zA-Z""'\s-]*$")]
+        [RegularExpression(@"^[A-Z]+[a-zA-Z""'\s-]*$", ErrorMessage = "Please enter the company name (max length 100)")]
         [StringLength(100)]
-        [Display(Name = "Company Name", Prompt = "Enter the Company name", Description= "Company Name")]
+        [Display(Name = "Company Name", Prompt = "Enter the Company name", Description = "Company Name")]
         public string CompanyName { get; set; }
 
         [Required]
@@ -22,7 +21,7 @@ namespace WootrixV2.Models
         public byte[] CompanyLogoImage { get; set; }
 
         [Required]
-        [RegularExpression(@"^#(?:[0-9a-fA-F]{3}){1,2}$")]
+        [RegularExpression(@"^#(?:[0-9a-fA-F]{3}){1,2}$", ErrorMessage = "Must be a hexidecimal color in the format #FFFFFF to #000000")]
         [StringLength(7, MinimumLength = 4)]
         [Display(Name = "Company Background Color", Prompt = "Must be a hexidecimal color in the format #FFFFFF to #000000", Description = "Company Background Color")]
         public string CompanyBackgroundColor { get; set; }
@@ -33,27 +32,97 @@ namespace WootrixV2.Models
         [Display(Name = "Company Focus Image", Prompt = "Please select a focus image to upload - best size is 700px wide and 550px high", Description = "Company Focus Image")]
         public byte[] CompanyFocusImage { get; set; }
 
-        [RegularExpression(@"^[A-Z]+[a-zA-Z""'\s-]*$")]
+        [RegularExpression(@"^[A-Z]+[a-zA-Z""'\s-]*$", ErrorMessage = "Please enter an optional main text message for users (max length 100)")]
         [StringLength(100)]
         [Display(Name = "Company Text Main", Prompt = "You can set an optional main message for all company users to see", Description = "Company Text Main")]
         public string CompanyTextMain { get; set; }
 
-        [RegularExpression(@"^[A-Z]+[a-zA-Z""'\s-]*$")]
+        [RegularExpression(@"^[A-Z]+[a-zA-Z""'\s-]*$", ErrorMessage = "Please enter an optional secondary text message for users (max length 500)")]
         [StringLength(500)]
         [Display(Name = "Company Text Secondary", Prompt = "You can set an optional message for all company users to see", Description = "Company Text Secondary")]
         public string CompanyTextSecondary { get; set; }
 
         [Required]
-        [RegularExpression(@"^#(?:[0-9a-fA-F]{3}){1,2}$")]
+        [RegularExpression(@"^#(?:[0-9a-fA-F]{3}){1,2}$", ErrorMessage = "Must be a hexidecimal color in the format #FFFFFF to #000000")]
         [StringLength(7, MinimumLength = 4)]
         [Display(Name = "Company Highlight Color", Prompt = "Must be a hexidecimal color in the format #FFFFFF to #000000", Description = "Company Highlight Color")]
         public string CompanyHighlightColor { get; set; }
 
         [Required]
-        [RegularExpression(@"^#(?:[0-9a-fA-F]{3}){1,2}$")]
+        [RegularExpression(@"^#(?:[0-9a-fA-F]{3}){1,2}$", ErrorMessage = "Must be a hexidecimal color in the format #FFFFFF to #000000")]
         [StringLength(7, MinimumLength = 4)]
         [Display(Name = "Company Header Background Color", Prompt = "Must be a hexidecimal color in the format #FFFFFF to #000000", Description = "Company Header Background Color")]
         public string CompanyHeaderBackgroundColor { get; set; }
+
+        [RegularExpression(@"^#(?:[0-9a-fA-F]{3}){1,2}$", ErrorMessage = "Must be a hexidecimal color in the format #FFFFFF to #000000")]
+        [StringLength(7, MinimumLength = 4)]
+        [Display(Name = "Company Main Font Color", Prompt = "Must be a hexidecimal color in the format #FFFFFF to #000000", Description = "Company Main Font Color")]
+        public string CompanyMainFontColor { get; set; }
+
+        [RegularExpression(@"^#(?:[0-9a-fA-F]{3}){1,2}$", ErrorMessage = "Must be a hexidecimal color in the format #FFFFFF to #000000")]
+        [StringLength(7, MinimumLength = 4)]
+        [Display(Name = "Company Header Font Color", Prompt = "Must be a hexidecimal color in the format #FFFFFF to #000000", Description = "Compan Header Font Color")]
+        public string CompanyHeaderFontColor { get; set; }
     }
-    
+
+
+    public class CompanyViewModel
+    {
+        
+
+        [Required]
+        [RegularExpression(@"^[A-Z]+[a-zA-Z""'\s-]*$", ErrorMessage = "Please enter the company name (max length 100)")]
+        [StringLength(100)]
+        [Display(Name = "Company Name", Prompt = "Enter the Company name", Description = "Company Name")]
+        public string CompanyName { get; set; }
+
+        [Required]
+        [Display(Name = "Company Logo", Prompt = "Please select a logo to upload - less than 500px wide and 100px high", Description = "Company Logo")]
+        public IFormFile CompanyLogoImage { get; set; }
+
+        [Required]
+        [RegularExpression(@"^#(?:[0-9a-fA-F]{3}){1,2}$", ErrorMessage = "Must be a hexidecimal color in the format #FFFFFF to #000000")]
+        [StringLength(7, MinimumLength = 4)]
+        [Display(Name = "Company Background Color", Prompt = "Must be a hexidecimal color in the format #FFFFFF to #000000", Description = "Company Background Color")]
+        public string CompanyBackgroundColor { get; set; }
+
+        [Display(Name = "Company Background Image", Prompt = "Please select a background to upload - best size is 1920px wide and 1080px high", Description = "Company Background Image")]
+        public IFormFile CompanyBackgroundImage { get; set; }
+
+        [Display(Name = "Company Focus Image", Prompt = "Please select a focus image to upload - best size is 700px wide and 550px high", Description = "Company Focus Image")]
+        public IFormFile CompanyFocusImage { get; set; }
+
+        [RegularExpression(@"^[A-Z]+[a-zA-Z""'\s-]*$", ErrorMessage = "Please enter an optional main text message for users (max length 100)")]
+        [StringLength(100)]
+        [Display(Name = "Company Text Main", Prompt = "You can set an optional main message for all company users to see", Description = "Company Text Main")]
+        public string CompanyTextMain { get; set; }
+
+        [RegularExpression(@"^[A-Z]+[a-zA-Z""'\s-]*$", ErrorMessage = "Please enter an optional secondary text message for users (max length 500)")]
+        [StringLength(500)]
+        [Display(Name = "Company Text Secondary", Prompt = "You can set an optional message for all company users to see", Description = "Company Text Secondary")]
+        public string CompanyTextSecondary { get; set; }
+
+        [Required]
+        [RegularExpression(@"^#(?:[0-9a-fA-F]{3}){1,2}$", ErrorMessage = "Must be a hexidecimal color in the format #FFFFFF to #000000")]
+        [StringLength(7, MinimumLength = 4)]
+        [Display(Name = "Company Highlight Color", Prompt = "Must be a hexidecimal color in the format #FFFFFF to #000000", Description = "Company Highlight Color")]
+        public string CompanyHighlightColor { get; set; }
+
+        [Required]
+        [RegularExpression(@"^#(?:[0-9a-fA-F]{3}){1,2}$", ErrorMessage = "Must be a hexidecimal color in the format #FFFFFF to #000000")]
+        [StringLength(7, MinimumLength = 4)]
+        [Display(Name = "Company Header Background Color", Prompt = "Must be a hexidecimal color in the format #FFFFFF to #000000", Description = "Company Header Background Color")]
+        public string CompanyHeaderBackgroundColor { get; set; }
+
+        [RegularExpression(@"^#(?:[0-9a-fA-F]{3}){1,2}$", ErrorMessage = "Must be a hexidecimal color in the format #FFFFFF to #000000")]
+        [StringLength(7, MinimumLength = 4)]
+        [Display(Name = "Company Main Font Color", Prompt = "Must be a hexidecimal color in the format #FFFFFF to #000000", Description = "Company Main Font Color")]
+        public string CompanyMainFontColor { get; set; }
+
+        [RegularExpression(@"^#(?:[0-9a-fA-F]{3}){1,2}$", ErrorMessage = "Must be a hexidecimal color in the format #FFFFFF to #000000")]
+        [StringLength(7, MinimumLength = 4)]
+        [Display(Name = "Company Font Header Color", Prompt = "Must be a hexidecimal color in the format #FFFFFF to #000000", Description = "Company Header Font Color")]
+        public string CompanyHeaderFontColor { get; set; }
+    }
+
 }

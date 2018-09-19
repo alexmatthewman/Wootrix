@@ -2,7 +2,7 @@
 
 @{
     ViewData["Title"] = "Create";
-    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h2>Create</h2>
@@ -11,17 +11,19 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="CompanyName" class="control-label"></label>
                 <input asp-for="CompanyName" class="form-control" />
                 <span asp-validation-for="CompanyName" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="CompanyLogoImage" class="control-label"></label>
-                <input asp-for="CompanyLogoImage" class="form-control" />
+                <input asp-for="CompanyLogoImage" type="file" class="form-control" />
                 <span asp-validation-for="CompanyLogoImage" class="text-danger"></span>
+
             </div>
             <div class="form-group">
                 <label asp-for="CompanyBackgroundColor" class="control-label"></label>
@@ -30,12 +32,12 @@
             </div>
             <div class="form-group">
                 <label asp-for="CompanyBackgroundImage" class="control-label"></label>
-                <input asp-for="CompanyBackgroundImage" class="form-control" />
+                <input asp-for="CompanyBackgroundImage" type="file" class="form-control" />
                 <span asp-validation-for="CompanyBackgroundImage" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="CompanyFocusImage" class="control-label"></label>
-                <input asp-for="CompanyFocusImage" class="form-control" />
+                <input asp-for="CompanyFocusImage" type="file" class="form-control" />
                 <span asp-validation-for="CompanyFocusImage" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -57,16 +59,6 @@
                 <label asp-for="CompanyHeaderBackgroundColor" class="control-label"></label>
                 <input asp-for="CompanyHeaderBackgroundColor" class="form-control" />
                 <span asp-validation-for="CompanyHeaderBackgroundColor" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CompanyMainFontColor" class="control-label"></label>
-                <input asp-for="CompanyMainFontColor" class="form-control" />
-                <span asp-validation-for="CompanyMainFontColor" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CompanyHeaderFontColor" class="control-label"></label>
-                <input asp-for="CompanyHeaderFontColor" class="form-control" />
-                <span asp-validation-for="CompanyHeaderFontColor" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-default" />
