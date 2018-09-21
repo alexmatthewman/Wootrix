@@ -14,12 +14,12 @@
     <title>@ViewData["Title"] - Wootrix</title>
     <meta name="apple-itunes-app" content="app-id=1034925784" />
 
-    @*<link rel="icon" href="~/favicon.png" type="image/png">*@
+    <link rel="icon" href="~/favicon.png" type="image/png">
 
     <environment include="Development">
-        <link href="~/css/OldWootrix.css" rel="stylesheet" />
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/css/site.css" />
+        <link href="~/css/OldWootrix.css" rel="stylesheet" />
         <!-- jQUERY -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js" type="text/javascript"></script>
@@ -31,7 +31,6 @@
               asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
         <link rel="stylesheet" href="~/css/OldWootrix.min.css" asp-append-version="true" />
-        <link rel="stylesheet" href="~/css/IdentityStyles.min.css" asp-append-version="true" />
         <!-- jQUERY -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js" type="text/javascript"></script>
@@ -53,7 +52,7 @@
                             var base64Logo = Convert.ToBase64String(Model.CompanyLogoImage);
                             var imgSrcLogo = String.Format("data:image/gif;base64,{0}", base64Logo);
 
-                        <img id="companyLogo" src="@imgSrcLogo" height="35" alt="Company Logo" class="img-responsive" />
+                            <img id="companyLogo" src="@imgSrcLogo" height="35" alt="Company Logo" class="img-responsive" />
                         }
                     </a>
                 </figure>
@@ -95,10 +94,10 @@
                     <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post" id="logoutForm" class="navbar-right" style="color:@Model.CompanyHeaderFontColor !important">
                         <ul class="nav navbar-nav navbar-right">
                             <li>
-                                <a asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage"style="color:@Model.CompanyHeaderFontColor !important">Hello @UserManager.GetUserName(User)!</a>
+                                <a asp-area="Identity" asp-page="/Account/Manage/Index" asp-route-id="@Model.CompanyName" title="Manage" style="color:@Model.CompanyHeaderFontColor !important">Hello @UserManager.GetUserName(User)!</a>
                             </li>
                             <li>
-                                <button type="submit" class="btn btn-link navbar-btn navbar-link" style="color:@Model.CompanyHeaderFontColor !important">Logout</button>
+                                <button type="submit" class="btn btn-link navbar-btn navbar-link" asp-route-id="@Model.CompanyName" style="color:@Model.CompanyHeaderFontColor !important">Logout</button>
                             </li>
                         </ul>
                     </form>
@@ -106,8 +105,8 @@
                 else
                 {
                     <ul class="nav navbar-nav navbar-right">
-                        <li><a asp-area="Identity" asp-page="/Account/Register" style="color:@Model.CompanyHeaderFontColor !important">Register</a></li>
-                        <li><a asp-area="Identity" class="sign-in" asp-page="/Account/Login" style="color:@Model.CompanyHeaderFontColor !important">Login</a></li>
+                        <li><a asp-area="Identity" asp-page="/Account/Register" asp-route-id="@Model.CompanyName" style="color:@Model.CompanyHeaderFontColor !important">Register</a></li>
+                        <li><a asp-area="Identity" class="sign-in" asp-page="/Account/Login" asp-route-id="@Model.CompanyName" style="color:@Model.CompanyHeaderFontColor !important">Login</a></li>
                     </ul>
                 }
             </div>

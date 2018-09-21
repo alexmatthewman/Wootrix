@@ -53,7 +53,7 @@
                     @if (!SignInManager.IsSignedIn(User))
                     {
                         <div class="btn-box clearfix">
-                            <a asp-area="Identity" class="register-bttn" asp-page="/Account/Login">Login</a>
+                            <a asp-area="Identity" class="register-bttn" asp-page="/Account/Login/@Model.CompanyName">Login</a>
                         </div>
                     }
                 </div>
