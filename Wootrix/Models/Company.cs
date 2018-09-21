@@ -32,13 +32,12 @@ namespace WootrixV2.Models
         [Display(Name = "Company Focus Image", Prompt = "Please select a focus image to upload - best size is 700px wide and 550px high", Description = "Company Focus Image")]
         public byte[] CompanyFocusImage { get; set; }
 
-        [RegularExpression(@"^[A-Z]+[a-zA-Z""'\s-]*$", ErrorMessage = "Please enter an optional main text message for users (max length 100)")]
-        [StringLength(100)]
+        [StringLength(1000, ErrorMessage = "Please keep the max length to 1000")]
         [Display(Name = "Company Text Main", Prompt = "You can set an optional main message for all company users to see", Description = "Company Text Main")]
         public string CompanyTextMain { get; set; }
 
-        [RegularExpression(@"^[A-Z]+[a-zA-Z""'\s-]*$", ErrorMessage = "Please enter an optional secondary text message for users (max length 500)")]
-        [StringLength(500)]
+        
+        [StringLength(5000, ErrorMessage = "Please keep the max length to 5000")]
         [Display(Name = "Company Text Secondary", Prompt = "You can set an optional message for all company users to see", Description = "Company Text Secondary")]
         public string CompanyTextSecondary { get; set; }
 
@@ -92,13 +91,11 @@ namespace WootrixV2.Models
         [Display(Name = "Company Focus Image", Prompt = "Please select a focus image to upload - best size is 700px wide and 550px high", Description = "Company Focus Image")]
         public IFormFile CompanyFocusImage { get; set; }
 
-        [RegularExpression(@"^[A-Z]+[a-zA-Z""'\s-]*$", ErrorMessage = "Please enter an optional main text message for users (max length 100)")]
-        [StringLength(100)]
+         [StringLength(1000, ErrorMessage = "Please keep the max length to 1000")]
         [Display(Name = "Company Text Main", Prompt = "You can set an optional main message for all company users to see", Description = "Company Text Main")]
         public string CompanyTextMain { get; set; }
 
-        [RegularExpression(@"^[A-Z]+[a-zA-Z""'\s-]*$", ErrorMessage = "Please enter an optional secondary text message for users (max length 500)")]
-        [StringLength(500)]
+         [StringLength(5000, ErrorMessage = "Please keep the max length to 5000")]
         [Display(Name = "Company Text Secondary", Prompt = "You can set an optional message for all company users to see", Description = "Company Text Secondary")]
         public string CompanyTextSecondary { get; set; }
 

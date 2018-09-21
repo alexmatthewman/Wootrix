@@ -10,28 +10,27 @@ namespace WootrixV2.Migrations
         {
 
             migrationBuilder.CreateTable(
-               name: "Company",
-               columns: table => new
-               {
-                   ID = table.Column<int>(nullable: false)
-                       .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                   CompanyName = table.Column<string>(maxLength: 100, nullable: false),
-                   CompanyLogoImage = table.Column<byte[]>(nullable: false),
-                   CompanyBackgroundColor = table.Column<string>(maxLength: 7, nullable: false),
-                   CompanyBackgroundImage = table.Column<byte[]>(nullable: true),
-                   CompanyFocusImage = table.Column<byte[]>(nullable: true),
-                   CompanyTextMain = table.Column<string>(maxLength: 100, nullable: true),
-                   CompanyTextSecondary = table.Column<string>(maxLength: 500, nullable: true),
-                   CompanyHighlightColor = table.Column<string>(maxLength: 7, nullable: false),
-                   CompanyHeaderBackgroundColor = table.Column<string>(maxLength: 7, nullable: false),
-                   CompanyMainFontColor = table.Column<string>(maxLength: 7, nullable: true),
-                   CompanyHeaderFontColor = table.Column<string>(maxLength: 7, nullable: true)
-               },
-               constraints: table =>
-               {
-                   table.PrimaryKey("PK_Company", x => x.ID);
-               });
-
+                name: "Company",
+                columns: table => new
+                {
+                    ID = table.Column<int>(nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    CompanyName = table.Column<string>(maxLength: 100, nullable: false),
+                    CompanyLogoImage = table.Column<byte[]>(nullable: false),
+                    CompanyBackgroundColor = table.Column<string>(maxLength: 7, nullable: false),
+                    CompanyBackgroundImage = table.Column<byte[]>(nullable: true),
+                    CompanyFocusImage = table.Column<byte[]>(nullable: true),
+                    CompanyTextMain = table.Column<string>(maxLength: 1000, nullable: true),
+                    CompanyTextSecondary = table.Column<string>(maxLength: 5000, nullable: true),
+                    CompanyHighlightColor = table.Column<string>(maxLength: 7, nullable: false),
+                    CompanyHeaderBackgroundColor = table.Column<string>(maxLength: 7, nullable: false),
+                    CompanyMainFontColor = table.Column<string>(maxLength: 7, nullable: true),
+                    CompanyHeaderFontColor = table.Column<string>(maxLength: 7, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Company", x => x.ID);
+                });
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
@@ -106,8 +105,8 @@ namespace WootrixV2.Migrations
                     CompanyBackgroundColor = table.Column<string>(maxLength: 7, nullable: false),
                     CompanyBackgroundImage = table.Column<byte[]>(nullable: true),
                     CompanyFocusImage = table.Column<byte[]>(nullable: true),
-                    CompanyTextMain = table.Column<string>(maxLength: 100, nullable: true),
-                    CompanyTextSecondary = table.Column<string>(maxLength: 500, nullable: true),
+                    CompanyTextMain = table.Column<string>(maxLength: 1000, nullable: true),
+                    CompanyTextSecondary = table.Column<string>(maxLength: 5000, nullable: true),
                     CompanyHighlightColor = table.Column<string>(maxLength: 7, nullable: false),
                     CompanyHeaderBackgroundColor = table.Column<string>(maxLength: 7, nullable: false),
                     CompanyMainFontColor = table.Column<string>(maxLength: 7, nullable: true),

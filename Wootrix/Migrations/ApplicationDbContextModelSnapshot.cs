@@ -261,10 +261,10 @@ namespace WootrixV2.Migrations
                         .HasMaxLength(100);
 
                     b.Property<string>("CompanyTextMain")
-                        .HasMaxLength(100);
+                        .HasMaxLength(1000);
 
                     b.Property<string>("CompanyTextSecondary")
-                        .HasMaxLength(500);
+                        .HasMaxLength(5000);
 
                     b.HasKey("ID");
 

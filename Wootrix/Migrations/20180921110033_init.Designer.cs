@@ -9,7 +9,7 @@ using Wootrix.Data;
 namespace WootrixV2.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20180919201142_init")]
+    [Migration("20180921110033_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -263,10 +263,10 @@ namespace WootrixV2.Migrations
                         .HasMaxLength(100);
 
                     b.Property<string>("CompanyTextMain")
-                        .HasMaxLength(100);
+                        .HasMaxLength(1000);
 
                     b.Property<string>("CompanyTextSecondary")
-                        .HasMaxLength(500);
+                        .HasMaxLength(5000);
 
                     b.HasKey("ID");
 

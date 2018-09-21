@@ -125,21 +125,21 @@ namespace WootrixV2.Controllers
             return View();
         }
 
-        // POST: Company/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,CompanyName,CompanyLogoImage,CompanyBackgroundColor,CompanyBackgroundImage,CompanyFocusImage,CompanyTextMain,CompanyTextSecondary,CompanyHighlightColor,CompanyHeaderBackgroundColor,CompanyMainFontColor,CompanyHeaderFontColor")] Company company)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(company);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(company);
-        }
+        //// POST: Company/Create
+        //// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        //// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Create([Bind("ID,CompanyName,CompanyLogoImage,CompanyBackgroundColor,CompanyBackgroundImage,CompanyFocusImage,CompanyTextMain,CompanyTextSecondary,CompanyHighlightColor,CompanyHeaderBackgroundColor,CompanyMainFontColor,CompanyHeaderFontColor")] Company company)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        _context.Add(company);
+        //        await _context.SaveChangesAsync();
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    return View(company);
+        //}
 
         // GET: Company/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -162,23 +162,59 @@ namespace WootrixV2.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,CompanyName,CompanyLogoImage,CompanyBackgroundColor,CompanyBackgroundImage,CompanyFocusImage,CompanyTextMain,CompanyTextSecondary,CompanyHighlightColor,CompanyHeaderBackgroundColor,CompanyMainFontColor,CompanyHeaderFontColor")] Company company)
+        public async Task<IActionResult> Edit(int id, CompanyViewModel model)
         {
-            if (id != company.ID)
-            {
-                return NotFound();
-            }
+            //Initialise a new company
+            var myCompany = new Company();
 
             if (ModelState.IsValid)
             {
+                myCompany.ID = id;
+                //Set the simple fields
+                myCompany.CompanyName = model.CompanyName;
+                myCompany.CompanyTextMain = model.CompanyTextMain;
+                myCompany.CompanyTextSecondary = model.CompanyTextSecondary;
+                myCompany.CompanyBackgroundColor = model.CompanyBackgroundColor;
+                myCompany.CompanyHeaderBackgroundColor = model.CompanyHeaderBackgroundColor;
+                myCompany.CompanyHighlightColor = model.CompanyHighlightColor;
+                myCompany.CompanyMainFontColor = model.CompanyMainFontColor;
+                myCompany.CompanyHeaderFontColor = model.CompanyHeaderFontColor;
+
+                //Copy the IFormFiles to stream and save it to the byte arrays
+                using (var memoryStream = new MemoryStream())
+                {
+                    await model.CompanyLogoImage.CopyToAsync(memoryStream);
+                    myCompany.CompanyLogoImage = memoryStream.ToArray();
+                }
+
+                //Optional so check if there first
+                if (model.CompanyFocusImage != null)
+                {
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        await model.CompanyFocusImage.CopyToAsync(memoryStream);
+                        myCompany.CompanyFocusImage = memoryStream.ToArray();
+                    }
+                }
+
+                //Optional so check if there first
+                if (model.CompanyBackgroundImage != null)
+                {
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        await model.CompanyBackgroundImage.CopyToAsync(memoryStream);
+                        myCompany.CompanyBackgroundImage = memoryStream.ToArray();
+                    }
+                }
+
                 try
                 {
-                    _context.Update(company);
-                    await _context.SaveChangesAsync();
+                    _context.Update(myCompany);
+                await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CompanyExists(company.ID))
+                    if (!CompanyExists(id))
                     {
                         return NotFound();
                     }
@@ -189,8 +225,11 @@ namespace WootrixV2.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(company);
+
+            return View(myCompany);
         }
+
+            
 
         // GET: Company/Delete/5
         public async Task<IActionResult> Delete(int? id)

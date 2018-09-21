@@ -2,7 +2,7 @@
 
 @{
     ViewData["Title"] = "Delete";
-    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h2>Delete</h2>
@@ -22,7 +22,13 @@
             @Html.DisplayNameFor(model => model.CompanyLogoImage)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.CompanyLogoImage)
+            @{
+                var base64Logo = Convert.ToBase64String(Model.CompanyLogoImage);
+                var imgSrcLogo = String.Format("data:image/gif;base64,{0}", base64Logo);
+            }
+            <img src="@imgSrcLogo" height="35" />
+
+            @*@Html.DisplayFor(model => model.CompanyLogoImage)*@
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.CompanyBackgroundColor)
@@ -34,13 +40,31 @@
             @Html.DisplayNameFor(model => model.CompanyBackgroundImage)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.CompanyBackgroundImage)
+            @{
+                var imgSrcBack = "";
+                if (Model.CompanyBackgroundImage != null)
+                {
+                    var base64Back = Convert.ToBase64String(Model.CompanyBackgroundImage);
+                    imgSrcBack = String.Format("data:image/gif;base64,{0}", base64Back);
+                }
+            }
+            <img src="@imgSrcBack" height="35" />
+            @*@Html.DisplayFor(model => model.CompanyBackgroundImage)*@
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.CompanyFocusImage)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.CompanyFocusImage)
+            @{
+                var imgSrcFoc = "";
+                if (Model.CompanyFocusImage != null)
+                {
+                    var base64Foc = Convert.ToBase64String(Model.CompanyFocusImage);
+                    imgSrcFoc = String.Format("data:image/gif;base64,{0}", base64Foc);
+                }
+            }
+            <img src="@imgSrcFoc" height="35" />
+            @*@Html.DisplayFor(model => model.CompanyFocusImage)*@
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.CompanyTextMain)

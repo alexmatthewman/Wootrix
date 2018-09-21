@@ -1,11 +1,9 @@
-﻿
-@using Microsoft.AspNetCore.Identity
+﻿@using Microsoft.AspNetCore.Identity
 @using System.Security.Claims
 @using WootrixV2.Data;
 
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
-
 
 <!DOCTYPE html>
 <html>
@@ -40,14 +38,23 @@
 
     </environment>
 </head>
-<body>
-   
-    <nav class="navbar navbar-inverse navbar-fixed-top">
+<body style="background-color:@Model.CompanyBackgroundColor; color:@Model.CompanyMainFontColor ">
+
+
+    <nav id="companyHeaderBackgroundColor" class="navbar navbar-inverse navbar-fixed-top" style="background-color:@Model.CompanyHeaderBackgroundColor !important;">
+
         <div class="container">
-            <div id="companyHighlight1" class="logo-bar">
+            <div class="logo-bar">
                 <figure class="logo-container">
                     <a href="~/">
-                        <img id="companyLogo" src="~/images/logo.png" alt="Company Logo" class="img-responsive" />
+                        @if (Model.CompanyLogoImage != null)
+                        {
+
+                            var base64Logo = Convert.ToBase64String(Model.CompanyLogoImage);
+                            var imgSrcLogo = String.Format("data:image/gif;base64,{0}", base64Logo);
+
+                        <img id="companyLogo" src="@imgSrcLogo" height="35" alt="Company Logo" class="img-responsive" />
+                        }
                     </a>
                 </figure>
             </div>
@@ -60,30 +67,49 @@
                 </button>
             </div>
             <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
+                <ul class="nav navbar-nav" style="color:@Model.CompanyHeaderFontColor !important">
 
 
                     @if (SignInManager.IsSignedIn(User))
                     {
-                        <li><a asp-area="" asp-controller="Magazine" asp-action="Index">Magazine</a></li>
+                        <li><a asp-area="" asp-controller="Magazine" asp-action="Index" style="color:@Model.CompanyHeaderFontColor !important">Magazine</a></li>
 
                         //So apparently you can't find the user's roles but you can find their claims to specific roles...
                         //That or they need to document this shit a bit better....definitely they do in any case...sigh
 
                         @if (User.HasClaim(ClaimTypes.Role, "Admin"))
                         {
-                            <li><a asp-area="" asp-controller="Company" asp-action="Home" asp-route-id="Kumon">Kumon</a></li>
-                            <li><a asp-area="" asp-controller="Company" asp-action="Home" asp-route-id="Wootrix">Wootrix</a></li>
-                            <li><a asp-area="" asp-controller="Company" asp-action="Index">Company</a></li>
+                            <li><a asp-area="" asp-controller="Company" asp-action="Home" asp-route-id="Kumon" style="color:@Model.CompanyHeaderFontColor !important">Kumon</a></li>
+                            <li><a asp-area="" asp-controller="Company" asp-action="Home" asp-route-id="Wootrix" style="color:@Model.CompanyHeaderFontColor !important">Wootrix</a></li>
+                            <li><a asp-area="" asp-controller="Company" asp-action="Index" style="color:@Model.CompanyHeaderFontColor !important">Company</a></li>
                         }
                     }
-                    }
+
 
 
 
                 </ul>
 
-                <partial name="_LoginPartial" />
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post" id="logoutForm" class="navbar-right" style="color:@Model.CompanyHeaderFontColor !important">
+                        <ul class="nav navbar-nav navbar-right">
+                            <li>
+                                <a asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage"style="color:@Model.CompanyHeaderFontColor !important">Hello @UserManager.GetUserName(User)!</a>
+                            </li>
+                            <li>
+                                <button type="submit" class="btn btn-link navbar-btn navbar-link" style="color:@Model.CompanyHeaderFontColor !important">Logout</button>
+                            </li>
+                        </ul>
+                    </form>
+                }
+                else
+                {
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a asp-area="Identity" asp-page="/Account/Register" style="color:@Model.CompanyHeaderFontColor !important">Register</a></li>
+                        <li><a asp-area="Identity" class="sign-in" asp-page="/Account/Login" style="color:@Model.CompanyHeaderFontColor !important">Login</a></li>
+                    </ul>
+                }
             </div>
         </div>
     </nav>

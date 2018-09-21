@@ -1,0 +1,3 @@
+﻿
+//This make placeholder text work....seems like a .NET bug to me that it doesn't out of the box
+@Html.TextBox("", ViewData.TemplateInfo.FormattedModelValue, new { @class = "text-box single-line", placeholder = ViewData.ModelMetadata.Placeholder })

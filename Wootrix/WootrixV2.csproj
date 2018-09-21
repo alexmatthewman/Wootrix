@@ -23,5 +23,12 @@
   <ItemGroup>
     <DotNetCliToolReference Include="Amazon.ElasticBeanstalk.Tools" Version="1.1.4" />
   </ItemGroup>
+
+
+  <ItemGroup>
+    <Content Update="Views\Shared\_LayoutCompany.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+  </ItemGroup>
 </Project>
 

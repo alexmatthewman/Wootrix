@@ -49,8 +49,7 @@ namespace Wootrix
             //services.AddDefaultIdentity<ApplicationUser>().AddDefaultUI().AddRoles<IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
             services.AddDefaultIdentity<ApplicationUser>().AddRoles<IdentityRole>().AddDefaultUI().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
             services.AddScoped<SignInManager<ApplicationUser>, SignInManager<ApplicationUser>>();
-
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            
             services.Configure<IdentityOptions>(options =>
             {
                 // Password settings.
