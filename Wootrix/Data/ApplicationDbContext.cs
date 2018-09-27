@@ -15,7 +15,17 @@ namespace Wootrix.Data
         {
             
         }
-        
+
         public DbSet<WootrixV2.Models.Company> Company { get; set; }
+
+        public DbSet<WootrixV2.Models.CompanyGroups> CompanyGroups { get; set; }
+        public DbSet<WootrixV2.Models.CompanyLanguages> CompanyLanguages { get; set; }
+        public DbSet<WootrixV2.Models.CompanyLocations> CompanyLocations { get; set; }
+        public DbSet<WootrixV2.Models.CompanyMagazine> CompanyMagazine { get; set; }
+        public DbSet<WootrixV2.Models.CompanyPushNotification> CompanyPushNotification { get; set; }
+        public DbSet<WootrixV2.Models.MagazineArticle> MagazineArticle { get; set; }
+        public DbSet<WootrixV2.Models.MagazineArticleComment> MagazineArticleComment { get; set; }
+        
+        public DbSet<ApplicationUser> ApplicationUser { get; set; }
     }
 }

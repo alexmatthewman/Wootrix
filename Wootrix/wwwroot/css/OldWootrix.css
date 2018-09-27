@@ -2023,11 +2023,7 @@ input[type=checkbox]:checked + label {
 
 
 
-/*21-dec-2014*/
-.social-login-cont {
-    width: 281px;
-    margin: auto;
-}
+
 /*contact us*/
 .form_cont {
     margin: 10px 0;
@@ -7217,6 +7213,7 @@ header {
 
 .main-home-image {
     padding: 120px 0 0;
+    margin:auto;
 }
 
 .login-divider {

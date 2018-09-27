@@ -9,7 +9,9 @@ namespace WootrixV2.Models
 {
     public class Company
     {
+        [Key]
         public int ID { get; set; }
+
         [Required]
         [RegularExpression(@"^[A-Z]+[a-zA-Z""'\s-]*$", ErrorMessage = "Please enter the company name (max length 100)")]
         [StringLength(100)]
@@ -36,7 +38,7 @@ namespace WootrixV2.Models
         [Display(Name = "Company Text Main", Prompt = "You can set an optional main message for all company users to see", Description = "Company Text Main")]
         public string CompanyTextMain { get; set; }
 
-        
+
         [StringLength(5000, ErrorMessage = "Please keep the max length to 5000")]
         [Display(Name = "Company Text Secondary", Prompt = "You can set an optional message for all company users to see", Description = "Company Text Secondary")]
         public string CompanyTextSecondary { get; set; }
@@ -62,12 +64,20 @@ namespace WootrixV2.Models
         [StringLength(7, MinimumLength = 4)]
         [Display(Name = "Company Header Font Color", Prompt = "Must be a hexidecimal color in the format #FFFFFF to #000000", Description = "Compan Header Font Color")]
         public string CompanyHeaderFontColor { get; set; }
+                
+        public List<CompanyGroups> CompanyGroups { get; set; }
+
+        public List<CompanyLanguages> CompanyLanguages { get; set; }
+
+        public List<CompanyLocations> CompanyLocations { get; set; }
+
+        public List<CompanyMagazine> CompanyMagazine { get; set; }
+
     }
 
 
     public class CompanyViewModel
     {
-        
 
         [Required]
         [RegularExpression(@"^[A-Z]+[a-zA-Z""'\s-]*$", ErrorMessage = "Please enter the company name (max length 100)")]
@@ -91,11 +101,11 @@ namespace WootrixV2.Models
         [Display(Name = "Company Focus Image", Prompt = "Please select a focus image to upload - best size is 700px wide and 550px high", Description = "Company Focus Image")]
         public IFormFile CompanyFocusImage { get; set; }
 
-         [StringLength(1000, ErrorMessage = "Please keep the max length to 1000")]
+        [StringLength(1000, ErrorMessage = "Please keep the max length to 1000")]
         [Display(Name = "Company Text Main", Prompt = "You can set an optional main message for all company users to see", Description = "Company Text Main")]
         public string CompanyTextMain { get; set; }
 
-         [StringLength(5000, ErrorMessage = "Please keep the max length to 5000")]
+        [StringLength(5000, ErrorMessage = "Please keep the max length to 5000")]
         [Display(Name = "Company Text Secondary", Prompt = "You can set an optional message for all company users to see", Description = "Company Text Secondary")]
         public string CompanyTextSecondary { get; set; }
 
@@ -120,6 +130,17 @@ namespace WootrixV2.Models
         [StringLength(7, MinimumLength = 4)]
         [Display(Name = "Company Font Header Color", Prompt = "Must be a hexidecimal color in the format #FFFFFF to #000000", Description = "Company Header Font Color")]
         public string CompanyHeaderFontColor { get; set; }
+
+        public List<CompanyGroups> CompanyGroups { get; set; }
+
+        public List<CompanyLanguages> CompanyLanguages { get; set; }
+
+        public List<CompanyLocations> CompanyLocations { get; set; }
+
+        public List<CompanyMagazine> CompanyMagazine { get; set; }
     }
+
+
+
 
 }

@@ -7,17 +7,22 @@ using Microsoft.AspNetCore.Identity;
 
 namespace WootrixV2.Data
 {
+
+    public enum Gender
+    {
+        Male, Female, Other
+    }
+
     public class ApplicationUser : IdentityUser
     {
         public virtual string name { get; set; }
         public virtual string companyName { get; set; }
         public virtual string companyID { get; set; }
-        public virtual string gender { get; set; }
-
+        public virtual Gender? gender { get; set; }
 
         public virtual string categories { get; set; }
         public virtual string photoUrl { get; set; }
-        
+
         public virtual string registrationType { get; set; }
         public virtual string linkedInID { get; set; }
         public virtual string facebookID { get; set; }
@@ -39,12 +44,9 @@ namespace WootrixV2.Data
         public virtual string deviceIosID { get; set; }
         public virtual string deviceAndroidID { get; set; }
         public virtual string deviceWebID { get; set; }
-
-
-
     }
 
-    public class RegisterViewModel
+    public class UserVM
     {
         // other properties omitted
         public virtual string name { get; set; }
@@ -84,10 +86,6 @@ namespace WootrixV2.Data
         public virtual DateTime createdOn { get; set; }
 
     }
-    //public virtual IEnumerable<Models.Company> Companies { get; set; }
-
-
-    // public enum Gender { Male, Female, Other };
-
-
 }
+
+  

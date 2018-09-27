@@ -42,7 +42,7 @@ namespace Wootrix
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseMySql(
                     Configuration.GetConnectionString("IdentityConnection")));
-
+            
             //This allows for custom Identity attributes
             //services.AddDefaultIdentity<ApplicationUser>().AddDefaultUI().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
             //services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
@@ -173,19 +173,33 @@ namespace Wootrix
             //Assign Super Admin role to the main User for Admin management  
             try
             {
+                
+                ApplicationUser user = await UserManager.FindByEmailAsync("amazon@wootrix.com");
+                var ac = await UserManager.GetClaimsAsync(user);
+
+                
                 // Main user has all roles
                 await UserManager.AddToRoleAsync(await UserManager.FindByEmailAsync("amazon@wootrix.com"), "Admin");
+                await UserManager.AddToRoleAsync(await UserManager.FindByEmailAsync("wootrixCompanyAdmin@wootrix.com"), "CompanyAdmin");
 
-                ApplicationUser user = await UserManager.FindByEmailAsync("amazon@wootrix.com");
-                var User = new ApplicationUser();
-                await UserManager.AddToRoleAsync(user, "Admin");
-                await UserManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, "Admin"));
-                //await UserManager.AddToRoleAsync(await UserManager.FindByEmailAsync("amazon@wootrix.com"), "CompanyAdmin");
-                //await UserManager.AddToRoleAsync(await UserManager.FindByEmailAsync("amazon@wootrix.com"), "User");
+                
 
-                //await UserManager.AddToRoleAsync(await UserManager.FindByEmailAsync("companyadmin@wootrix.com"), "CompanyAdmin");
-                //await UserManager.AddToRoleAsync(await UserManager.FindByEmailAsync("alex.matthewman@gmail.com"), "User");
+                // If the Admin claim is in the DB for the user above don't bother to re-add it
+                if (ac.Where(s => s.Value == "Admin").FirstOrDefault().Value != "Admin")
+                {
+                    await UserManager.AddToRoleAsync(user, "Admin");
+                    await UserManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, "Admin"));
+                }
 
+                user = await UserManager.FindByEmailAsync("wootrixCompanyAdmin@wootrix.com");
+                ac = await UserManager.GetClaimsAsync(user);
+
+                // If the Admin claim is in the DB for the user above don't bother to re-add it
+                if (ac.Where(s => s.Value == "ComanyAdmin").FirstOrDefault().Value != "ComanyAdmin")
+                {
+                    await UserManager.AddToRoleAsync(user, "ComanyAdmin");
+                    await UserManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, "ComanyAdmin"));
+                }
 
             }
             catch (Exception e)

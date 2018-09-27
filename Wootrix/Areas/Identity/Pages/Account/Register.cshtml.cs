@@ -21,6 +21,8 @@ namespace WootrixV2.Areas.Identity.Pages.Account
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
 
+        private readonly Wootrix.Data.ApplicationDbContext _context;
+
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
@@ -36,7 +38,9 @@ namespace WootrixV2.Areas.Identity.Pages.Account
         [BindProperty]
         public InputModel Input { get; set; }
 
-        public string ReturnUrl { get; set; }        
+        public string ReturnUrl { get; set; }   
+        
+        public Models.Company myCompany { get; set; }
 
         public class InputModel
         {
@@ -56,18 +60,14 @@ namespace WootrixV2.Areas.Identity.Pages.Account
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
 
-            //[EnumDataType(typeof(Gender), ErrorMessage = "Shouldn't ever see this")]
-            //[Display(Name = "Gender")]
-            //public List<Gender> gender { get; set; }
+            [Required]
+            [DataType(DataType.Text)]
+            [Display(Name = "Company Name")]
+            public string CompanyName { get; set; }
 
             //[DataType(DataType.Upload)]
             //[Display(Name = "Upload Profile Picture")]
             //public string photoUrl { get; set; }
-
-            
-            [DataType(DataType.Text)]
-            [Display(Name = "Name")]
-            public string name { get; set; }
 
         }
 
@@ -81,8 +81,17 @@ namespace WootrixV2.Areas.Identity.Pages.Account
             returnUrl = returnUrl ?? Url.Content("~/");
             if (ModelState.IsValid)
             {
-                // gender = Input.gender, photoUrl = Input.photoUrl
-                var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email, name = Input.name };
+                ////OK here we need to check the company name is valid 
+                //var companyWithSelectedName = (from cp in _context.Company.Find( where cp.CompanyName == Input.CompanyName).ToList();
+                //    from cps in _context.Company() where cps.
+                //                                    where ep.**== 1
+                //                                    select new customersordersViewModel
+                //                                    {
+                //                                        Customer = ep,
+                //                                        Order = e
+                //                                    }).ToList();
+
+                var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email, companyName = Input.CompanyName };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
