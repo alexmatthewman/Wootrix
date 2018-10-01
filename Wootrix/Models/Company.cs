@@ -62,16 +62,22 @@ namespace WootrixV2.Models
 
         [RegularExpression(@"^#(?:[0-9a-fA-F]{3}){1,2}$", ErrorMessage = "Must be a hexidecimal color in the format #FFFFFF to #000000")]
         [StringLength(7, MinimumLength = 4)]
-        [Display(Name = "Company Header Font Color", Prompt = "Must be a hexidecimal color in the format #FFFFFF to #000000", Description = "Compan Header Font Color")]
+        [Display(Name = "Company Header Font Color", Prompt = "Must be a hexidecimal color in the format #FFFFFF to #000000", Description = "Company Header Font Color")]
         public string CompanyHeaderFontColor { get; set; }
-                
+
+        [Required]
+        [Display(Name = "Number of Allowed Users", Prompt = "-1 for infinite or specify", Description = "Number of Allowed Users")]
+        public int CompanyNumberOfUsers { get; set; }
+
         public List<CompanyGroups> CompanyGroups { get; set; }
 
         public List<CompanyLanguages> CompanyLanguages { get; set; }
 
         public List<CompanyLocations> CompanyLocations { get; set; }
 
-        public List<CompanyMagazine> CompanyMagazine { get; set; }
+        public List<CompanyCountries> CompanyCountries { get; set; }
+
+        public List<CompanySegment> CompanySegment { get; set; }
 
     }
 
@@ -131,13 +137,7 @@ namespace WootrixV2.Models
         [Display(Name = "Company Font Header Color", Prompt = "Must be a hexidecimal color in the format #FFFFFF to #000000", Description = "Company Header Font Color")]
         public string CompanyHeaderFontColor { get; set; }
 
-        public List<CompanyGroups> CompanyGroups { get; set; }
-
-        public List<CompanyLanguages> CompanyLanguages { get; set; }
-
-        public List<CompanyLocations> CompanyLocations { get; set; }
-
-        public List<CompanyMagazine> CompanyMagazine { get; set; }
+       
     }
 
 

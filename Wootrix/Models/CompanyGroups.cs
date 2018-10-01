@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace WootrixV2.Models
 {
-    public class CompanyGroups
-    {
+    public class CompanyGroups 
+    { 
 
         public int ID { get; set; }
 
@@ -18,6 +18,6 @@ namespace WootrixV2.Models
         [StringLength(1000)]
         [Display(Name = "Group Name", Prompt = "Enter the Group name", Description = "Group Name")]
         public string GroupName { get; set; }
-
+        
     }
 }

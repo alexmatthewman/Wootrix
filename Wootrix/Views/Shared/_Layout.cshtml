@@ -70,11 +70,31 @@
                         //So apparently you can't find the user's roles but you can find their claims to specific roles...
                         //That or they need to document this shit a bit better....definitely they do in any case...sigh
 
+                        //Really if the user is logged in we should have redirected to the Company home page already
+
                         @if (User.HasClaim(ClaimTypes.Role, "Admin"))
                         {
+
                             <li><a asp-area="" asp-controller="Company" asp-action="Home" asp-route-id="Kumon">Kumon</a></li>
                             <li><a asp-area="" asp-controller="Company" asp-action="Home" asp-route-id="Wootrix">Wootrix</a></li>
                             <li><a asp-area="" asp-controller="Company" asp-action="Index">Company</a></li>
+
+                        }
+                        @if (User.HasClaim(ClaimTypes.Role, "CompanyAdmin") || User.HasClaim(ClaimTypes.Role, "Admin"))
+                        {
+                            <li class="dropdown">
+                                <a asp-area="" asp-controller="Company" asp-action="Index">Company</a>
+                                <ul class="dropdown-content">
+                                    <li><a asp-controller="CompanyMagazines" asp-action="Index" class="dropdown-item" >Magazines</a></li>
+                                    <li><a asp-controller="MagazineArticles" asp-action="Index" class="dropdown-item" >Articles</a></li>
+                                    <li><a asp-controller="MagazineArticleComments" asp-action="Index" class="dropdown-item" >Article Comments</a></li>
+                                    <li><a asp-controller="CompanyGroups" asp-action="Index" class="dropdown-item" >Groups</a></li>
+                                    <li><a asp-controller="CompanyLanguages" asp-action="Index" class="dropdown-item" >Languages</a></li>
+                                    <li><a asp-controller="CompanyLocations" asp-action="Index" class="dropdown-item" >Locations</a></li>
+                                    <li><a asp-controller="CompanyPushNotifications" asp-action="Index" class="dropdown-item" >Push Notifications</a></li>
+                                    <li><a asp-controller="Reports" asp-action="Index" class="dropdown-item" >Reports</a></li>
+                                </ul>
+                            </li>
                         }
                     }
                     }

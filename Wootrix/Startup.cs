@@ -81,6 +81,14 @@ namespace Wootrix
                 options.AccessDeniedPath = "/Identity/Account/AccessDenied";
                 options.SlidingExpiration = true;
             });
+            services.AddDistributedMemoryCache();
+
+            services.AddSession(options =>
+            {
+                //// Set a short timeout for easy testing.
+                //options.IdleTimeout = TimeSpan.FromMinutes(60);
+                options.Cookie.HttpOnly = true;
+            });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
@@ -102,7 +110,7 @@ namespace Wootrix
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
-
+            app.UseSession();
             app.UseAuthentication();
 
             app.UseMvc(routes =>

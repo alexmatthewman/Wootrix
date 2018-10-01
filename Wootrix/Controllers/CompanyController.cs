@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -37,6 +38,24 @@ namespace WootrixV2.Controllers
 
             var company = await _context.Company
                 .FirstOrDefaultAsync(m => m.CompanyName == id);
+
+            // Saving all this company stuff to the session so the layout isn't dependent on the model
+            // Note that it is all non-sensitive stuff
+            byte[] asdf = new byte[8];
+            HttpContext.Session.SetInt32("CompanyID", company.ID);
+            HttpContext.Session.SetString("CompanyName", company.CompanyName);
+            HttpContext.Session.SetString("CompanyTextMain", company.CompanyTextMain);
+            HttpContext.Session.SetString("CompanyTextSecondary", company.CompanyTextSecondary);
+            HttpContext.Session.SetString("CompanyMainFontColor", company.CompanyMainFontColor);
+            HttpContext.Session.Set("CompanyLogoImage", company.CompanyLogoImage);
+            HttpContext.Session.Set("CompanyFocusImage", company.CompanyFocusImage ?? asdf);
+            HttpContext.Session.Set("CompanyBackgroundImage", company.CompanyBackgroundImage ?? asdf);
+            HttpContext.Session.SetString("CompanyHighlightColor", company.CompanyHighlightColor);
+            HttpContext.Session.SetString("CompanyHeaderFontColor", company.CompanyHeaderFontColor);
+            HttpContext.Session.SetString("CompanyHeaderBackgroundColor", company.CompanyHeaderBackgroundColor);
+            HttpContext.Session.SetString("CompanyBackgroundColor", company.CompanyBackgroundColor);
+            HttpContext.Session.SetInt32("CompanyNumberOfUsers", company.CompanyNumberOfUsers);
+
             if (company == null)
             {
                 return NotFound();

@@ -1,6 +1,8 @@
 ﻿@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Http;
 @using System.Security.Claims
 @using WootrixV2.Data;
+
 
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
@@ -39,19 +41,18 @@
 
     </environment>
 </head>
-<body style="background-color:@Model.CompanyBackgroundColor; color:@Model.CompanyMainFontColor ">
+<body style="background-color:@Context.Session.GetString("CompanyBackgroundColor"); color:@Context.Session.GetString("CompanyMainFontColor")">
 
 
-    <nav id="companyHeaderBackgroundColor" class="navbar navbar-inverse navbar-fixed-top" style="background-color:@Model.CompanyHeaderBackgroundColor !important;">
+    <nav id="companyHeaderBackgroundColor" class="navbar navbar-inverse navbar-fixed-top" style="background-color:@Context.Session.GetString("CompanyHeaderBackgroundColor") !important;">
 
         <div class="container">
             <div class="logo-bar">
                 <figure class="logo-container">
                     <a href="~/">
-                        @if (Model.CompanyLogoImage != null)
+                        @if (Context.Session.Get("CompanyLogoImage") != null)
                         {
-
-                            var base64Logo = Convert.ToBase64String(Model.CompanyLogoImage);
+                            var base64Logo = Convert.ToBase64String(Context.Session.Get("CompanyLogoImage"));
                             var imgSrcLogo = String.Format("data:image/gif;base64,{0}", base64Logo);
 
                             <img id="companyLogo" src="@imgSrcLogo" height="35" alt="Company Logo" class="img-responsive" />
@@ -67,22 +68,41 @@
                     <span class="icon-bar"></span>
                 </button>
             </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav" style="color:@Model.CompanyHeaderFontColor !important">
-
+            <ul class="navbar-collapse collapse">
+                <ul class="nav navbar-nav" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
 
                     @if (SignInManager.IsSignedIn(User))
                     {
-                        <li><a asp-area="" asp-controller="Magazine" asp-action="Index" style="color:@Model.CompanyHeaderFontColor !important">Magazine</a></li>
+
+                        // SO to handle the user company I think we should create a company claim when the user is created.
+
+                        <li><a asp-controller="Fruit" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">Fruit</a></li>
+                        <li><a asp-controller="Company" asp-action="Home" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">Articles</a></li>
 
                         //So apparently you can't find the user's roles but you can find their claims to specific roles...
                         //That or they need to document this shit a bit better....definitely they do in any case...sigh
 
                         @if (User.HasClaim(ClaimTypes.Role, "Admin"))
                         {
-                            <li><a asp-area="" asp-controller="Company" asp-action="Home" asp-route-id="Kumon" style="color:@Model.CompanyHeaderFontColor !important">Kumon</a></li>
-                            <li><a asp-area="" asp-controller="Company" asp-action="Home" asp-route-id="Wootrix" style="color:@Model.CompanyHeaderFontColor !important">Wootrix</a></li>
-                            <li><a asp-area="" asp-controller="Company" asp-action="Index" style="color:@Model.CompanyHeaderFontColor !important">Company</a></li>
+                            <li><a asp-controller="Company" asp-action="Home" asp-route-id="Kumon" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">Kumon</a></li>
+                            <li><a asp-controller="Company" asp-action="Home" asp-route-id="Wootrix" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">Wootrix</a></li>
+
+                        }
+                        @if (User.HasClaim(ClaimTypes.Role, "CompanyAdmin") || User.HasClaim(ClaimTypes.Role, "Admin"))
+                        {
+                            <li class="dropdown">
+                                <a asp-area="" asp-controller="Company" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">Company</a>
+                                <ul class="dropdown-content">
+                                    <li><a asp-controller="CompanyMagazines" asp-action="Index" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Magazines</a></li>
+                                    <li><a asp-controller="MagazineArticles" asp-action="Index" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Articles</a></li>
+                                    <li><a asp-controller="MagazineArticleComments" asp-action="Index" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Article Comments</a></li>
+                                    <li><a asp-controller="CompanyGroups" asp-action="Index" asp-route-id="@Context.Session.GetString("CompanyName")" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Groups</a></li>
+                                    <li><a asp-controller="CompanyLanguages" asp-action="Index" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Languages</a></li>
+                                    <li><a asp-controller="CompanyLocations" asp-action="Index" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Locations</a></li>
+                                    <li><a asp-controller="CompanyPushNotifications" asp-action="Index" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Push Notifications</a></li>
+                                    <li><a asp-controller="Reports" asp-action="Index" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Reports</a></li>
+                                </ul>
+                            </li>
                         }
                     }
 
@@ -93,13 +113,13 @@
 
                 @if (SignInManager.IsSignedIn(User))
                 {
-                    <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post" id="logoutForm" class="navbar-right" style="color:@Model.CompanyHeaderFontColor !important">
+                    <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post" id="logoutForm" class="navbar-right" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
                         <ul class="nav navbar-nav navbar-right">
                             <li>
-                                <a asp-area="Identity" asp-page="/Account/Manage/Index" asp-route-id="@Model.CompanyName" title="Manage" style="color:@Model.CompanyHeaderFontColor !important">Hello @UserManager.GetUserName(User)!</a>
+                                <a asp-area="Identity" asp-page="/Account/Manage/Index" asp-route-id="@Context.Session.GetString("CompanyName")" title="Manage" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">Hello @UserManager.GetUserName(User)!</a>
                             </li>
                             <li>
-                                <button type="submit" class="btn btn-link navbar-btn navbar-link" asp-route-id="@Model.CompanyName" style="color:@Model.CompanyHeaderFontColor !important">Logout</button>
+                                <button type="submit" class="btn btn-link navbar-btn navbar-link" asp-route-id="@Context.Session.GetString("CompanyName")" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">Logout</button>
                             </li>
                         </ul>
                     </form>
@@ -107,17 +127,17 @@
                 else
                 {
                     <ul class="nav navbar-nav navbar-right">
-                        <li><a asp-area="Identity" asp-page="/Account/Register" asp-route-id="@Model.CompanyName" style="color:@Model.CompanyHeaderFontColor !important">Register</a></li>
-                        <li><a asp-area="Identity" class="sign-in" asp-page="/Account/Login" asp-route-id="@Model.CompanyName" style="color:@Model.CompanyHeaderFontColor !important">Login</a></li>
+                        <li><a asp-area="Identity" asp-page="/Account/Register" asp-route-id="@Context.Session.GetString("CompanyName")" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">Register</a></li>
+                        <li><a asp-area="Identity" class="sign-in" asp-page="/Account/Login" asp-route-id="@Context.Session.GetString("CompanyName")" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">Login</a></li>
                     </ul>
                 }
-            </div>
+        </div>
         </div>
     </nav>
 
     <partial name="_CookieConsentPartial" />
 
-    <div class="body-content">
+    <div class="body-content" style="background-color:@Context.Session.GetString("CompanyBackgroundColor"); color:@Context.Session.GetString("CompanyMainFontColor")">
 
         @RenderBody()
         <!-- Footer -->
