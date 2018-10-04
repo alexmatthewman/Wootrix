@@ -22,11 +22,7 @@
             @Html.DisplayNameFor(model => model.CompanyLogoImage)
         </dt>
         <dd>
-            @{
-                var base64Logo = Convert.ToBase64String(item.CompanyLogoImage);
-                var imgSrcLogo = String.Format("data:image/gif;base64,{0}", base64Logo);
-            }
-            <img src="@imgSrcLogo" height="35" />
+            @Html.DisplayFor(model => model.CompanyLogoImage)
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.CompanyBackgroundColor)
@@ -38,29 +34,13 @@
             @Html.DisplayNameFor(model => model.CompanyBackgroundImage)
         </dt>
         <dd>
-            @{
-                var imgSrcBack = "";
-                if (item.CompanyBackgroundImage != null)
-                {
-                    var base64Back = Convert.ToBase64String(item.CompanyBackgroundImage);
-                    imgSrcBack = String.Format("data:image/gif;base64,{0}", base64Back);
-                }
-            }
-            <img src="@imgSrcBack" height="35" />
+            @Html.DisplayFor(model => model.CompanyBackgroundImage)
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.CompanyFocusImage)
         </dt>
         <dd>
-            @{
-                var imgSrcFoc = "";
-                if (item.CompanyFocusImage != null)
-                {
-                    var base64Foc = Convert.ToBase64String(item.CompanyFocusImage);
-                    imgSrcFoc = String.Format("data:image/gif;base64,{0}", base64Foc);
-                }
-            }
-            <img src="@imgSrcFoc" height="35" />
+            @Html.DisplayFor(model => model.CompanyFocusImage)
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.CompanyTextMain)
@@ -97,6 +77,18 @@
         </dt>
         <dd>
             @Html.DisplayFor(model => model.CompanyHeaderFontColor)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CompanyNumberOfUsers)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CompanyNumberOfUsers)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CompanyNumberOfPushNotifications)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CompanyNumberOfPushNotifications)
         </dd>
     </dl>
 </div>

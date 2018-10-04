@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -15,10 +16,14 @@ namespace WootrixV2.Controllers
     public class CompanyController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IHostingEnvironment _env;
+        private readonly string _rootpath;
 
-        public CompanyController(ApplicationDbContext context)
+        public CompanyController(IHostingEnvironment env, ApplicationDbContext context)
         {
             _context = context;
+            _env = env;
+            _rootpath =_env.ContentRootPath;
         }
 
         // GET: Company
@@ -41,15 +46,15 @@ namespace WootrixV2.Controllers
 
             // Saving all this company stuff to the session so the layout isn't dependent on the model
             // Note that it is all non-sensitive stuff
-            byte[] asdf = new byte[8];
+            //byte[] asdf = new byte[8];
             HttpContext.Session.SetInt32("CompanyID", company.ID);
             HttpContext.Session.SetString("CompanyName", company.CompanyName);
             HttpContext.Session.SetString("CompanyTextMain", company.CompanyTextMain);
             HttpContext.Session.SetString("CompanyTextSecondary", company.CompanyTextSecondary);
             HttpContext.Session.SetString("CompanyMainFontColor", company.CompanyMainFontColor);
-            HttpContext.Session.Set("CompanyLogoImage", company.CompanyLogoImage);
-            HttpContext.Session.Set("CompanyFocusImage", company.CompanyFocusImage ?? asdf);
-            HttpContext.Session.Set("CompanyBackgroundImage", company.CompanyBackgroundImage ?? asdf);
+            HttpContext.Session.SetString("CompanyLogoImage", company.CompanyLogoImage);
+            HttpContext.Session.SetString("CompanyFocusImage", company.CompanyFocusImage);
+            HttpContext.Session.SetString("CompanyBackgroundImage", company.CompanyBackgroundImage);
             HttpContext.Session.SetString("CompanyHighlightColor", company.CompanyHighlightColor);
             HttpContext.Session.SetString("CompanyHeaderFontColor", company.CompanyHeaderFontColor);
             HttpContext.Session.SetString("CompanyHeaderBackgroundColor", company.CompanyHeaderBackgroundColor);
@@ -83,33 +88,54 @@ namespace WootrixV2.Controllers
                 myCompany.CompanyHighlightColor = model.CompanyHighlightColor;
                 myCompany.CompanyMainFontColor = model.CompanyMainFontColor;
                 myCompany.CompanyHeaderFontColor = model.CompanyHeaderFontColor;
+                myCompany.CompanyNumberOfUsers = model.CompanyNumberOfUsers;
+                myCompany.CompanyNumberOfPushNotifications = model.CompanyNumberOfPushNotifications;
 
-                //Copy the IFormFiles to stream and save it to the byte arrays
-                using (var memoryStream = new MemoryStream())
+                IFormFile logo = model.CompanyLogoImage;
+                if (logo != null)
                 {
-                    await model.CompanyLogoImage.CopyToAsync(memoryStream);
-                    myCompany.CompanyLogoImage = memoryStream.ToArray();
-                }
-
-                //Optional so check if there first
-                if (model.CompanyFocusImage != null)
-                {
-                    using (var memoryStream = new MemoryStream())
+                    var filePath = Path.Combine(_rootpath, "Uploads", model.CompanyName + "_" + logo.FileName);
+                    using (var stream = new FileStream(filePath, FileMode.Create))
                     {
-                        await model.CompanyFocusImage.CopyToAsync(memoryStream);
-                        myCompany.CompanyFocusImage = memoryStream.ToArray();
+                        await logo.CopyToAsync(stream);
                     }
+                    //The file has been saved to disk - now save the file name to the DB
+                    myCompany.CompanyLogoImage = logo.FileName;
                 }
 
-                //Optional so check if there first
-                if (model.CompanyBackgroundImage != null)
+                IFormFile background = model.CompanyBackgroundImage;
+                if (background != null)
                 {
-                    using (var memoryStream = new MemoryStream())
+                    var filePath = Path.Combine(_rootpath, "Uploads", model.CompanyName + "_" + background.FileName);
+                    using (var stream = new FileStream(filePath, FileMode.Create))
                     {
-                        await model.CompanyBackgroundImage.CopyToAsync(memoryStream);
-                        myCompany.CompanyBackgroundImage = memoryStream.ToArray();
+                        await background.CopyToAsync(stream);
                     }
+                    //The file has been saved to disk - now save the file name to the DB
+                    myCompany.CompanyBackgroundImage = background.FileName;
                 }
+
+                IFormFile focus = model.CompanyFocusImage;
+                if (focus != null)
+                {
+                    var filePath = Path.Combine(_rootpath, "Uploads", model.CompanyName + "_" + focus.FileName);
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await focus.CopyToAsync(stream);
+                    }
+                    //The file has been saved to disk - now save the file name to the DB
+                    myCompany.CompanyFocusImage = focus.FileName;
+                }
+
+                ////Optional so check if there first
+                //if (model.CompanyBackgroundImage != null)
+                //{
+                //    using (var memoryStream = new MemoryStream())
+                //    {
+                //        await model.CompanyBackgroundImage.CopyToAsync(memoryStream);
+                //        myCompany.CompanyBackgroundImage = memoryStream.ToArray();
+                //    }
+                //}
 
                 _context.Add(myCompany);
                 await _context.SaveChangesAsync();
@@ -198,38 +224,60 @@ namespace WootrixV2.Controllers
                 myCompany.CompanyHighlightColor = model.CompanyHighlightColor;
                 myCompany.CompanyMainFontColor = model.CompanyMainFontColor;
                 myCompany.CompanyHeaderFontColor = model.CompanyHeaderFontColor;
+                myCompany.CompanyNumberOfUsers = model.CompanyNumberOfUsers;
+                myCompany.CompanyNumberOfPushNotifications = model.CompanyNumberOfPushNotifications;
 
-                //Copy the IFormFiles to stream and save it to the byte arrays
-                using (var memoryStream = new MemoryStream())
+                IFormFile logo = model.CompanyLogoImage;
+                if (logo != null)
                 {
-                    await model.CompanyLogoImage.CopyToAsync(memoryStream);
-                    myCompany.CompanyLogoImage = memoryStream.ToArray();
-                }
-
-                //Optional so check if there first
-                if (model.CompanyFocusImage != null)
-                {
-                    using (var memoryStream = new MemoryStream())
+                    var filePath = Path.Combine(_rootpath, "Uploads", model.CompanyName + "_" + logo.FileName);
+                    using (var stream = new FileStream(filePath, FileMode.Create))
                     {
-                        await model.CompanyFocusImage.CopyToAsync(memoryStream);
-                        myCompany.CompanyFocusImage = memoryStream.ToArray();
+                        await logo.CopyToAsync(stream);
                     }
+                    //The file has been saved to disk - now save the file name to the DB
+                    myCompany.CompanyLogoImage = logo.FileName;
                 }
 
-                //Optional so check if there first
-                if (model.CompanyBackgroundImage != null)
+                IFormFile background = model.CompanyBackgroundImage;
+                if (background != null)
                 {
-                    using (var memoryStream = new MemoryStream())
+                    var filePath = Path.Combine(_rootpath, "Uploads", model.CompanyName + "_" + background.FileName);
+                    using (var stream = new FileStream(filePath, FileMode.Create))
                     {
-                        await model.CompanyBackgroundImage.CopyToAsync(memoryStream);
-                        myCompany.CompanyBackgroundImage = memoryStream.ToArray();
+                        await background.CopyToAsync(stream);
                     }
+                    //The file has been saved to disk - now save the file name to the DB
+                    myCompany.CompanyBackgroundImage = background.FileName;
                 }
+
+                IFormFile focus = model.CompanyFocusImage;
+                if (focus != null)
+                {
+                    var filePath = Path.Combine(_rootpath, "Uploads", model.CompanyName + "_" + focus.FileName);
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await focus.CopyToAsync(stream);
+                    }
+                    //The file has been saved to disk - now save the file name to the DB
+                    myCompany.CompanyFocusImage = focus.FileName;
+                }
+
+                //There should probably be some separation by company for files but fuck it
+
+
+                ////Copy the IFormFiles to stream and save it to the byte arrays
+                //using (var memoryStream = new MemoryStream())
+                //{
+                //    await model.CompanyLogoImage.CopyToAsync(memoryStream);
+                //    myCompany.CompanyLogoImage = memoryStream.ToArray();
+                //}
+
 
                 try
                 {
                     _context.Update(myCompany);
-                await _context.SaveChangesAsync();
+                    await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -248,7 +296,7 @@ namespace WootrixV2.Controllers
             return View(myCompany);
         }
 
-            
+
 
         // GET: Company/Delete/5
         public async Task<IActionResult> Delete(int? id)

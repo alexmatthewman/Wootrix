@@ -13,9 +13,11 @@ namespace WootrixV2.Models
 
         public int CompanySegmentID { get; set; }
 
-        public string title { get; set; }
+        public int Order { get; set; }
 
-        public string image { get; set; }
+        public string Title { get; set; }
+
+        public string Image { get; set; }
 
         public int embedVideoLink { get; set; }
 
@@ -29,25 +31,11 @@ namespace WootrixV2.Models
 
         public int allowComments { get; set; }
 
-        public int allowShare { get; set; }
-
         public DateTime publishFrom { get; set; }
 
         public DateTime publishTill { get; set; }
 
         public string author { get; set; }
-
-        public List<CompanyGroups> CompanyGroups { get; set; }
-
-        public List<CompanyLanguages> CompanyLanguages { get; set; }
-
-        public List<CompanyLocations> CompanyLocations { get; set; }
-
-        public List<CompanyTypeOfUser> CompanyTypeOfUser { get; set; }
-
-        public List<CompanyCountries> CompanyCountries { get; set; }
-
-        public List<SegmentArticleComment> SegmentArticleComment { get; set; }
 
     }
 }

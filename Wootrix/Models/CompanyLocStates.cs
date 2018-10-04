@@ -6,18 +6,20 @@ using System.Threading.Tasks;
 
 namespace WootrixV2.Models
 {
-    public class CompanyCountries
+    public class CompanyLocStates
     {
         [Key]
         public int ID { get; set; }
+
+        public int CompanyLocCountriesID { get; set; }
 
         public int CompanyID { get; set; }
 
         [Required]
         [RegularExpression(@"^[A-Z]+[a-zA-Z""'\s-]*$", ErrorMessage = "Please only enter a string")]
         [StringLength(1000)]
-        [Display(Name = "CountryName Name", Prompt = "Enter the Country name", Description = "Country Name")]
-        public string CountryName { get; set; }
+        [Display(Name = "State Name", Prompt = "Enter the State name", Description = "State Name")]
+        public string StateName { get; set; }
 
         
 

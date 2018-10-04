@@ -14,7 +14,7 @@ namespace WootrixV2.Models
         public int SegmentArticleID { get; set; }
         public string Comment { get; set; }
         public int UserID { get; set; }        
-        public DateTime CreatedDated { get; set; }
+        public DateTime CreatedDate { get; set; }
         public string status { get; set; }
     }
 }

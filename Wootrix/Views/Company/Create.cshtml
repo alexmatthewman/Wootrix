@@ -30,7 +30,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="CompanyBackgroundImage" class="control-label"></label>
-                <input asp-for="CompanyBackgroundImage"  type="file" class="form-control" />
+                <input asp-for="CompanyBackgroundImage" type="file" class="form-control" />
                 <span asp-validation-for="CompanyBackgroundImage" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -67,6 +67,16 @@
                 <label asp-for="CompanyHeaderFontColor" class="control-label"></label>
                 <input asp-for="CompanyHeaderFontColor" class="form-control" />
                 <span asp-validation-for="CompanyHeaderFontColor" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CompanyNumberOfUsers" class="control-label"></label>
+                <input asp-for="CompanyNumberOfUsers" class="form-control" />
+                <span asp-validation-for="CompanyNumberOfUsers" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CompanyNumberOfPushNotifications" class="control-label"></label>
+                <input asp-for="CompanyNumberOfPushNotifications" class="form-control" />
+                <span asp-validation-for="CompanyNumberOfPushNotifications" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-default" />

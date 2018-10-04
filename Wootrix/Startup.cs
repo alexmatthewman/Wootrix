@@ -15,6 +15,8 @@ using Microsoft.Extensions.DependencyInjection;
 using WootrixV2.Data;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.Extensions.FileProviders;
+using System.IO;
 
 namespace Wootrix
 {
@@ -106,6 +108,14 @@ namespace Wootrix
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
+
+            app.UseStaticFiles();
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath, "Uploads")),
+                RequestPath = new PathString("/Uploads")
+            });
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

@@ -12,34 +12,18 @@
 
 <div class="companyHome" company="@Model.CompanyName">
     <!-- Banner -->
-    @{
-        var imgSrcBack = "";
-        var backID = "banner";
-        if (Model.CompanyBackgroundImage != null)
-        {
-            var base64Back = Convert.ToBase64String(Model.CompanyBackgroundImage);
-            imgSrcBack = String.Format("data:image/gif;base64,{0}", base64Back);
-        }
-    }
-
+    
     @if (!SignInManager.IsSignedIn(User))
     {
-        <section style="height: 92vh; background-image: url(@imgSrcBack);" alt="Home screen image" class="img-responsive">
+        <section style="height: 92vh; background-image: url(@Model.CompanyBackgroundImage);" alt="Home screen image" class="img-responsive">
 
 
             <div class="container clearfix">
                 <div class="span7 left">
                     <figure class="main-home-image">
                         <!--COMPANY FOCUS IMAGE-->
-                        @{
-                            var imgSrcFoc = "";
-                            if (Model.CompanyFocusImage != null)
-                            {
-                                var base64Foc = Convert.ToBase64String(Model.CompanyFocusImage);
-                                imgSrcFoc = String.Format("data:image/gif;base64,{0}", base64Foc);
-                            }
-                        }
-                        <img src="@imgSrcFoc" id="CompanyFocusImage" alt="Home screen image" />
+                        
+                        <img src="@Model.CompanyFocusImage" id="CompanyFocusImage" alt="Home screen image" />
 
                     </figure>
                 </div>

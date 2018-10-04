@@ -54,7 +54,10 @@
 
 /*DROP DOWN MENU STYLING - END */
 
-
+.tableimg {
+    max-height:4em;
+    max-width:4em;
+}
 
 .body-content {
     color: #CCC;

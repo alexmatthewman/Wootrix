@@ -13,6 +13,8 @@ namespace WootrixV2.Models
 
         public int CompanyID { get; set; }
 
+        public int Order { get; set; }
+
         public string Title { get; set; }
 
         public string CoverImage { get; set; }
