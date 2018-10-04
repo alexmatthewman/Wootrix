@@ -44,27 +44,26 @@ namespace WootrixV2.Models
                         new Company
                         {
                             CompanyName = "Wootrix",
-                            CompanyLogoImage = "This should be the file locations",
+                            CompanyLogoImage = "logo.png",
                             CompanyBackgroundColor = "#2E3842",
-                            CompanyBackgroundImage = "This should be the file locations",
-                            CompanyFocusImage = "This should be the file locations",
+                            CompanyBackgroundImage = "girl.jpg",
+                            CompanyFocusImage = "app2.png",
                             CompanyTextMain = "Seeded Bring your team together",
                             CompanyTextSecondary = "Mobile-first communication. Strengthens your company. Built for getting work done.",
                             CompanyHighlightColor = "#00A1E5",
                             CompanyHeaderBackgroundColor = "#FFFFFF",
                             CompanyMainFontColor = "#FFFFFF",
                             CompanyHeaderFontColor = "#00A1E5",
-                            CompanyNumberOfUsers = 100,
+                            CompanyNumberOfUsers = 10,
                             CompanyNumberOfPushNotifications = 10
                         },
-
                         new Company
                         {
                             CompanyName = "Kumon",
-                            CompanyLogoImage = "This should be the file locations",
+                            CompanyLogoImage = "logokumon.gif",
                             CompanyBackgroundColor = "#FFFFFF",
-                            CompanyBackgroundImage = "This should be the file locations",
-                            CompanyFocusImage = "This should be the file locations",
+                            CompanyBackgroundImage = "",
+                            CompanyFocusImage = "",
                             CompanyTextMain = "Seeded Kumon South America",
                             CompanyTextSecondary = "The Kumon is a methodology that aims to encourage in the child the autonomy in the studies, seeking to strengthen the learning potential of each one.",
                             CompanyHighlightColor = "#99CDFF",

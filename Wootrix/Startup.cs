@@ -196,9 +196,9 @@ namespace Wootrix
                 var ac = await UserManager.GetClaimsAsync(user);
 
                 
-                // Main user has all roles
-                await UserManager.AddToRoleAsync(await UserManager.FindByEmailAsync("amazon@wootrix.com"), "Admin");
-                await UserManager.AddToRoleAsync(await UserManager.FindByEmailAsync("wootrixCompanyAdmin@wootrix.com"), "CompanyAdmin");
+                //// Main user has all roles
+                //await UserManager.AddToRoleAsync(await UserManager.FindByEmailAsync("amazon@wootrix.com"), "Admin");
+                //await UserManager.AddToRoleAsync(await UserManager.FindByEmailAsync("wootrixCompanyAdmin@wootrix.com"), "CompanyAdmin");
 
                 
 
@@ -211,12 +211,11 @@ namespace Wootrix
 
                 user = await UserManager.FindByEmailAsync("wootrixCompanyAdmin@wootrix.com");
                 ac = await UserManager.GetClaimsAsync(user);
-
-                // If the Admin claim is in the DB for the user above don't bother to re-add it
-                if (ac.Where(s => s.Value == "ComanyAdmin").FirstOrDefault().Value != "ComanyAdmin")
+                
+                if (ac.Count() <= 0)
                 {
-                    await UserManager.AddToRoleAsync(user, "ComanyAdmin");
-                    await UserManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, "ComanyAdmin"));
+                    await UserManager.AddToRoleAsync(user, "CompanyAdmin");
+                    await UserManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, "CompanyAdmin"));
                 }
 
             }
