@@ -30,7 +30,12 @@ namespace Wootrix.Controllers
                 var claim = "";
                 if (User.Claims.Count() > 0)
                 {
-                    claim = User.Claims.FirstOrDefault(m => m.Value == "Admin" || m.Value == "CompanyAdmin").Value;
+                    var cl = User.Claims.FirstOrDefault(m => m.Value == "Admin" || m.Value == "CompanyAdmin");
+                    if (cl != null) { claim = cl.Value; } else
+                    {
+                        //This is a user
+
+                    }                   
                 }
 
                 if (claim == "Admin")
@@ -39,11 +44,19 @@ namespace Wootrix.Controllers
                 }
                 if (claim == "CompanyAdmin")
                 {
-                    //Company admin so lets redirect to company admin home
-                    
+                    //Company admin so lets redirect to company home
+
                     //And lets find the company for the user and redirect to that id
-                    var user =  _userManager.FindByEmailAsync("wootrixCompanyAdmin@wootrix.com").GetAwaiter().GetResult();
-                  
+
+                    var user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();
+
+                    return RedirectToAction("Home", "Company", new { id = user.companyName });
+                }
+                if (claim == "")
+                {
+                    //User - they also go to company home
+                    var user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();
+
                     return RedirectToAction("Home", "Company", new { id = user.companyName });
                 }
             }

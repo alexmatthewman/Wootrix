@@ -53,8 +53,8 @@ namespace WootrixV2.Controllers
             HttpContext.Session.SetString("CompanyTextSecondary", company.CompanyTextSecondary);
             HttpContext.Session.SetString("CompanyMainFontColor", company.CompanyMainFontColor);
             HttpContext.Session.SetString("CompanyLogoImage", company.CompanyLogoImage);
-            HttpContext.Session.SetString("CompanyFocusImage", company.CompanyFocusImage);
-            HttpContext.Session.SetString("CompanyBackgroundImage", company.CompanyBackgroundImage);
+            HttpContext.Session.SetString("CompanyFocusImage", company.CompanyFocusImage ?? "");
+            HttpContext.Session.SetString("CompanyBackgroundImage", company.CompanyBackgroundImage ?? "");
             HttpContext.Session.SetString("CompanyHighlightColor", company.CompanyHighlightColor);
             HttpContext.Session.SetString("CompanyHeaderFontColor", company.CompanyHeaderFontColor);
             HttpContext.Session.SetString("CompanyHeaderBackgroundColor", company.CompanyHeaderBackgroundColor);

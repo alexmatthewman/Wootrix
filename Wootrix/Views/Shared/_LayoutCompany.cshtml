@@ -3,6 +3,9 @@
 @using System.Security.Claims
 @using WootrixV2.Data;
 
+@{ 
+    var companyName = @Context.Session.GetString("CompanyName") ?? "Wootrix";
+}
 
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
@@ -44,19 +47,16 @@
 <body style="background-color:@Context.Session.GetString("CompanyBackgroundColor"); color:@Context.Session.GetString("CompanyMainFontColor")">
 
 
-    <nav id="companyHeaderBackgroundColor" class="navbar navbar-inverse navbar-fixed-top" style="background-color:@Context.Session.GetString("CompanyHeaderBackgroundColor") !important;">
+    <nav id="companyHeaderBackgroundColor" class="navbar navbar-inverse navbar-fixed-top" style="background-color:@Context.Session.GetString("CompanyHeaderBackgroundColor") !important; border-bottom: 0.5em solid @Context.Session.GetString("CompanyHighlightColor"); ">
 
         <div class="container">
             <div class="logo-bar">
                 <figure class="logo-container">
-                    <a href="~/">
-                        @if (Context.Session.Get("CompanyLogoImage") != null)
-                        {
-                            var base64Logo = Convert.ToBase64String(Context.Session.Get("CompanyLogoImage"));
-                            var imgSrcLogo = String.Format("data:image/gif;base64,{0}", base64Logo);
-
-                            <img id="companyLogo" src="@imgSrcLogo" height="35" alt="Company Logo" class="img-responsive" />
+                    <a asp-controller="Company" asp-action="Home" asp-route-id="@companyName">
+                        @{
+                            var fn = @companyName + "_" + @Context.Session.GetString("CompanyLogoImage");
                         }
+                        <img id="companyLogo" src="~/../Uploads/@fn" height="35" alt="Company Logo" class="img-responsive" />
                     </a>
                 </figure>
             </div>
@@ -76,31 +76,34 @@
 
                         // SO to handle the user company I think we should create a company claim when the user is created.
 
-                        <li><a asp-controller="Fruit" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">Fruit</a></li>
-                        <li><a asp-controller="Company" asp-action="Home" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">Articles</a></li>
+                        @*<li><a asp-controller="Fruit" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">Fruit</a></li>*@
+                        @*<li><a asp-controller="Company" asp-action="Home" asp-route-id="@companyName style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">Home</a></li>*@
 
                         //So apparently you can't find the user's roles but you can find their claims to specific roles...
                         //That or they need to document this shit a bit better....definitely they do in any case...sigh
 
                         @if (User.HasClaim(ClaimTypes.Role, "Admin"))
                         {
-                            <li><a asp-controller="Company" asp-action="Home" asp-route-id="Kumon" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">Kumon</a></li>
-                            <li><a asp-controller="Company" asp-action="Home" asp-route-id="Wootrix" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">Wootrix</a></li>
+                            @*<li><a asp-controller="Company" asp-action="Home" asp-route-id="Kumon" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">Kumon</a></li>
+                            <li><a asp-controller="Company" asp-action="Home" asp-route-id="Wootrix" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">Wootrix</a></li>*@
+                            <li><a asp-area="" asp-controller="Company" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">Manage Companies</a></li>
+                            @*<li><a asp-area="" asp-controller="CompanyDepartments" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">Company Departments</a></li>*@
 
                         }
-                        @if (User.HasClaim(ClaimTypes.Role, "CompanyAdmin") || User.HasClaim(ClaimTypes.Role, "Admin"))
+                        @if (User.HasClaim(ClaimTypes.Role, "CompanyAdmin"))
                         {
                             <li class="dropdown">
-                                <a asp-area="" asp-controller="Company" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">Company</a>
+                                <a asp-area="" asp-controller="" asp-action="" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">Company Details</a>
                                 <ul class="dropdown-content">
-                                    <li><a asp-controller="CompanyMagazines" asp-action="Index" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Magazines</a></li>
-                                    <li><a asp-controller="MagazineArticles" asp-action="Index" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Articles</a></li>
-                                    <li><a asp-controller="MagazineArticleComments" asp-action="Index" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Article Comments</a></li>
                                     <li><a asp-controller="CompanyGroups" asp-action="Index" asp-route-id="@Context.Session.GetString("CompanyName")" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Groups</a></li>
-                                    <li><a asp-controller="CompanyLanguages" asp-action="Index" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Languages</a></li>
-                                    <li><a asp-controller="CompanyLocations" asp-action="Index" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Locations</a></li>
+                                    <li><a asp-controller="CompanyTopics" asp-action="Index" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Topics</a></li>
+                                    <li><a asp-controller="CompanyTypeOfUsers" asp-action="Index" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Type of Users</a></li>
+                                    <li><a asp-controller="CompanySegments" asp-action="Index" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Segments</a></li>
+                                    <li><a asp-controller="SegementArticles" asp-action="Index" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Articles</a></li>
+                                    <li><a asp-controller="SegementsArticleComments" asp-action="Index" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Article Comments</a></li>
                                     <li><a asp-controller="CompanyPushNotifications" asp-action="Index" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Push Notifications</a></li>
                                     <li><a asp-controller="Reports" asp-action="Index" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Reports</a></li>
+
                                 </ul>
                             </li>
                         }
@@ -113,10 +116,10 @@
 
                 @if (SignInManager.IsSignedIn(User))
                 {
-                    
 
-                                <partial name="_LoginPartial" />
-                       
+
+                    <partial name="_LoginPartial" />
+
                 }
                 else
                 {
@@ -133,19 +136,34 @@
 
     <div class="body-content" style="background-color:@Context.Session.GetString("CompanyBackgroundColor"); color:@Context.Session.GetString("CompanyMainFontColor")">
 
-        @RenderBody()
+        <div class="body-stuff">
+            @RenderBody()
+        </div>
         <!-- Footer -->
-        <footer id="footer">
+        <footer id="footer" style="background-color:@Context.Session.GetString("CompanyHeaderBackgroundColor") !important; border-bottom: 0.5em solid @Context.Session.GetString("CompanyHighlightColor"); ">
             <div id="companyHighlight2">
-                <ul class="icons">
-                    <li><a href="https://twitter.com/wootrixoficial" class="icon f-twitter"><img src="~/images/footicon-twitter.png" alt="Twitter" /></a></li>
-                    <li><a href="https://www.facebook.com/wootrix/" class="icon f-facebook"><img src="~/images/footicon-facebook.png" alt="Faceboook" /></a></li>
-                    <li><a href="https://plus.google.com/109310151849035195482" class="icon f-google"><img src="~/images/footicon-google.png" alt="Google+" /></a></li>
-                    <li><a href="https://www.linkedin.com/company/wootrix/" class="icon f-linkedin"><img src="~/images/footicon-linkedin.png" alt="LinkedIn" /></a></li>
-                    <li><a href="mailto:wootrix@wootrix.com" class="icon f-envelope-o"><img src="~/images/footicon-email.png" alt="Email" /></a></li>
-                </ul>
-                <ul class="copyright">
-                    <li>&copy;<a href="#">WOOTRIX</a></li>
+                @*<ul class="icons">
+                        <li><a href="https://twitter.com/wootrixoficial" class="icon f-twitter"><img src="~/images/footicon-twitter.png" alt="Twitter" /></a></li>
+                        <li><a href="https://www.facebook.com/wootrix/" class="icon f-facebook"><img src="~/images/footicon-facebook.png" alt="Faceboook" /></a></li>
+                        <li><a href="https://plus.google.com/109310151849035195482" class="icon f-google"><img src="~/images/footicon-google.png" alt="Google+" /></a></li>
+                        <li><a href="https://www.linkedin.com/company/wootrix/" class="icon f-linkedin"><img src="~/images/footicon-linkedin.png" alt="LinkedIn" /></a></li>
+                        <li><a href="mailto:wootrix@wootrix.com" class="icon f-envelope-o"><img src="~/images/footicon-email.png" alt="Email" /></a></li>
+                    </ul>*@
+                @*<ul class="copyright">
+                        <li>&copy;<a href="#">WOOTRIX</a></li>
+                    </ul>*@
+                <ul>
+                    <li class="left">
+                        @{
+                            var footerlogo = Context.Session.GetString("CompanyName") + "_" + @Context.Session.GetString("CompanyLogoImage");
+                        }
+                        <a asp-controller="Company" asp-action="Home" asp-route-id="@Context.Session.GetString("CompanyName")">
+                            <img id="companyLogo" src="~/../Uploads/@footerlogo" height="35" alt="Company Logo" class="img-responsive" />
+                        </a>
+                    </li>
+                    <li class="right powered">
+                        Powered by Wootrix @@ @DateTime.Now.Year
+                    </li>
                 </ul>
             </div>
         </footer>

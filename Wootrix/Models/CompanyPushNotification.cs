@@ -11,7 +11,9 @@ namespace WootrixV2.Models
         [Key]
         public int ID { get; set; }
 
+        [ScaffoldColumn(false)]
         public int CompanyID { get; set; }
+
         public int UserID { get; set; }
         public string Message { get; set; }
         public string Options { get; set; }

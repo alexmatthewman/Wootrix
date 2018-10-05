@@ -3,8 +3,15 @@
 @{
     ViewData["Title"] = "Wootrix 2.0 Company Home Page";
     Layout = "~/Views/Shared/_LayoutCompany.cshtml";
+    var companyName = Model.CompanyName;
+
+    var bImage = companyName + "_" + Model.CompanyBackgroundImage;
+    var fImage = companyName + "_" + Model.CompanyFocusImage;
 }
+
 @using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Http;
+@using System.Security.Claims
 @using WootrixV2.Data;
 
 @inject SignInManager<ApplicationUser> SignInManager
@@ -12,18 +19,20 @@
 
 <div class="companyHome" company="@Model.CompanyName">
     <!-- Banner -->
-    
+
     @if (!SignInManager.IsSignedIn(User))
     {
-        <section style="height: 92vh; background-image: url(@Model.CompanyBackgroundImage);" alt="Home screen image" class="img-responsive">
+
+
+        <section style="height: 92vh; background-repeat: no-repeat; background-image: -webkit-linear-gradient(left, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 20%, rgba(0,0,0,0) 80%, rgba(0,0,0,0.9) 100%), url(../../Uploads/@bImage);" alt="Home screen background" class="img-responsive">
 
 
             <div class="container clearfix">
                 <div class="span7 left">
                     <figure class="main-home-image">
                         <!--COMPANY FOCUS IMAGE-->
-                        
-                        <img src="@Model.CompanyFocusImage" id="CompanyFocusImage" alt="Home screen image" />
+
+                        <img src="~/../Uploads/@fImage" id="CompanyFocusImage" alt="Company Focus Image" />
 
                     </figure>
                 </div>
@@ -52,8 +61,164 @@
     }
     else
     {
-        <section style="background-color:@Model.CompanyBackgroundColor;"></section>
-<h1>Articles here</h1>
+        <section style="background-color:@Model.CompanyBackgroundColor;">
+
+            @if (User.HasClaim(ClaimTypes.Role, "CompanyAdmin"))
+            {
+                <!--Should build in the old style interface for consistency-->
+                <div class="fix-container clearfix">
+                    <div class="super-admin-cont">
+                        <div class="admin-profile clearfix">
+                            <div class="profile-image-cont"><img src="~/../Uploads/@fImage" id="CompanyFocusImage" alt="Company Focus Image" /></div>
+                            <h4>Company Admin</h4>
+                            <h5>@UserManager.GetUserName(User)</h5>
+
+                        </div>
+                        <div class="categories">
+                            <ul>
+                                <li>
+                                    <a href="">
+                                        <span><img src="~/images/icon-2.png" alt="" /></span>
+                                        <strong>Manage Company Admins</strong>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="">
+                                        <span><img src="~/images/icon-3.png" alt="" /></span>
+                                        <strong>Manage Users</strong>
+                                    </a>
+                                </li>
+
+
+                                <li>
+                                    <a href="">
+                                        <span><img src="~/images/icon-5.png" alt="" /></span>
+                                        <strong>Segments</strong>
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="">
+                                        <span><img src="~/images/icon-6.png" alt="" /></span>
+                                        <strong>Articles</strong>
+                                    </a>
+
+                                </li>
+
+                                <li>
+                                    <a href="~/index.php/openarticlelist">
+                                        <span><img src="~/images/icon-6.png" alt="" /></span>
+                                        <strong>Article Comments</strong>
+                                    </a>
+
+                                </li>
+
+                                <li>
+                                    <a class="language" href="">
+                                        <span><img src="~/images/icon-7.png" alt="" /></span>
+                                        <strong>Change Language</strong>
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="">
+                                        <span><img src="~/images/icon-8.png" alt="" /></span>
+                                        <strong>History</strong>
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="">
+                                        <span><img src="~/images/icon-9.png" alt="" /></span>
+                                        <strong>Push Notifications</strong>
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="">
+                                        <span><img src="~/images/icon-6.png" alt="" /></span>
+                                        <strong>Reports</strong>
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a asp-area="" asp-controller="CompanyDepartments" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
+                                        <span><img src="~/images/icon-1.png" alt="Department Filters" /></span>
+                                        <strong>Department Filters</strong>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a asp-area="" asp-controller="CompanyGroups" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
+                                        <span><img src="~/images/icon-1.png" alt="Group Filters" /></span>
+                                        <strong>Group Filters</strong>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a asp-area="" asp-controller="CompanyTopics" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
+                                        <span><img src="~/images/icon-1.png" alt="Topic Filters" /></span>
+                                        <strong>Topic Filters</strong>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a asp-area="" asp-controller="CompanyTypeOfUsers" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
+                                        <span><img src="~/images/icon-1.png" alt="User Type Filters" /></span>
+                                        <strong>User Type Filters</strong>
+                                    </a>
+                                </li>
+
+                            </ul>
+
+
+                        </div>
+                    </div>
+                </div>
+            }
+
+
+
+
+            @if (User.HasClaim(ClaimTypes.Role, "Admin"))
+            {
+                <!--Should build in the old style interface for consistency-->
+                <div class="fix-container clearfix">
+                    <div class="super-admin-cont">
+                        <div class="admin-profile clearfix">
+                            <div class="profile-image-cont"><img src="~/../Uploads/@fImage" id="CompanyFocusImage" alt="Company Focus Image" /></div>
+                            <h4>Super Admin</h4>
+                            <h5>@UserManager.GetUserName(User)</h5>
+
+                        </div>
+                        <div class="categories">
+                            <ul>
+                                <li>
+                                    <a href="">
+                                        <span><img src="~/images/icon-3.png" alt="" /></span>
+                                        <strong>Manage Company Admins</strong>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a asp-area="" asp-controller="Company" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
+                                        <span><img src="~/images/icon-5.png" alt="Manage Companies" /></span>
+                                        <strong>Manage Companies</strong>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a asp-area="" asp-controller="CompanyDepartments" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
+                                        <span><img src="~/images/icon-1.png" alt="Department Filters" /></span>
+                                        <strong>Department Filters</strong>
+                                    </a>
+                                </li>
+
+                            </ul>
+
+
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </section>
+
 
     }
 

@@ -8,9 +8,10 @@ namespace WootrixV2.Models
 {
     public class CompanyTypeOfUser
     { 
-
+        [Key]
         public int ID { get; set; }
 
+        [ScaffoldColumn(false)]
         public int CompanyID { get; set; }
 
         [Required]

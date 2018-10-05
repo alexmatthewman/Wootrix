@@ -1,0 +1,91 @@
+﻿@model WootrixV2.Models.SegmentArticle
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_LayoutCompany.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>SegmentArticle</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Order)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Order)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Image)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Image)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.embedVideoLink)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.embedVideoLink)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.description)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.description)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.link)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.link)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.publishDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.publishDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.tags)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.tags)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.allowComments)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.allowComments)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.publishFrom)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.publishFrom)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.publishTill)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.publishTill)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.author)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.author)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.ID">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

@@ -218,6 +218,17 @@ namespace Wootrix
                     await UserManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, "CompanyAdmin"));
                 }
 
+                user = await UserManager.FindByEmailAsync("linhadiretaCompanyAdmin@linhadireta.com");
+                ac = await UserManager.GetClaimsAsync(user);
+
+                if (ac.Count() <= 0)
+                {
+                    await UserManager.AddToRoleAsync(user, "CompanyAdmin");
+                    await UserManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, "CompanyAdmin"));
+                }
+
+                
+
             }
             catch (Exception e)
             {

@@ -59,10 +59,11 @@ namespace WootrixV2.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,CompanyID,GroupName")] CompanyGroups companyGroups)
+        public async Task<IActionResult> Create([Bind("ID,GroupName")] CompanyGroups companyGroups)
         {
             if (ModelState.IsValid)
             {
+                companyGroups.CompanyID = HttpContext.Session.GetInt32("CompanyID") ?? 0;
                 _context.Add(companyGroups);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -91,7 +92,7 @@ namespace WootrixV2.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,CompanyID,GroupName")] CompanyGroups companyGroups)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,GroupName")] CompanyGroups companyGroups)
         {
             if (id != companyGroups.ID)
             {
@@ -102,6 +103,7 @@ namespace WootrixV2.Controllers
             {
                 try
                 {
+                    companyGroups.CompanyID = HttpContext.Session.GetInt32("CompanyID") ?? 0;
                     _context.Update(companyGroups);
                     await _context.SaveChangesAsync();
                 }
