@@ -23,7 +23,7 @@ namespace WootrixV2.Controllers
         {
             _context = context;
             _env = env;
-            _rootpath =_env.ContentRootPath;
+            _rootpath =_env.WebRootPath;
         }
 
         // GET: Company
@@ -94,7 +94,7 @@ namespace WootrixV2.Controllers
                 IFormFile logo = model.CompanyLogoImage;
                 if (logo != null)
                 {
-                    var filePath = Path.Combine(_rootpath, "Uploads", model.CompanyName + "_" + logo.FileName);
+                    var filePath = Path.Combine(_rootpath, "images/Uploads", model.CompanyName + "_" + logo.FileName);
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
                         await logo.CopyToAsync(stream);
@@ -106,7 +106,7 @@ namespace WootrixV2.Controllers
                 IFormFile background = model.CompanyBackgroundImage;
                 if (background != null)
                 {
-                    var filePath = Path.Combine(_rootpath, "Uploads", model.CompanyName + "_" + background.FileName);
+                    var filePath = Path.Combine(_rootpath, "images/Uploads", model.CompanyName + "_" + background.FileName);
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
                         await background.CopyToAsync(stream);
@@ -118,7 +118,7 @@ namespace WootrixV2.Controllers
                 IFormFile focus = model.CompanyFocusImage;
                 if (focus != null)
                 {
-                    var filePath = Path.Combine(_rootpath, "Uploads", model.CompanyName + "_" + focus.FileName);
+                    var filePath = Path.Combine(_rootpath, "images/Uploads", model.CompanyName + "_" + focus.FileName);
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
                         await focus.CopyToAsync(stream);
@@ -230,7 +230,7 @@ namespace WootrixV2.Controllers
                 IFormFile logo = model.CompanyLogoImage;
                 if (logo != null)
                 {
-                    var filePath = Path.Combine(_rootpath, "Uploads", model.CompanyName + "_" + logo.FileName);
+                    var filePath = Path.Combine(_rootpath, "images/Uploads", model.CompanyName + "_" + logo.FileName);
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
                         await logo.CopyToAsync(stream);
@@ -242,7 +242,8 @@ namespace WootrixV2.Controllers
                 IFormFile background = model.CompanyBackgroundImage;
                 if (background != null)
                 {
-                    var filePath = Path.Combine(_rootpath, "Uploads", model.CompanyName + "_" + background.FileName);
+                    var s = _env.WebRootPath;
+                    var filePath = Path.Combine(_rootpath, "images/Uploads", model.CompanyName + "_" + background.FileName);
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
                         await background.CopyToAsync(stream);
@@ -254,7 +255,7 @@ namespace WootrixV2.Controllers
                 IFormFile focus = model.CompanyFocusImage;
                 if (focus != null)
                 {
-                    var filePath = Path.Combine(_rootpath, "Uploads", model.CompanyName + "_" + focus.FileName);
+                    var filePath = Path.Combine(_rootpath, "images/Uploads", model.CompanyName + "_" + focus.FileName);
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
                         await focus.CopyToAsync(stream);

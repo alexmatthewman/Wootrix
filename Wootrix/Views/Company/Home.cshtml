@@ -24,7 +24,7 @@
     {
 
 
-        <section style="height: 92vh; background-repeat: no-repeat; background-image: -webkit-linear-gradient(left, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 20%, rgba(0,0,0,0) 80%, rgba(0,0,0,0.9) 100%), url(../../Uploads/@bImage);" alt="Home screen background" class="img-responsive">
+        <section style="height: 92vh; background-repeat: no-repeat; background-image: -webkit-linear-gradient(left, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 20%, rgba(0,0,0,0) 80%, rgba(0,0,0,0.9) 100%), url(../images/Uploads/@bImage);" alt="Home screen background" class="img-responsive">
 
 
             <div class="container clearfix">
@@ -32,7 +32,7 @@
                     <figure class="main-home-image">
                         <!--COMPANY FOCUS IMAGE-->
 
-                        <img src="~/../Uploads/@fImage" id="CompanyFocusImage" alt="Company Focus Image" />
+                        <img src="~/images/Uploads/@fImage" id="CompanyFocusImage" alt="Company Focus Image" />
 
                     </figure>
                 </div>
@@ -49,7 +49,7 @@
                         @if (!SignInManager.IsSignedIn(User))
                         {
                             <div class="btn-box clearfix">
-                                <a asp-area="Identity" class="register-bttn" asp-page="/Account/Login/@Model.CompanyName">Login</a>
+                                <a asp-area="Identity" class="register-bttn" asp-page="/Account/Login" asp-route-id="@Context.Session.GetString("CompanyName")">Login</a>
                             </div>
                         }
                     </div>
@@ -69,7 +69,7 @@
                 <div class="fix-container clearfix">
                     <div class="super-admin-cont">
                         <div class="admin-profile clearfix">
-                            <div class="profile-image-cont"><img src="~/../Uploads/@fImage" id="CompanyFocusImage" alt="Company Focus Image" /></div>
+                            <div class="profile-image-cont"><img src="~/images/Uploads/@fImage" id="CompanyFocusImage" alt="Company Focus Image" /></div>
                             <h4>Company Admin</h4>
                             <h5>@UserManager.GetUserName(User)</h5>
 
@@ -183,7 +183,7 @@
                 <div class="fix-container clearfix">
                     <div class="super-admin-cont">
                         <div class="admin-profile clearfix">
-                            <div class="profile-image-cont"><img src="~/../Uploads/@fImage" id="CompanyFocusImage" alt="Company Focus Image" /></div>
+                            <div class="profile-image-cont"><img src="~/images/Uploads/@fImage" id="CompanyFocusImage" alt="Company Focus Image" /></div>
                             <h4>Super Admin</h4>
                             <h5>@UserManager.GetUserName(User)</h5>
 

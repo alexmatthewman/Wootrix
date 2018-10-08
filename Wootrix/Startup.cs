@@ -109,20 +109,24 @@ namespace Wootrix
                 app.UseHsts();
             }
 
+            //So it seems that AWS has a bug or misplaced security setting that stops file locations that aren't above the wwwroot location
             app.UseStaticFiles();
+            //app.UseStaticFiles(new StaticFileOptions
+            //{
+            //    FileProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath, "Uploads")),
+            //    RequestPath = new PathString("/Uploads")
+            //});
 
-            app.UseStaticFiles(new StaticFileOptions
-            {
-                FileProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath, "Uploads")),
-                RequestPath = new PathString("/Uploads")
-            });
+            //app.UseStaticFiles();
+            //app.UseDeveloperExceptionPage();
+            //app.UseDatabaseErrorPage();
 
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
+            app.UseHttpsRedirection();            
             app.UseCookiePolicy();
             app.UseSession();
             app.UseAuthentication();
-
+            
+            
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

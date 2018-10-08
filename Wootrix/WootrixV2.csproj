@@ -40,7 +40,19 @@
 
 
   <ItemGroup>
-    <Folder Include="Uploads\" />
+    <Folder Include="wwwroot\images\Uploads\" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <None Include="wwwroot\images\Uploads\Kumon_LIght-Box-INSTITUCIONALv.jpg" />
+    <None Include="wwwroot\images\Uploads\Kumon_logokumon.gif" />
+    <None Include="wwwroot\images\Uploads\Kumon_logo_kumon00.gif" />
+    <None Include="wwwroot\images\Uploads\Linha Direta_akumon-round.jpg" />
+    <None Include="wwwroot\images\Uploads\Linha Direta_aLogo.png" />
+    <None Include="wwwroot\images\Uploads\Wootrix_app2.png" />
+    <None Include="wwwroot\images\Uploads\Wootrix_girl.jpg" />
+    <None Include="wwwroot\images\Uploads\Wootrix_logo.png" />
   </ItemGroup>
 </Project>
 

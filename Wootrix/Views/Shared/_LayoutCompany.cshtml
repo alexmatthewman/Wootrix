@@ -56,7 +56,7 @@
                         @{
                             var fn = @companyName + "_" + @Context.Session.GetString("CompanyLogoImage");
                         }
-                        <img id="companyLogo" src="~/../Uploads/@fn" height="35" alt="Company Logo" class="img-responsive" />
+                        <img id="companyLogo" src="~/images/Uploads/@fn" height="35" alt="Company Logo" class="img-responsive" />
                     </a>
                 </figure>
             </div>
@@ -158,7 +158,7 @@
                             var footerlogo = Context.Session.GetString("CompanyName") + "_" + @Context.Session.GetString("CompanyLogoImage");
                         }
                         <a asp-controller="Company" asp-action="Home" asp-route-id="@Context.Session.GetString("CompanyName")">
-                            <img id="companyLogo" src="~/../Uploads/@footerlogo" height="35" alt="Company Logo" class="img-responsive" />
+                            <img id="companyLogo" src="~/images/Uploads/@footerlogo" height="35" alt="Company Logo" class="img-responsive" />
                         </a>
                     </li>
                     <li class="right powered">

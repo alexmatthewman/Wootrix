@@ -4,8 +4,11 @@ using System.Diagnostics;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Wootrix.Data;
 using Wootrix.Models;
 using WootrixV2.Data;
 
@@ -15,16 +18,16 @@ namespace Wootrix.Controllers
     {
 
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ApplicationDbContext _context;
 
-        public HomeController(UserManager<ApplicationUser> userManager)
+        public HomeController(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
         {
+            _context = context;
             _userManager = userManager;
         }
 
         public IActionResult Index()
         {
-            
-
             if (User.Identity.IsAuthenticated)
             {
                 var claim = "";
@@ -60,6 +63,29 @@ namespace Wootrix.Controllers
                     return RedirectToAction("Home", "Company", new { id = user.companyName });
                 }
             }
+
+            //If not logged in at all set the session to show the wootrix company so the login pages aren't messed up
+
+            var company = _context.Company
+                .FirstOrDefaultAsync(m => m.CompanyName == "Wootrix").GetAwaiter().GetResult();
+
+            // Saving all this company stuff to the session so the layout isn't dependent on the model
+            // Note that it is all non-sensitive stuff
+            //byte[] asdf = new byte[8];
+            HttpContext.Session.SetInt32("CompanyID", company.ID);
+            HttpContext.Session.SetString("CompanyName", company.CompanyName);
+            HttpContext.Session.SetString("CompanyTextMain", company.CompanyTextMain);
+            HttpContext.Session.SetString("CompanyTextSecondary", company.CompanyTextSecondary);
+            HttpContext.Session.SetString("CompanyMainFontColor", company.CompanyMainFontColor);
+            HttpContext.Session.SetString("CompanyLogoImage", company.CompanyLogoImage);
+            HttpContext.Session.SetString("CompanyFocusImage", company.CompanyFocusImage ?? "");
+            HttpContext.Session.SetString("CompanyBackgroundImage", company.CompanyBackgroundImage ?? "");
+            HttpContext.Session.SetString("CompanyHighlightColor", company.CompanyHighlightColor);
+            HttpContext.Session.SetString("CompanyHeaderFontColor", company.CompanyHeaderFontColor);
+            HttpContext.Session.SetString("CompanyHeaderBackgroundColor", company.CompanyHeaderBackgroundColor);
+            HttpContext.Session.SetString("CompanyBackgroundColor", company.CompanyBackgroundColor);
+            HttpContext.Session.SetInt32("CompanyNumberOfUsers", company.CompanyNumberOfUsers);
+
             return View();
         }
 
