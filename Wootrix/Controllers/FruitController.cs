@@ -10,46 +10,46 @@ namespace WootrixV2.Controllers
 {
     public class FruitController : Controller
     {
-        
-            public ActionResult Index()
+
+        public ActionResult Index()
+        {
+            var model = new FruitModel
             {
-                var model = new FruitModel
-                {
-                    AvailableFruits = GetFruits()
-                };
-                return View(model);
+                AvailableFruits = GetFruits()
+            };
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult Index(FruitModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var fruits = string.Join(",", model.SelectedFruits);
+
+                // Save data to database, and redirect to Success page.
+
+                return RedirectToAction("Success");
             }
+            model.AvailableFruits = GetFruits();
+            return View(model);
+        }
 
-            [HttpPost]
-            public ActionResult Index(FruitModel model)
-            {
-                if (ModelState.IsValid)
-                {
-                    var fruits = string.Join(",", model.SelectedFruits);
+        public ActionResult Success()
+        {
+            return View();
+        }
 
-                    // Save data to database, and redirect to Success page.
-
-                    return RedirectToAction("Success");
-                }
-                model.AvailableFruits = GetFruits();
-                return View(model);
-            }
-
-            public ActionResult Success()
-            {
-                return View();
-            }
-
-            private IList<SelectListItem> GetFruits()
-            {
-                return new List<SelectListItem>
+        private IList<SelectListItem> GetFruits()
+        {
+            return new List<SelectListItem>
         {
             new SelectListItem {Text = "Apple", Value = "Apple"},
             new SelectListItem {Text = "Pear", Value = "Pear"},
             new SelectListItem {Text = "Banana", Value = "Banana"},
             new SelectListItem {Text = "Orange", Value = "Orange"},
         };
-            }
         }
-    
+    }
+
 }

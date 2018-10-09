@@ -68,7 +68,7 @@
                 <img src="~/images/Uploads/@fn"  class="tableimg"/>
                      @*@Html.DisplayFor(modelItem => item.CompanyLogoImage)*@
             </td>
-            <td>
+            <td style="background:@item.CompanyBackgroundColor">
                 @Html.DisplayFor(modelItem => item.CompanyBackgroundColor)
             </td>
             <td>
@@ -87,16 +87,16 @@
             <td>
                 @Html.DisplayFor(modelItem => item.CompanyTextSecondary)
             </td>
-            <td>
+            <td style="background:@item.CompanyHighlightColor">
                 @Html.DisplayFor(modelItem => item.CompanyHighlightColor)
             </td>
-            <td>
+            <td style="background:@item.CompanyHeaderBackgroundColor">
                 @Html.DisplayFor(modelItem => item.CompanyHeaderBackgroundColor)
             </td>
-            <td>
+            <td style="background:@item.CompanyMainFontColor">
                 @Html.DisplayFor(modelItem => item.CompanyMainFontColor)
             </td>
-            <td>
+            <td style="background:@item.CompanyHeaderFontColor">
                 @Html.DisplayFor(modelItem => item.CompanyHeaderFontColor)
             </td>
             <td>

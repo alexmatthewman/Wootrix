@@ -294,6 +294,7 @@ header.major h2, header.major h3, header.major h4, header.major h5, header.major
 
     #footer .powered {
         color: #ccc;
+        padding-right: 1em;
     }
 
     #footer img {

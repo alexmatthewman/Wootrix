@@ -199,6 +199,22 @@ namespace WootrixV2.Controllers
             {
                 return NotFound();
             }
+            //var logo = company.CompanyLogoImage;
+            //CompanyViewModel cpy = new CompanyViewModel();
+            //cpy.CompanyName = company.CompanyName;
+            //cpy.CompanyTextMain = company.CompanyTextMain;
+            //cpy.CompanyTextSecondary = company.CompanyTextSecondary;
+            //cpy.CompanyNumberOfUsers = company.CompanyNumberOfUsers;
+            //cpy.CompanyNumberOfPushNotifications = company.CompanyNumberOfPushNotifications;
+            //cpy.CompanyMainFontColor = company.CompanyMainFontColor;
+            //cpy.CompanyHighlightColor = company.CompanyHighlightColor;
+            //cpy.CompanyHeaderFontColor = company.CompanyHeaderFontColor;
+            //cpy.CompanyHeaderBackgroundColor = company.CompanyHeaderBackgroundColor;
+            //cpy.CompanyBackgroundColor = company.CompanyBackgroundColor;
+
+            //var filePath = Path.Combine(_rootpath, "images/Uploads", cpy.CompanyName + "_" + company.CompanyLogoImage);
+            //cpy.CompanyLogoImage = System.IO.File..GetFiles(filePath);
+
             return View(company);
         }
 

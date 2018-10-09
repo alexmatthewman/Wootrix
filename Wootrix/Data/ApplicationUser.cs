@@ -24,7 +24,7 @@ namespace WootrixV2.Data
     {
         public virtual string name { get; set; }
         public virtual string companyName { get; set; }
-        public virtual string companyID { get; set; }
+        public virtual int companyID { get; set; }
         public virtual Gender? gender { get; set; }
 
         public virtual string categories { get; set; }

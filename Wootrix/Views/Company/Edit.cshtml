@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Edit";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    
 }
 
 <h2>Edit</h2>
@@ -26,7 +27,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="CompanyBackgroundColor" class="control-label"></label>
-                <input asp-for="CompanyBackgroundColor" class="form-control" />
+                <input asp-for="CompanyBackgroundColor" type="color" class="form-control" />
                 <span asp-validation-for="CompanyBackgroundColor" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -51,22 +52,22 @@
             </div>
             <div class="form-group">
                 <label asp-for="CompanyHighlightColor" class="control-label"></label>
-                <input asp-for="CompanyHighlightColor" class="form-control" />
+                <input asp-for="CompanyHighlightColor" type="color" class="form-control" />
                 <span asp-validation-for="CompanyHighlightColor" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="CompanyHeaderBackgroundColor" class="control-label"></label>
-                <input asp-for="CompanyHeaderBackgroundColor" class="form-control" />
+                <input asp-for="CompanyHeaderBackgroundColor" type="color" class="form-control" />
                 <span asp-validation-for="CompanyHeaderBackgroundColor" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="CompanyMainFontColor" class="control-label"></label>
-                <input asp-for="CompanyMainFontColor" class="form-control" />
+                <input asp-for="CompanyMainFontColor" type="color" class="form-control" />
                 <span asp-validation-for="CompanyMainFontColor" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="CompanyHeaderFontColor" class="control-label"></label>
-                <input asp-for="CompanyHeaderFontColor" class="form-control" />
+                <input asp-for="CompanyHeaderFontColor" type="color" class="form-control" />
                 <span asp-validation-for="CompanyHeaderFontColor" class="text-danger"></span>
             </div>
             <div class="form-group">

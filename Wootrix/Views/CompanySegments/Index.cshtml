@@ -1,8 +1,17 @@
 ﻿@model IEnumerable<WootrixV2.Models.CompanySegment>
 
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Http;
+@using System.Security.Claims
+@using WootrixV2.Data;
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_LayoutCompany.cshtml";
+    var _companyName = UserManager.GetUserAsync(User).GetAwaiter().GetResult().companyName;
 }
 
 <h2>Index</h2>
@@ -46,51 +55,76 @@
             <th>
                 @Html.DisplayNameFor(model => model.Draft)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Department)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Tags)
+            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Order)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CoverImage)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CoverImageMobileFriendly)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PublishDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FinishDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ClientName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ClientLogoImage)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ThemeColor)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StandardColor)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Draft)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Order)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @{
+                        var fn = _companyName + "_" + item.CoverImage;
+                    }
+                    <img src="~/images/Uploads/@fn" class="tableimg" />
+                    @*@Html.DisplayFor(modelItem => item.CoverImage)*@
+                </td>
+                <td>
+                    @{
+                        var mb = _companyName + "_" + item.CoverImageMobileFriendly;
+                    }
+                    <img src="~/images/Uploads/@mb" class="tableimg" />
+                    @*@Html.DisplayFor(modelItem => item.CoverImageMobileFriendly)*@
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PublishDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FinishDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ClientName)
+                </td>
+                <td>
+                    @{
+                        var ci = _companyName + "_" + item.ClientLogoImage;
+                    }
+                    <img src="~/images/Uploads/@ci" class="tableimg" />
+                    @*@Html.DisplayFor(modelItem => item.ClientLogoImage)*@
+                </td>
+                <td style="background:@item.ThemeColor">
+                    @Html.DisplayFor(modelItem => item.ThemeColor)
+                </td>
+                <td style="background:@item.StandardColor">
+                    @Html.DisplayFor(modelItem => item.StandardColor)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Draft)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Department)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Tags)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
