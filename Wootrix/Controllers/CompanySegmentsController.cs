@@ -105,6 +105,7 @@ namespace WootrixV2.Controllers
                 mySegment.StandardColor = cps.StandardColor;
                 mySegment.Draft = DateTime.Now > cps.PublishDate ? false : true;
                 mySegment.Department = cps.Department;
+                mySegment.Tags = cps.Tags;
 
                 IFormFile coverImage = cps.CoverImage;
                 if (coverImage != null)
@@ -162,7 +163,24 @@ namespace WootrixV2.Controllers
             {
                 return NotFound();
             }
-            return View(companySegment);
+
+            _user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();
+            CompanySegmentViewModel s = new CompanySegmentViewModel();
+
+            s.Order = companySegment.Order;
+            s.Title = companySegment.Title;            
+            s.PublishDate = companySegment.PublishDate;
+            s.FinishDate = companySegment.FinishDate;
+            s.StandardColor = companySegment.StandardColor;
+            s.ThemeColor = companySegment.ThemeColor;
+            s.ClientName = companySegment.ClientName;
+           // s.ClientLogoImage = FormFileHelper.PhysicalToIFormFile(new FileInfo(companySegment.ClientLogoImage));
+            s.Department = companySegment.Department;
+            s.Tags = companySegment.Tags;
+
+            DatabaseAccessLayer dla = new DatabaseAccessLayer(_context, _user.companyID);
+            s.Departments = dla.GetDepartments();
+            return View(s);
         }
 
         // POST: CompanySegments/Edit/5
@@ -170,24 +188,76 @@ namespace WootrixV2.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Order,Title,CoverImage,CoverImageMobileFriendly,PublishDate,FinishDate,ClientName,ClientLogoImage,ThemeColor,StandardColor,Draft,Department,Tags")] CompanySegment companySegment)
+        public async Task<IActionResult> Edit(int id, CompanySegmentViewModel cps)
         {
-            if (id != companySegment.ID)
+            if (id != cps.ID)
             {
                 return NotFound();
             }
 
+            _user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();
+            //Initialise a new companysegment
+
+            CompanySegment mySegment = await _context.CompanySegment.FindAsync(id);
             if (ModelState.IsValid)
             {
+                //ID,Order,Title,CoverImage,CoverImageMobileFriendly,PublishDate,FinishDate,ClientName,ClientLogoImage,ThemeColor,StandardColor,Draft,Department,Tags
+                mySegment.CompanyID = HttpContext.Session.GetInt32("CompanyID") ?? 0;
+                mySegment.Order = cps.Order ?? 1;
+                mySegment.Title = cps.Title;
+                mySegment.PublishDate = cps.PublishDate;
+                mySegment.FinishDate = cps.FinishDate;
+                mySegment.ClientName = cps.ClientName;
+                mySegment.ThemeColor = cps.ThemeColor;
+                mySegment.StandardColor = cps.StandardColor;
+                mySegment.Draft = DateTime.Now > cps.PublishDate ? false : true;
+                mySegment.Department = cps.Department;
+                mySegment.Tags = cps.Tags;
+
+                IFormFile coverImage = cps.CoverImage;
+                if (coverImage != null)
+                {
+                    var filePath = Path.Combine(_rootpath, "images/Uploads", _user.companyName + "_" + coverImage.FileName);
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await coverImage.CopyToAsync(stream);
+                    }
+                    //The file has been saved to disk - now save the file name to the DB
+                    mySegment.CoverImage = coverImage.FileName;
+                }
+
+                IFormFile coverImageMB = cps.CoverImageMobileFriendly;
+                if (coverImageMB != null)
+                {
+                    var filePath = Path.Combine(_rootpath, "images/Uploads", _user.companyName + "_" + coverImageMB.FileName);
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await coverImageMB.CopyToAsync(stream);
+                    }
+                    //The file has been saved to disk - now save the file name to the DB
+                    mySegment.CoverImageMobileFriendly = coverImageMB.FileName;
+                }
+
+                IFormFile cli = cps.ClientLogoImage;
+                if (cli != null)
+                {
+                    var filePath = Path.Combine(_rootpath, "images/Uploads", _user.companyName + "_" + cli.FileName);
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await cli.CopyToAsync(stream);
+                    }
+                    //The file has been saved to disk - now save the file name to the DB
+                    mySegment.CoverImageMobileFriendly = cli.FileName;
+                }
+
                 try
                 {
-                    companySegment.CompanyID = HttpContext.Session.GetInt32("CompanyID") ?? 0;
-                    _context.Update(companySegment);
+                    _context.Update(mySegment);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CompanySegmentExists(companySegment.ID))
+                    if (!CompanySegmentExists(cps.ID))
                     {
                         return NotFound();
                     }
@@ -198,7 +268,7 @@ namespace WootrixV2.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(companySegment);
+            return View(cps);
         }
 
         // GET: CompanySegments/Delete/5
