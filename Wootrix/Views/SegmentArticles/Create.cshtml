@@ -4,14 +4,14 @@
     ViewData["Title"] = "Create";
     Layout = "~/Views/Shared/_LayoutCompany.cshtml";
 }
-
+<script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
 <h2>Create</h2>
 
 <h4>SegmentArticle</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Order" class="control-label"></label>
@@ -29,49 +29,44 @@
                 <span asp-validation-for="Image" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="embedVideoLink" class="control-label"></label>
-                <input asp-for="embedVideoLink" class="form-control" />
-                <span asp-validation-for="embedVideoLink" class="text-danger"></span>
+                <label asp-for="ArticleContent" class="control-label"></label>
+                <textarea asp-for="ArticleContent" class="form-control"></textarea>
+                <span asp-validation-for="ArticleContent" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="description" class="control-label"></label>
-                <input asp-for="description" class="form-control" />
-                <span asp-validation-for="description" class="text-danger"></span>
+                <label asp-for="ArticleUrl" class="control-label"></label>
+                <input asp-for="ArticleUrl" class="form-control" />
+                <span asp-validation-for="ArticleUrl" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="link" class="control-label"></label>
-                <input asp-for="link" class="form-control" />
-                <span asp-validation-for="link" class="text-danger"></span>
+                <label asp-for="EmbedVideoUrl" class="control-label"></label>
+                <input asp-for="EmbedVideoUrl" class="form-control" />
+                <span asp-validation-for="EmbedVideoUrl" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="publishDate" class="control-label"></label>
-                <input asp-for="publishDate" class="form-control" />
-                <span asp-validation-for="publishDate" class="text-danger"></span>
+                <label asp-for="Tags" class="control-label"></label>
+                <input asp-for="Tags" class="form-control" />
+                <span asp-validation-for="Tags" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="tags" class="control-label"></label>
-                <input asp-for="tags" class="form-control" />
-                <span asp-validation-for="tags" class="text-danger"></span>
+                <label asp-for="AllowComments" class="control-label"></label>
+                <input asp-for="AllowComments" class="form-control" />
+                <span asp-validation-for="AllowComments" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="allowComments" class="control-label"></label>
-                <input asp-for="allowComments" class="form-control" />
-                <span asp-validation-for="allowComments" class="text-danger"></span>
+                <label asp-for="PublishFrom" class="control-label"></label>
+                <input asp-for="PublishFrom" class="form-control" />
+                <span asp-validation-for="PublishFrom" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="publishFrom" class="control-label"></label>
-                <input asp-for="publishFrom" class="form-control" />
-                <span asp-validation-for="publishFrom" class="text-danger"></span>
+                <label asp-for="PublishTill" class="control-label"></label>
+                <input asp-for="PublishTill" class="form-control" />
+                <span asp-validation-for="PublishTill" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="publishTill" class="control-label"></label>
-                <input asp-for="publishTill" class="form-control" />
-                <span asp-validation-for="publishTill" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="author" class="control-label"></label>
-                <input asp-for="author" class="form-control" />
-                <span asp-validation-for="author" class="text-danger"></span>
+                <label asp-for="Author" class="control-label"></label>
+                <input asp-for="Author" class="form-control" />
+                <span asp-validation-for="Author" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-default" />
@@ -84,3 +79,7 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
+@section Scripts
+    {
+    <script>tinymce.init({ selector:'textarea' });</script>
+}

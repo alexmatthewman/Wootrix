@@ -29,6 +29,8 @@ namespace Wootrix.Data
         public DbSet<WootrixV2.Models.SegmentArticle> SegmentArticle { get; set; }
         public DbSet<WootrixV2.Models.SegmentArticleComment> SegmentArticleComment { get; set; }
 
+        public DbSet<WootrixV2.Models.SegmentArticleSegments> SegmentArticleSegments { get; set; }
+        
         public DbSet<ApplicationUser> ApplicationUser { get; set; }
     }
 }

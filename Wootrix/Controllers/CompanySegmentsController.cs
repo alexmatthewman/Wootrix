@@ -194,15 +194,15 @@ namespace WootrixV2.Controllers
             {
                 return NotFound();
             }
-
+            
             _user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();
             //Initialise a new companysegment
-
-            CompanySegment mySegment = await _context.CompanySegment.FindAsync(id);
+            CompanySegment mySegment = await _context.CompanySegment.FindAsync(id);            
+            
             if (ModelState.IsValid)
             {
                 //ID,Order,Title,CoverImage,CoverImageMobileFriendly,PublishDate,FinishDate,ClientName,ClientLogoImage,ThemeColor,StandardColor,Draft,Department,Tags
-                mySegment.CompanyID = HttpContext.Session.GetInt32("CompanyID") ?? 0;
+                mySegment.CompanyID = _user.companyID;
                 mySegment.Order = cps.Order ?? 1;
                 mySegment.Title = cps.Title;
                 mySegment.PublishDate = cps.PublishDate;
@@ -268,6 +268,8 @@ namespace WootrixV2.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            DatabaseAccessLayer dla = new DatabaseAccessLayer(_context, _user.companyID);
+            cps.Departments = dla.GetDepartments();
             return View(cps);
         }
 

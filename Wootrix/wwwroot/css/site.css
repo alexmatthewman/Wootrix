@@ -126,15 +126,17 @@
                 min-height: 9em;
                 padding-left: unset;
             }
+
                 .super-admin-cont .categories ul li:hover {
                     transition: all 0.4s ease-out 0s;
                 }
 
 
-            .super-admin-cont .categories ul li a{
-                margin-top: 1em;
-                width: 100%;
-            }
+                .super-admin-cont .categories ul li a {
+                    margin-top: 1em;
+                    width: 100%;
+                }
+
                 .super-admin-cont .categories ul li span {
                     display: inline-block;
                     margin: 15px 0 0;
@@ -152,6 +154,56 @@
 /* ADMIN MENU STYLING - END */
 
 
+
+/* SEGMENT STYLING START */
+
+.magazine {
+    max-width: 5em;
+    height: 25em;
+    padding: 1em;
+    margin: 1em;
+    display: inline-block;
+    min-width: 20em;
+    box-shadow: 1.1em 1.1em 1.1em #ccc;
+    border-radius: .5em;
+}
+    .magazine .magazine-text {
+        display: unset;
+        overflow: hidden;
+        word-break: break-all;
+    }
+
+    .magazine .magazine-text div {
+        display: inline-block;
+    }
+
+    .magazine .magazine-text-title {
+        font-weight: 900;
+        max-height: 3em;
+        overflow: auto;
+    }
+
+    .magazine .magazine-pic {
+        border: .1em .1em .1em #ccc;
+        border-radius: .5em;
+        border: .5em solid #fff;
+        min-height: 16em;
+        vertical-align: middle;
+        margin: 0 auto;
+    }
+
+        .magazine .magazine-pic img {
+            max-height: 15em;
+            display: flex;
+            margin: 0 auto;
+            max-width: 17em;
+            vertical-align: middle;
+            width: unset;
+        }
+
+
+
+/* SEGMENT STYLING END */
 .tableimg {
     max-height: 4em;
     max-width: 4em;

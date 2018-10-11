@@ -2,20 +2,33 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Wootrix.Data;
+using WootrixV2.Data;
 using WootrixV2.Models;
 
 namespace WootrixV2.Controllers
 {
     public class FruitController : Controller
     {
+        private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
+
+        public FruitController(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
+        {
+            _context = context;
+            _userManager = userManager;
+
+        }
 
         public ActionResult Index()
         {
+
             var model = new FruitModel
             {
-                AvailableFruits = GetFruits()
+                AvailableFruits = GetGroups()
             };
             return View(model);
         }
@@ -31,13 +44,22 @@ namespace WootrixV2.Controllers
 
                 return RedirectToAction("Success");
             }
-            model.AvailableFruits = GetFruits();
+            model.AvailableFruits = GetGroups();
             return View(model);
         }
 
         public ActionResult Success()
         {
             return View();
+        }
+
+        private IList<SelectListItem> GetGroups()
+        {
+            var _user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();
+            var cp = _user.companyID;
+            DatabaseAccessLayer dla = new DatabaseAccessLayer(_context, cp);
+            return dla.GetGroups();
+
         }
 
         private IList<SelectListItem> GetFruits()

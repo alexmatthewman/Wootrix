@@ -23,31 +23,28 @@
                 @Html.DisplayNameFor(model => model.Image)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.embedVideoLink)
+                @Html.DisplayNameFor(model => model.ArticleContent)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.description)
+                @Html.DisplayNameFor(model => model.ArticleUrl)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.link)
+                @Html.DisplayNameFor(model => model.EmbedVideoUrl)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.publishDate)
+                @Html.DisplayNameFor(model => model.Tags)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.tags)
+                @Html.DisplayNameFor(model => model.AllowComments)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.allowComments)
+                @Html.DisplayNameFor(model => model.PublishFrom)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.publishFrom)
+                @Html.DisplayNameFor(model => model.PublishTill)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.publishTill)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.author)
+                @Html.DisplayNameFor(model => model.Author)
             </th>
             <th></th>
         </tr>
@@ -65,31 +62,28 @@
                 @Html.DisplayFor(modelItem => item.Image)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.embedVideoLink)
+                @Html.DisplayFor(modelItem => item.ArticleContent)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.description)
+                @Html.DisplayFor(modelItem => item.ArticleUrl)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.link)
+                @Html.DisplayFor(modelItem => item.EmbedVideoUrl)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.publishDate)
+                @Html.DisplayFor(modelItem => item.Tags)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.tags)
+                @Html.DisplayFor(modelItem => item.AllowComments)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.allowComments)
+                @Html.DisplayFor(modelItem => item.PublishFrom)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.publishFrom)
+                @Html.DisplayFor(modelItem => item.PublishTill)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.publishTill)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.author)
+                @Html.DisplayFor(modelItem => item.Author)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |

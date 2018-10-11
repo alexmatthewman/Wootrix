@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -13,7 +14,6 @@ namespace WootrixV2.Controllers
     public class SegmentArticlesController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private int csi;
 
         public SegmentArticlesController(ApplicationDbContext context)
         {
@@ -21,10 +21,11 @@ namespace WootrixV2.Controllers
         }
 
         // GET: SegmentArticles
-        public async Task<IActionResult> Index(int segmentID)
-        {//Get the company name out the session and use it as a filter for the groups returned
-            csi = segmentID;
-            var ctx = _context.SegmentArticle.Where(m => m.CompanySegmentID == segmentID);
+        public async Task<IActionResult> Index()
+        {
+            //Get the company name out the session and use it as a filter for the groups returned
+            var id = HttpContext.Session.GetInt32("CompanyID");
+            var ctx = _context.SegmentArticle.Where(m => m.CompanyID == id);
             return View(await ctx.ToListAsync());
         }
 
@@ -57,11 +58,10 @@ namespace WootrixV2.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Order,Title,Image,embedVideoLink,description,link,publishDate,tags,allowComments,publishFrom,publishTill,author")] SegmentArticle segmentArticle)
+        public async Task<IActionResult> Create([Bind("ID,Order,Title,Image,ArticleContent,ArticleUrl,EmbedVideoUrl,Tags,AllowComments,PublishFrom,PublishTill,Author")] SegmentArticle segmentArticle)
         {
             if (ModelState.IsValid)
             {
-                segmentArticle.CompanySegmentID = csi;
                 _context.Add(segmentArticle);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -90,7 +90,7 @@ namespace WootrixV2.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Order,Title,Image,embedVideoLink,description,link,publishDate,tags,allowComments,publishFrom,publishTill,author")] SegmentArticle segmentArticle)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Order,Title,Image,ArticleContent,ArticleUrl,EmbedVideoUrl,Tags,AllowComments,PublishFrom,PublishTill,Author")] SegmentArticle segmentArticle)
         {
             if (id != segmentArticle.ID)
             {
@@ -101,7 +101,6 @@ namespace WootrixV2.Controllers
             {
                 try
                 {
-                    segmentArticle.CompanySegmentID = csi;
                     _context.Update(segmentArticle);
                     await _context.SaveChangesAsync();
                 }

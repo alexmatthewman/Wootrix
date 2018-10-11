@@ -1,5 +1,9 @@
 ﻿@model WootrixV2.Models.Company
 
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
 @{
     ViewData["Title"] = "Wootrix 2.0 Company Home Page";
     Layout = "~/Views/Shared/_LayoutCompany.cshtml";
@@ -7,6 +11,7 @@
 
     var bImage = companyName + "_" + Model.CompanyBackgroundImage;
     var fImage = companyName + "_" + Model.CompanyFocusImage;
+    var _user = UserManager.GetUserAsync(User).GetAwaiter().GetResult();
 }
 
 @using Microsoft.AspNetCore.Identity
@@ -14,10 +19,7 @@
 @using System.Security.Claims
 @using WootrixV2.Data;
 
-@inject SignInManager<ApplicationUser> SignInManager
-@inject UserManager<ApplicationUser> UserManager
-
-<div class="companyHome" company="@Model.CompanyName">
+<div class="companyHome" company="@companyName">
     <!-- Banner -->
 
     @if (!SignInManager.IsSignedIn(User))
@@ -49,7 +51,7 @@
                         @if (!SignInManager.IsSignedIn(User))
                         {
                             <div class="btn-box clearfix">
-                                <a asp-area="Identity" class="register-bttn" asp-page="/Account/Login" asp-route-id="@Context.Session.GetString("CompanyName")">Login</a>
+                                <a asp-area="Identity" class="register-bttn" asp-page="/Account/Login" asp-route-id="@companyName">Login</a>
                             </div>
                         }
                     </div>
@@ -99,7 +101,8 @@
                                 </li>
 
                                 <li>
-                                    <a href="">
+                                    <a asp-area="" asp-controller="SegmentArticles" asp-action="Index" asp-route-id="@_user." style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
+
                                         <span><img src="~/images/icon-6.png" alt="" /></span>
                                         <strong>Articles</strong>
                                     </a>
@@ -166,7 +169,12 @@
                                         <strong>User Type Filters</strong>
                                     </a>
                                 </li>
-
+                                <li>
+                                    <a asp-area="" asp-controller="Fruit" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
+                                        <span><img src="~/images/icon-2.png" alt="Department Filters" /></span>
+                                        <strong>Fruit</strong>
+                                    </a>
+                                </li>
                             </ul>
 
 
@@ -207,6 +215,13 @@
                                     <a asp-area="" asp-controller="CompanyDepartments" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
                                         <span><img src="~/images/icon-1.png" alt="Department Filters" /></span>
                                         <strong>Department Filters</strong>
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a asp-area="" asp-controller="Fruit" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
+                                        <span><img src="~/images/icon-2.png" alt="Department Filters" /></span>
+                                        <strong>Fruit</strong>
                                     </a>
                                 </li>
 
