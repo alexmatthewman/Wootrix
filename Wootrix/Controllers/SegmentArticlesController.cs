@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Wootrix.Data;
+using WootrixV2.Data;
 using WootrixV2.Models;
 
 namespace WootrixV2.Controllers
@@ -14,10 +19,17 @@ namespace WootrixV2.Controllers
     public class SegmentArticlesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IHostingEnvironment _env;
+        private readonly string _rootpath;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private ApplicationUser _user;
 
-        public SegmentArticlesController(ApplicationDbContext context)
+        public SegmentArticlesController(UserManager<ApplicationUser> userManager, IHostingEnvironment env, ApplicationDbContext context)
         {
             _context = context;
+            _env = env;
+            _rootpath = _env.WebRootPath;
+            _userManager = userManager;
         }
 
         // GET: SegmentArticles
@@ -50,23 +62,75 @@ namespace WootrixV2.Controllers
         // GET: SegmentArticles/Create
         public IActionResult Create()
         {
-            return View();
+
+            _user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();
+            SegmentArticleViewModel s = new SegmentArticleViewModel();
+            s.Order = 1;
+            s.PublishFrom = DateTime.Now.Date;
+            s.PublishTill = DateTime.Now.AddYears(10).Date;
+            s.CompanyID = _user.companyID;
+            s.Author = _user.name;
+            s.AllowComments = true;
+            //s.ClientLogoImage = _user.photoUrl;
+            //var cp = _user.companyID;
+
+            //DatabaseAccessLayer dla = new DatabaseAccessLayer(_context, cp);
+            //s.Departments = dla.GetDepartments();
+            return View(s);
         }
 
         // POST: SegmentArticles/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [DisableRequestSizeLimit]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Order,Title,Image,ArticleContent,ArticleUrl,EmbedVideoUrl,Tags,AllowComments,PublishFrom,PublishTill,Author")] SegmentArticle segmentArticle)
+        public async Task<IActionResult> Create(SegmentArticleViewModel sa)
         {
+            _user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();
+            var myArticle = new SegmentArticle();
             if (ModelState.IsValid)
             {
-                _context.Add(segmentArticle);
+                //ID,Order,Title,CoverImage,CoverImageMobileFriendly,PublishDate,FinishDate,ClientName,ClientLogoImage,ThemeColor,StandardColor,Draft,Department,Tags
+                myArticle.CompanyID = _user.companyID;
+                myArticle.Order = sa.Order ?? 1;
+                myArticle.Title = sa.Title;
+                myArticle.PublishFrom = sa.PublishFrom;
+                myArticle.PublishTill = sa.PublishTill;
+                myArticle.AllowComments = sa.AllowComments;
+                myArticle.ArticleContent = sa.ArticleContent;
+                myArticle.Author = sa.Author;
+                myArticle.Tags = sa.Tags;
+                
+                IFormFile img = sa.Image;
+                if (img != null)
+                {
+                    var filePath = Path.Combine(_rootpath, "images/Uploads/Articles", _user.companyName + "_" + WebUtility.HtmlEncode(myArticle.Title) + "_" + img.FileName);
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await img.CopyToAsync(stream);
+                    }
+                    //The file has been saved to disk - now save the file name to the DB
+                    myArticle.Image = img.FileName;
+                }
+
+                IFormFile vid = sa.EmbeddedVideo;
+                if (vid != null)
+                {
+                    var filePath = Path.Combine(_rootpath, "images/Uploads/Articles", _user.companyName + "_" + WebUtility.HtmlEncode(myArticle.Title) + "_" + vid.FileName);
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await vid.CopyToAsync(stream);
+                    }
+                    //The file has been saved to disk - now save the file name to the DB
+                    myArticle.EmbeddedVideo = vid.FileName;
+                }
+
+                _context.Add(myArticle);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(segmentArticle);
+            return View(myArticle);
         }
 
         // GET: SegmentArticles/Edit/5
@@ -82,31 +146,85 @@ namespace WootrixV2.Controllers
             {
                 return NotFound();
             }
-            return View(segmentArticle);
+
+            
+            SegmentArticleViewModel s = new SegmentArticleViewModel();
+            s.Order = segmentArticle.Order;
+            s.ArticleUrl = segmentArticle.ArticleUrl;
+            s.Title = segmentArticle.Title;
+            //s.Image = segmentArticle.Image; TODO still need to fix this crap
+            //s.EmbeddedVideo = segmentArticle.EmbeddedVideo;
+            s.ArticleContent = segmentArticle.ArticleContent;
+            s.PublishFrom = segmentArticle.PublishFrom;
+            s.PublishTill = segmentArticle.PublishTill;
+            s.CompanyID = segmentArticle.CompanyID;
+            s.Author = segmentArticle.Author;
+            s.AllowComments = segmentArticle.AllowComments;
+            s.Tags = segmentArticle.Tags;
+            return View(s);
         }
 
         // POST: SegmentArticles/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [DisableRequestSizeLimit]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Order,Title,Image,ArticleContent,ArticleUrl,EmbedVideoUrl,Tags,AllowComments,PublishFrom,PublishTill,Author")] SegmentArticle segmentArticle)
+        public async Task<IActionResult> Edit(int id, SegmentArticleViewModel sa)
         {
-            if (id != segmentArticle.ID)
+            if (id != sa.ID)
             {
                 return NotFound();
             }
 
+            _user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();
+            var myArticle = new SegmentArticle();
+
             if (ModelState.IsValid)
             {
+                myArticle.ID = sa.ID;
+                myArticle.CompanyID = _user.companyID;
+                myArticle.Order = sa.Order ?? 1;
+                myArticle.Title = sa.Title;
+                myArticle.PublishFrom = sa.PublishFrom;
+                myArticle.PublishTill = sa.PublishTill;
+                myArticle.AllowComments = sa.AllowComments;
+                myArticle.ArticleContent = sa.ArticleContent;
+                myArticle.Author = sa.Author;
+                myArticle.Tags = sa.Tags;
+
+                IFormFile img = sa.Image;
+                if (img != null)
+                {
+                    var filePath = Path.Combine(_rootpath, "images/Uploads/Articles", _user.companyName + "_" + WebUtility.HtmlEncode(myArticle.Title) + "_" + img.FileName);
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await img.CopyToAsync(stream);
+                    }
+                    //The file has been saved to disk - now save the file name to the DB
+                    myArticle.Image = img.FileName;
+                }
+
+                IFormFile vid = sa.EmbeddedVideo;
+                if (vid != null)
+                {
+                    var filePath = Path.Combine(_rootpath, "images/Uploads/Articles", _user.companyName + "_" + WebUtility.HtmlEncode(myArticle.Title) + "_" + vid.FileName);
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        vid.CopyToAsync(stream);
+                    }
+                    //The file has been saved to disk - now save the file name to the DB
+                    myArticle.EmbeddedVideo = vid.FileName;
+                }
+
                 try
                 {
-                    _context.Update(segmentArticle);
+                    _context.Update(myArticle);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!SegmentArticleExists(segmentArticle.ID))
+                    if (!SegmentArticleExists(myArticle.ID))
                     {
                         return NotFound();
                     }
@@ -117,7 +235,7 @@ namespace WootrixV2.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(segmentArticle);
+            return View(sa);
         }
 
         // GET: SegmentArticles/Delete/5

@@ -27,7 +27,8 @@
             </div>
             <div class="form-group">
                 <label asp-for="CoverImage" class="control-label"></label>
-                <input asp-for="CoverImage" type="file" class="form-control" />
+                @Html.EditorFor(x => x.CoverImage);
+                @*<input asp-for="CoverImage" type="file" class="form-control" />*@
                 <span asp-validation-for="CoverImage" class="text-danger"></span>
             </div>
             <div class="form-group">

@@ -1,4 +1,4 @@
-﻿@model WootrixV2.Models.SegmentArticle
+﻿@model WootrixV2.Models.SegmentArticleViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -19,39 +19,30 @@
                 <span asp-validation-for="Order" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="ArticleUrl" class="control-label"></label>
+                <input asp-for="ArticleUrl" class="form-control" />
+                <span asp-validation-for="ArticleUrl" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="Title" class="control-label"></label>
                 <input asp-for="Title" class="form-control" />
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Image" class="control-label"></label>
-                <input asp-for="Image" class="form-control" />
+                @Html.EditorFor(x => x.Image)
+                @*<input asp-for="Image" type="file" class="form-control" />*@
                 <span asp-validation-for="Image" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EmbeddedVideo" class="control-label"></label>
+                <input asp-for="EmbeddedVideo" type="file"  class="form-control" />
+                <span asp-validation-for="EmbeddedVideo" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="ArticleContent" class="control-label"></label>
                 <textarea asp-for="ArticleContent" class="form-control"></textarea>
                 <span asp-validation-for="ArticleContent" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ArticleUrl" class="control-label"></label>
-                <input asp-for="ArticleUrl" class="form-control" />
-                <span asp-validation-for="ArticleUrl" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="EmbedVideoUrl" class="control-label"></label>
-                <input asp-for="EmbedVideoUrl" class="form-control" />
-                <span asp-validation-for="EmbedVideoUrl" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Tags" class="control-label"></label>
-                <input asp-for="Tags" class="form-control" />
-                <span asp-validation-for="Tags" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="AllowComments" class="control-label"></label>
-                <input asp-for="AllowComments" class="form-control" />
-                <span asp-validation-for="AllowComments" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="PublishFrom" class="control-label"></label>
@@ -63,6 +54,18 @@
                 <input asp-for="PublishTill" class="form-control" />
                 <span asp-validation-for="PublishTill" class="text-danger"></span>
             </div>
+
+            <div class="form-group">
+                <label asp-for="Tags" class="control-label"></label>
+                <input asp-for="Tags" class="form-control" />
+                <span asp-validation-for="Tags" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AllowComments" class="control-label"></label>
+                @Html.EditorFor(x => x.AllowComments)
+                <span asp-validation-for="AllowComments" class="text-danger"></span>
+            </div>
+
             <div class="form-group">
                 <label asp-for="Author" class="control-label"></label>
                 <input asp-for="Author" class="form-control" />

@@ -99,7 +99,7 @@
                                     <li><a asp-controller="CompanyTopics" asp-action="Index" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Topics</a></li>
                                     <li><a asp-controller="CompanyTypeOfUsers" asp-action="Index" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Type of Users</a></li>
                                     <li><a asp-controller="CompanySegments" asp-action="Index" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Segments</a></li>
-                                    <li><a asp-controller="SegementArticles" asp-action="Index" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Articles</a></li>
+                                    <li><a asp-controller="SegmentArticles" asp-action="Index" asp-route-id="@companyName" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Articles</a></li>
                                     <li><a asp-controller="SegementsArticleComments" asp-action="Index" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Article Comments</a></li>
                                     <li><a asp-controller="CompanyPushNotifications" asp-action="Index" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Push Notifications</a></li>
                                     <li><a asp-controller="Reports" asp-action="Index" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Reports</a></li>
