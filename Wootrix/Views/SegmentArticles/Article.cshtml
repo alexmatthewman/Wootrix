@@ -1,0 +1,66 @@
+﻿@model WootrixV2.Models.SegmentArticle
+
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Http;
+@using System.Security.Claims
+@using WootrixV2.Data;
+@using System.Net
+@using System.Web;
+@using System.IO;
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    ViewData["Title"] = "Article";
+    Layout = "~/Views/Shared/_LayoutCompany.cshtml";
+
+    var _companyName = Context.Session.GetString("CompanyName");
+
+}
+<div class="articleBackButtonContainer">
+    <a href="javascript:history.go(-1)"><button class="articleBackButton button"><span class="glyphicon glyphicon-menu-left"></span>&nbsp;Back to Article List</button></a>
+</div>
+<main id="UserView">
+    <div class="articleContainer">
+        <div class="articleContainerCentred">
+            <div class="articleContainerSub">
+                <div class="articleBox">
+                    <section style="display: block">
+                        <div class="article articleDetails">
+                            <div>
+
+                                @{
+                                    var fn = _companyName + "_" + WebUtility.HtmlEncode(Model.Title) + "_" + Model.Image;
+                                }
+
+                                <h1>@Model.Title</h1>
+                                <div class="imageStuff">
+                                    <img src="~/images/Uploads/Articles/@fn" class="UserArticleImage" />
+                                </div>
+                                @Html.Raw(Model.ArticleContent)
+                                <div class="publishStuff">
+                                    <span class="glyphicon glyphicon-user"></span>
+                                    <div class="author">Posted by @Model.Author&nbsp;</div><div class="publishDate">@Model.PublishFrom</div>
+                                </div>
+                                <div class="commentStuff">
+                                    <a asp-area="" asp-controller="SegmentArticleComment" asp-action="Index">
+                                        <span class="glyphicon glyphicon-comment"></span>
+                                        <div class="commentCount">0&nbsp;</div><div class="commentView">
+                                            Comments
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div class="articleBackButtonContainer">
+    <a href="javascript:history.go(-1)"><button class="articleBackButton button"><span class="glyphicon glyphicon-menu-left"></span>&nbsp;Back to Article List</button></a>
+</div>

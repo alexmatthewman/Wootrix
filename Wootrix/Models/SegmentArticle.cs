@@ -58,6 +58,9 @@ namespace WootrixV2.Models
         [StringLength(1000)]
         [Display(Name = "Publisher Name", Prompt = "Will default to creator user name", Description = "Publisher Name")]
         public string Author { get; set; }
+
+        [Display(Name = "Segments which have this Article", Prompt = "Segments which have this Article", Description = "Segments which have this Article")]
+        public string Segments { get; set; }
     }
 
     public class SegmentArticleViewModel
@@ -109,5 +112,38 @@ namespace WootrixV2.Models
         [StringLength(1000)]
         [Display(Name = "Publisher Name", Prompt = "Will default to creator user name", Description = "Publisher Name")]
         public string Author { get; set; }
+
+        [Display(Name = "Article appears in these segments", Prompt = "Article appears in these segments", Description = "Article appears in these segments")]
+        public string Segments { get; set; }
+        //{
+        //    get { new List<string>();
+        //              string.Join(",", Segments)
+        //    }
+        //    set { SegmentList = value.Split(',').Select(x => new SelectListItem { Text = x, Value = x }).ToList();
+        //    }
+        //}
+        public IList<string> SelectedSegments { get; set; }
+        public IList<SelectListItem> AvailableSegments { get; set; }
+
+        public SegmentArticleViewModel()
+    {
+            //Maybe get data here
+            SelectedSegments = new List<string>();
+            AvailableSegments = new List<SelectListItem>();
+        }
+
+        //// This property contains the available options
+        //public SelectList AvailableSegments { get; set; }
+
+        //// This property contains the selected options
+        //public IEnumerable<string> SelectedSegments { get; set; }
+
+        //public SegmentArticleViewModel()
+        //{
+        //    AvailableSegments = new SelectList(
+        //        new[] { "Google", "TV", "Radio", "A friend", "Crazy bloke down the pub" });
+
+        //    SelectedSegments = new[] { "Google" };
+        //}
     }
 }

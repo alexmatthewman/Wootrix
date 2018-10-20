@@ -5,10 +5,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Wootrix.Data;
+using WootrixV2.Data;
 using WootrixV2.Models;
 
 namespace WootrixV2.Controllers
@@ -18,12 +20,19 @@ namespace WootrixV2.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IHostingEnvironment _env;
         private readonly string _rootpath;
+        private ApplicationUser _user;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private DatabaseAccessLayer _dla;
+        private SignInManager<ApplicationUser> _signInManager;
 
-        public CompanyController(IHostingEnvironment env, ApplicationDbContext context)
+        public CompanyController(UserManager<ApplicationUser> userManager, IHostingEnvironment env, ApplicationDbContext context, SignInManager<ApplicationUser> signInManager)
         {
             _context = context;
             _env = env;
             _rootpath =_env.WebRootPath;
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _dla = new DatabaseAccessLayer(_context);
         }
 
         // GET: Company
@@ -66,6 +75,14 @@ namespace WootrixV2.Controllers
                 return NotFound();
             }
 
+            // Now for users we need to show them articles on the home page so get them in the ViewBag for display
+            _user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();
+
+            if (_signInManager.IsSignedIn(User))
+            {
+                ViewBag.Segments = _dla.GetSegmentsList(_user.companyID);
+                ViewBag.Articles = _dla.GetArticlesList(_user.companyID);
+            }
             return View(company);
         }
 

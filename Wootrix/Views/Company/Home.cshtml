@@ -7,17 +7,28 @@
 @{
     ViewData["Title"] = "Wootrix 2.0 Company Home Page";
     Layout = "~/Views/Shared/_LayoutCompany.cshtml";
+
+
     var companyName = Model.CompanyName;
 
     var bImage = companyName + "_" + Model.CompanyBackgroundImage;
     var fImage = companyName + "_" + Model.CompanyFocusImage;
-    var _user = UserManager.GetUserAsync(User).GetAwaiter().GetResult();
+
+    if (!SignInManager.IsSignedIn(User))
+    {
+        var _user = UserManager.GetUserAsync(User).GetAwaiter().GetResult();
+    }
 }
 
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.Http;
 @using System.Security.Claims
 @using WootrixV2.Data;
+@using System.Net
+@using System.Web;
+@using System.IO;
+
+
 
 <div class="companyHome" company="@companyName">
     <!-- Banner -->
@@ -212,19 +223,11 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a asp-area="" asp-controller="CompanyDepartments" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
+                                    <a asp-area="" asp-controller="CompanyDepartments" asp-action="Index" asp-route-id="@Model.ID" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
                                         <span><img src="~/images/icon-1.png" alt="Department Filters" /></span>
                                         <strong>Department Filters</strong>
                                     </a>
                                 </li>
-
-                                <li>
-                                    <a asp-area="" asp-controller="Fruit" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
-                                        <span><img src="~/images/icon-2.png" alt="Department Filters" /></span>
-                                        <strong>Fruit</strong>
-                                    </a>
-                                </li>
-
                             </ul>
 
 
@@ -232,11 +235,151 @@
                     </div>
                 </div>
             }
+            @if (!User.HasClaim(ClaimTypes.Role, "CompanyAdmin") && !User.HasClaim(ClaimTypes.Role, "Admin"))
+            {
 
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th class="magazine-header-text">
+                                <h2>Segments</h2>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+
+                            @foreach (var item in ViewBag.Segments)
+                            {
+
+                                <td class="magazine" style="border:4px solid @item.ThemeColor;  background:@item.StandardColor;">
+                                    <a asp-controller="CompanySegments" asp-action="ArticleList" asp-route-id="@item.Title">                                       
+                                            <div class="magazine-pic">
+                                                @{
+                                                    var fn = companyName + "_" + item.CoverImage;
+                                                }
+                                                <img src="~/images/Uploads/@fn" />
+                                            </div>
+                                            <div class="magazine-text">
+                                                <div class="magazine-text-title">
+                                                    @item.Title
+                                                </div>
+                                                <div class="publishStuff">
+                                                    <span class="glyphicon glyphicon-user"></span>
+                                                    <div class="author">Posted&nbsp;by @(item.ClientName == null ? "Anon" : item.ClientName)</div>
+                                                    <div class="publishDate">&nbsp;@item.PublishDate.ToString("dd MMM yyyy")</div>
+                                                </div>
+                                            </div>
+                                        </a>
+</td>
+                            }
+                        </tr>
+                    </tbody>
+                </table>
+                @*var segmentCount = 0;
+                    var articleCount = 0;
+                    var articleSegmentCount = 0;
+                    <!--Just a normal user so show the magazines and articles-->
+                    <!--So we have the company and user so all articles that are displayed should come from the user subset for the company minus filters-->
+                    <main id="UserView">
+
+                        <div class="container">
+                            <div class="scroller scroller-left"><i class="glyphicon glyphicon-chevron-left"></i></div>
+                            <div class="scroller scroller-right"><i class="glyphicon glyphicon-chevron-right"></i></div>
+                            <div class="wrapper">
+                                <ul class="nav nav-tabs list" id="myTab">
+                                    @foreach (var segment in ViewBag.Segments)
+                                    {
+                                        segmentCount++;
+                                        var id = "tab" + segmentCount;
+
+                                        <li class="segmemtlist" @(segmentCount == 1 ? "active" : "")>
+                                            @{
+                                                var fn = companyName + "_" + segment.CoverImage;
+                                                //TODO put check to only display if at least one article has it selected
+                                            }
+
+                                            <input id="@id" type="radio" name="tabs" @(segmentCount == 1 ? "checked" : "")>
+                                            <label id="@segmentCount" class="segmentlabel" onClick="slideMenuClick(this.id)" for="@id">
+                                                <img align="left" src="~/images/Uploads/@fn" />
+                                                <div class="segmentTitle">@segment.Title</div>
+                                            </label>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="articleContainer">
+                            <div class="articleContainerCentred">
+                                <div class="articleContainerSub">
+
+                                    @foreach (var segment in ViewBag.Segments)
+                                    {
+                                        articleSegmentCount++;
+                                        var aid = "content" + articleSegmentCount;
+                                        var displayStyle = "none";
+                                        <div class="articleBox">
+                                            <!--Make the first element visible-->
+                                            @if (articleSegmentCount == 1)
+                                            {
+                                                displayStyle = "block";
+                                            }
+                                            <section id="@aid" style="display: @displayStyle">
+                                                @foreach (var article in ViewBag.Articles)
+                                                {
+                                                    //Now put a check to only display Articles that have selected this segment
+                                                    //TODO move the filtering logic to the backend
+                                                    if (article.Segments != null)
+                                                    {
+                                                        if (article.Segments.Contains(segment.Title))
+                                                        {
+                                                            articleCount++;
+                                                            var artcount = "article" + articleCount;
+
+                                                            <div class="article">
+                                                                <div class="@artcount">
+                                                                    <a asp-controller="SegmentArticles" asp-action="Article" asp-route-id="@article.ID">
+                                                                        @{
+                                                                            var fn = companyName + "_" + WebUtility.HtmlEncode(article.Title) + "_" + article.Image;
+                                                                        }
+                                                                        <h1>@article.Title</h1>
+                                                                        <div class="imageStuff">
+                                                                            <img src="~/images/Uploads/Articles/@fn" class="UserArticleImage" />
+                                                                        </div>
+                                                                        Html.Raw(article.ArticleContent)
+
+                                                                    </a>
+                                                                    <div class="publishStuff">
+                                                                        <span class="glyphicon glyphicon-user"></span>
+                                                                        <div class="author">Posted&nbsp;by @article.Author</div><div class="publishDate">&nbsp;@article.PublishFrom.ToString("dd MMM yyyy")</div>
+                                                                    </div>
+                                                                    <a asp-area="" asp-controller="SegmentArticleComment" asp-action="Index" asp-route-id="@article.ID">
+                                                                        <div class="commentStuff">
+                                                                            <span class="glyphicon glyphicon-comment"></span>
+                                                                            <div class="commentCount">0&nbsp;</div>
+                                                                            <div class="commentView">Comments</div>
+
+                                                                        </div>
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+
+                                                        }
+                                                    }
+                                                }
+                                            </section>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </main>*@
+
+
+            }
         </section>
-
-
     }
-
-
 </div>
+
+
+

@@ -75,11 +75,12 @@ namespace Wootrix
             });
             services.Configure<SecurityStampValidatorOptions>(options => options.ValidationInterval = TimeSpan.FromSeconds(10));
 
+
             services.ConfigureApplicationCookie(options =>
             {
                 // Cookie settings
                 options.Cookie.HttpOnly = true;
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(21);
                 options.SlidingExpiration = true;
                 options.LoginPath = "/Identity/Account/Login";
                 options.AccessDeniedPath = "/Identity/Account/AccessDenied";
@@ -90,7 +91,7 @@ namespace Wootrix
             services.AddSession(options =>
             {
                 //// Set a short timeout for easy testing.
-                //options.IdleTimeout = TimeSpan.FromMinutes(60);
+                options.IdleTimeout = TimeSpan.FromMinutes(21);
                 options.Cookie.HttpOnly = true;
             });
 
@@ -233,7 +234,16 @@ namespace Wootrix
                     await UserManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, "CompanyAdmin"));
                 }
 
-                
+                user = await UserManager.FindByEmailAsync("companyAdmin@bosch.com");
+                ac = await UserManager.GetClaimsAsync(user);
+
+                if (ac.Count() <= 0)
+                {
+                    await UserManager.AddToRoleAsync(user, "CompanyAdmin");
+                    await UserManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, "CompanyAdmin"));
+                }
+
+
 
             }
             catch (Exception e)

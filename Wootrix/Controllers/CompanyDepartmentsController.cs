@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Wootrix.Data;
+using WootrixV2.Data;
 using WootrixV2.Models;
 
 namespace WootrixV2.Controllers
@@ -14,19 +16,35 @@ namespace WootrixV2.Controllers
     public class CompanyDepartmentsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private ApplicationUser _user;
+        private DatabaseAccessLayer _dla;
 
-        public CompanyDepartmentsController(ApplicationDbContext context)
+        public CompanyDepartmentsController(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
         {
             _context = context;
+            _userManager = userManager;
+            _dla = new DatabaseAccessLayer(_context);
         }
 
         // GET: CompanyDepartments
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? id)
         {
-            //Get the company name out the session and use it as a filter for the groups returned
-            var id = HttpContext.Session.GetInt32("CompanyID");
-            var ctx = _context.CompanyDepartments.Where(m => m.CompanyID == id);
-            return View(await ctx.ToListAsync());
+            var companyID = 0;
+            if (!id.HasValue)
+            {
+                companyID = _userManager.GetUserAsync(User).GetAwaiter().GetResult().companyID;
+            }
+            else
+            {
+                companyID = (int)id;
+            }
+            HttpContext.Session.SetInt32("CompanyID", companyID);
+
+            //Add a company list dropdown to the page
+            ViewBag.Companies = _dla.GetCompanies();
+
+            return View(await _context.CompanyDepartments.Where(m => m.CompanyID == id).ToListAsync());
         }
 
         // GET: CompanyDepartments/Details/5

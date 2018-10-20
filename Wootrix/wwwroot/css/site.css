@@ -1,5 +1,350 @@
-﻿/*@import url("http://fonts.googleapis.com/css?family=Open+Sans:300,400,400italic,600,600italic,700,800,800italic");
-@import url(font-awesome.min.css);*/
+﻿@import url("http://fonts.googleapis.com/css?family=Open+Sans:300,400,400italic,600,600italic,700,800,800italic");
+@import url(font-awesome.min.css);
+
+
+/* ARTICLES STYLING START */
+
+
+
+#UserView .articleContainer {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100vh - 48px);
+    background: #DAE0E6;
+    padding: 1em;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+#UserView .articleContainerCentred {
+    -webkit-box-pack: center;
+    justify-content: center;
+    max-width: 1248px;
+    position: relative;
+    margin: 0px auto;
+    
+}
+
+#UserView .articleContainerSub {
+    min-width: 0px;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    -webkit-box-pack: center;
+    justify-content: center;
+    position: relative;
+    margin: 0px auto;
+   
+}
+
+
+
+#UserView .articleBox {
+    position: relative;
+    background-color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 10px;
+    color: rgb(135, 138, 140);
+    fill: rgb(135, 138, 140);
+    cursor: pointer;
+    overflow: hidden;
+    transition: color 0.5s ease 0s, fill 0.5s ease 0s, box-shadow 0.5s ease 0s;
+    border-radius: 4px;
+}
+
+
+.articleBackButtonContainer {
+    background: #DAE0E6;
+    padding: 1em;
+}
+
+    .articleBackButtonContainer .articleBackButton a:hover {
+        text-decoration: none;
+    }
+
+
+#UserView .articleBox section {
+    background: rgb(255, 255, 255);
+    padding-top: 8px;
+}
+
+
+    #UserView .articleBox section .article a:hover {
+        text-decoration: none;
+    }
+
+
+
+
+#UserView .articleContainer .articleBox section .article {
+    border-bottom: 2em solid #DAE0E6;
+    padding: 1em;
+    max-height: 40em;
+    margin: 0 auto;
+    min-width: 62em;
+}
+
+#UserView .articleContainer .articleBox section .articleDetails {
+    border-bottom: 2em solid #DAE0E6;
+    padding: 1em;
+    max-height: unset;
+    margin: 0 auto;
+    min-width: 62em;
+}
+
+#UserView .articleContainer .articleBox section .article p {
+    margin-top: 2em;
+    text-align: left;
+}
+
+
+#UserView .articleContainer .articleBox .article imageStuff {
+    max-height: 512px;
+    margin: 0 auto;
+}
+
+#UserView .articleContainer .articleBox .article img {
+    background-color: #FFFFFF;
+    max-height: 512px;
+    margin: 0 auto;
+    display: block;
+    max-width: 100%;
+    position: relative;
+}
+
+
+#UserView .articleContainer .articleBox .article .publishStuff {
+    display: flex;
+    text-align: left;
+    font-size: smaller;
+    margin-top: .2em
+}
+
+#UserView .articleContainer .articleBox section .articleDetails .publishStuff {
+    margin-top: 2em;
+}
+
+
+#UserView .articleContainer .articleBox section .articleDetails .commentStuff a {
+    display: flex;
+}
+
+#UserView .articleContainer .articleBox .article .commentStuff {
+    display: flex;
+    text-align: left;
+    font-size: smaller;
+}
+
+#UserView .articleContainer .articleBox .article h1 {
+    display: block;
+    color: rgb(34, 34, 34);
+    overflow-wrap: break-word;
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 22px;
+    padding-right: 5px;
+    text-align: left;
+}
+#UserView .articleContainer .articleBox .article div span {
+    padding-top: .15em;
+    padding-right: .5em;
+}
+
+
+
+
+/* ARTICLES STYLING END */
+/* TABBED USER ARTICLE MENU STYLING  -- WITH SCROLLING START */
+/* Segment scroller start*/
+#UserView .list img {
+    max-height: 8em;
+    max-width: 8em;
+    display: flex;
+}
+
+#UserView .container {
+    max-width: unset;
+    height: 10em;
+}
+
+#UserView input[type="checkbox"] + label:before, #UserView input[type="radio"] + label:before {
+    background: unset;
+}
+
+@font-face {
+    font-family: 'Glyphicons Halflings';
+    src: url('../fonts/glyphicons-halflings-regular.eot');
+    src: url('../fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('../fonts/glyphicons-halflings-regular.woff2') format('woff2'), url('../fonts/glyphicons-halflings-regular.woff') format('woff'), url('../fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('../fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
+}
+
+#UserView .wrapper {
+    position: relative;
+    margin: 0 auto;
+    overflow: hidden;
+    padding: 5px;
+    height: 10em;
+}
+
+#UserView .list {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    min-width: 3000px;
+    margin-left: 12px;
+    margin-top: 0px;
+    height: 10em;
+}
+
+    #UserView .list li {
+        display: table-cell;
+        position: relative;
+        text-align: center;
+        cursor: grab;
+        cursor: -webkit-grab;
+        color: #efefef;
+        vertical-align: middle;
+        height: 10em;
+    }
+
+#UserView .scroller {
+    text-align: center;
+    cursor: pointer;
+    display: none;
+    padding: 7px;
+    padding-top: 11px;
+    white-space: no-wrap;
+    vertical-align: middle;
+    background-color: #fff;
+}
+
+#UserView .scroller-right {
+    float: right;
+}
+
+#UserView .scroller-left {
+    float: left;
+}
+/* Segment scroller end*/
+
+
+/* Segment and Article Tabs Start */
+#UserView *, #UserView *:before, *:after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+#UserView html, #UserView body {
+    height: 100vh;
+}
+
+#UserView body {
+    font: 14px/1 'Open Sans', sans-serif;
+    color: #555;
+    background: #eee;
+}
+
+
+
+#UserView p {
+    margin: 0 0 20px;
+    line-height: 1.5;
+}
+
+#UserView main {
+    min-width: 320px;
+    /*max-width: 800px;*/
+    padding: 50px;
+    margin: 0 auto;
+    background: #fff;
+}
+
+#UserView section {
+    display: none;
+    padding: 20px 0 0;
+    border-top: 1px solid #ddd;
+}
+
+#UserView input {
+    display: none;
+}
+
+#UserView label {
+    display: inline-block;
+    margin: 0 0 -1px;
+    padding: 15px 25px;
+    font-weight: 600;
+    text-align: center;
+    color: #bbb;
+    border: 1px solid transparent;
+    width: 21em;
+}
+
+    #UserView label:before {
+        font-weight: normal;
+        margin-right: 10px;
+    }
+
+
+
+    #UserView label:hover {
+        color: #888;
+        cursor: pointer;
+    }
+
+    #UserView label img {
+        max-height: 28em;
+        display: inline-flex;
+    }
+
+    #UserView label h1 {
+        padding: 50px 0;
+        font-weight: 400;
+        text-align: left;
+        display: inline-flex;
+        vertical-align: top;
+        padding-right: 5em;
+    }
+
+#UserView input:checked + label {
+    color: #555;
+    border: 1px solid #ddd;
+    border-top: 2px solid orange;
+    border-bottom: 1px solid #fff;
+}
+
+
+#UserView #tab1:checked ~ #content1,
+#UserView #tab2:checked ~ #content2,
+#UserView #tab3:checked ~ #content3,
+#UserView #tab4:checked ~ #content4 {
+    display: block;
+}
+
+@media screen and (max-width: 650px) {
+    #UserView label {
+        font-size: 1em;
+    }
+
+        #UserView label:before {
+            margin: 0;
+            font-size: 18px;
+        }
+}
+
+@media screen and (max-width: 400px) {
+    #UserView label {
+        padding: 15px;
+    }
+}
+/* Segment and Article Tabs Start */
+
+/* TABBED USER ARTICLE MENU STYLING END */
+
+
+
+
+
 
 
 /*DROP DOWN MENU STYLING - START */
@@ -92,6 +437,8 @@
             text-align: center;
             text-align: center;
             word-wrap: break-word;
+            padding-top: unset;
+            padding-left: unset;
         }
 
         .super-admin-cont .admin-profile h5 {
@@ -103,7 +450,8 @@
             display: inline-block;
             padding: 10px;
             margin: 0;
-            word-break: break-word;
+            word-wrap: break-word;
+            word-break: break-all;
         }
 
 
@@ -155,27 +503,28 @@
 
 
 
-/* SEGMENT STYLING START */
+/* SEGMENT ADMIN STYLING START */
 
 .magazine {
     max-width: 5em;
     height: 25em;
     padding: 1em;
     margin: 1em;
-    display: inline-block;
+    display: inline-flex;
     min-width: 20em;
     box-shadow: 1.1em 1.1em 1.1em #ccc;
     border-radius: .5em;
 }
+
     .magazine .magazine-text {
         display: unset;
         overflow: hidden;
         word-break: break-all;
     }
 
-    .magazine .magazine-text div {
-        display: inline-block;
-    }
+        .magazine .magazine-text div {
+            display: inline-block;
+        }
 
     .magazine .magazine-text-title {
         font-weight: 900;
@@ -204,6 +553,61 @@
 
 
 /* SEGMENT STYLING END */
+
+
+/* ARTICLE ADMIN STYLING START */
+
+
+.body-content h2 {
+    padding-top: 3em;
+}
+
+.body-content h2, .body-content h4 {
+    padding-top: 3em;
+    padding-left: 2em;
+}
+
+
+
+
+.body-content form {
+    margin-left: 2em;
+    margin-right: -22em;
+}
+
+    .body-content form .form-group {
+        margin-bottom: 2em;
+    }
+
+.checkbox-box {
+    float: none;
+    position: relative;
+    border: 3px solid #bfbfc0;
+    width: unset;
+    height: unset;
+    padding: 0.5em;
+    margin-top: 1em;
+    border-radius: 3px;
+}
+
+    .checkbox-box .checkbox {
+        margin-top: -5px;
+    }
+
+        .checkbox-box .checkbox label {
+            min-width: 30em;
+        }
+
+        .checkbox-box .checkbox input[type="checkbox"] {
+            -webkit-appearance: checkbox;
+            opacity: unset;
+            z-index: unset;
+        }
+
+
+/* ARTICLE STYLING END */
+
+
 .tableimg {
     max-height: 4em;
     max-width: 4em;
@@ -366,9 +770,10 @@ body {
 }
 
     body .body-stuff {
-        padding: 2em;
         min-height: 45em;
+        display: grid;
     }
+
 
 *, *:before, *:after {
     -moz-box-sizing: border-box;
@@ -521,5 +926,9 @@ for details on configuring this project to bundle and minify static web assets. 
     /* Hide captions */
     .carousel-caption {
         display: none;
+    }
+
+    #UserView .articleContainer .articleBox section .article {
+        min-width: unset;
     }
 }

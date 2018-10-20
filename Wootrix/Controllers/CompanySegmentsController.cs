@@ -45,6 +45,27 @@ namespace WootrixV2.Controllers
             return View(await ctx.ToListAsync());
         }
 
+        // GET: SegmentArticles/Articlelist/id of segment
+        public async Task<IActionResult> ArticleList(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            _companyID = HttpContext.Session.GetInt32("CompanyID") ?? 0;
+            var segmentArticle = _context.SegmentArticle
+                .Where(n => n.CompanyID == _companyID)
+                .Where(m => m.Segments.Contains(id));
+
+            if (segmentArticle == null)
+            {
+                return NotFound(); 
+            }
+
+            return View(await segmentArticle.ToListAsync());
+        }
+
+
         // GET: CompanySegments/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -77,8 +98,8 @@ namespace WootrixV2.Controllers
             //s.ClientLogoImage = _user.photoUrl;
             var cp = _user.companyID;
             
-            DatabaseAccessLayer dla = new DatabaseAccessLayer(_context, cp);               
-            s.Departments = dla.GetDepartments();
+            DatabaseAccessLayer dla = new DatabaseAccessLayer(_context);               
+            s.Departments = dla.GetDepartments(cp);
             return View(s);
         }
 
@@ -106,6 +127,7 @@ namespace WootrixV2.Controllers
                 mySegment.Draft = DateTime.Now > cps.PublishDate ? false : true;
                 mySegment.Department = cps.Department;
                 mySegment.Tags = cps.Tags;
+                mySegment.ClientName = cps.ClientName ?? _user.name;
 
                 IFormFile coverImage = cps.CoverImage;
                 if (coverImage != null)
@@ -147,7 +169,7 @@ namespace WootrixV2.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(mySegment);
+            return View(cps);
         }
 
         // GET: CompanySegments/Edit/5
@@ -173,13 +195,13 @@ namespace WootrixV2.Controllers
             s.FinishDate = companySegment.FinishDate;
             s.StandardColor = companySegment.StandardColor;
             s.ThemeColor = companySegment.ThemeColor;
-            s.ClientName = companySegment.ClientName;
+            s.ClientName = (companySegment.ClientName == null ? _user.name : companySegment.ClientName);
            // s.ClientLogoImage = FormFileHelper.PhysicalToIFormFile(new FileInfo(companySegment.ClientLogoImage));
             s.Department = companySegment.Department;
             s.Tags = companySegment.Tags;
 
-            DatabaseAccessLayer dla = new DatabaseAccessLayer(_context, _user.companyID);
-            s.Departments = dla.GetDepartments();
+            DatabaseAccessLayer dla = new DatabaseAccessLayer(_context);
+            s.Departments = dla.GetDepartments(_user.companyID);
             return View(s);
         }
 
@@ -268,8 +290,9 @@ namespace WootrixV2.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            DatabaseAccessLayer dla = new DatabaseAccessLayer(_context, _user.companyID);
-            cps.Departments = dla.GetDepartments();
+
+            DatabaseAccessLayer dla = new DatabaseAccessLayer(_context);
+            cps.Departments = dla.GetDepartments(_user.companyID);
             return View(cps);
         }
 

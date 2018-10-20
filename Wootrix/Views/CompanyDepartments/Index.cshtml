@@ -7,9 +7,60 @@
 
 <h2>Index</h2>
 
+<script>
+
+  
+</script>
+
+<div class="row">
+    <div class="col-md-4">
+
+
+        <div class="form-group">
+            <label class="control-label">Select Company</label>
+            <select id="CompanySelector" class="form-control">
+                @foreach (var company in ViewBag.Companies)
+                {
+                    <option value="@company.Value">@company.Text</option>
+                }
+            </select>
+        </div>
+    </div>
+</div>
+@*segmentCount++;
+    var id = "tab" + segmentCount;
+
+    <li class="segmemtlist" @(segmentCount == 1 ? "active" : "")>
+        @{
+            var fn = companyName + "_" + segment.CoverImage;
+            //TODO put check to only display if at least one article has it selected
+        }
+
+        <input id="@id" type="radio" name="tabs" @(segmentCount == 1 ? "checked" : "")>
+        <label id="@segmentCount" class="segmentlabel" onClick="slideMenuClick(this.id)" for="@id">
+            <img align="left" src="~/images/Uploads/@fn" />
+            <div class="segmentTitle">@segment.Title</div>
+        </label>
+    </li>*@
+
+@*<div class="form-group">
+        <label class="control-label" for="Department">Limit editors to this Department</label>
+
+        <select class="form-control" id="Departments" name="Department">
+            <option value="">--- Select Department ---</option>
+            <option value="3">LD IT</option>
+            <option selected="selected" value="1">LD Marketing</option>
+            <option value="2">LD Resources</option>
+        </select>
+        <span class="field-validation-valid text-danger" data-valmsg-for="Department" data-valmsg-replace="true"></span>
+
+    </div>*@
+
+
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+
 <table class="table">
     <thead>
         <tr>
@@ -20,17 +71,18 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.CompanyDepartmentName)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CompanyDepartmentName)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

@@ -26,9 +26,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.Order)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ArticleUrl)
-            </th>
+
             <th>
                 @Html.DisplayNameFor(model => model.Title)
             </th>
@@ -38,9 +36,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.EmbeddedVideo)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ArticleContent)
-            </th>
+            
             <th>
                 @Html.DisplayNameFor(model => model.PublishFrom)
             </th>
@@ -58,58 +54,61 @@
             <th>
                 @Html.DisplayNameFor(model => model.Author)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Segments)
+            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Order)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ArticleUrl)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Title)
-                </td>
-                <td>
-                    @{
-                        var fn = _companyName + "_" + WebUtility.HtmlEncode(item.Title) + "_" + item.Image;
-                    }
-                    <img src="~/images/Uploads/Articles/@fn" class="tableimg" />
-                    @Html.DisplayFor(modelItem => item.Image)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.EmbeddedVideo)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ArticleContent)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PublishFrom)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PublishTill)
-                </td>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Order)
+            </td>
 
-                <td>
-                    @Html.DisplayFor(modelItem => item.Tags)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.AllowComments)
-                </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @{
+                    var fn = _companyName + "_" + WebUtility.HtmlEncode(item.Title) + "_" + item.Image;
+                }
+                <img src="~/images/Uploads/Articles/@fn" class="tableimg" />
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EmbeddedVideo)
+            </td>
 
-                <td>
-                    @Html.DisplayFor(modelItem => item.Author)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-                </td>
-            </tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.PublishFrom)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PublishTill)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.Tags)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AllowComments)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.Author)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.Segments)
+            </td>
+
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+            </td>
+        </tr>
         }
     </tbody>
 </table>

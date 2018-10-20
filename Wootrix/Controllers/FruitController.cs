@@ -57,8 +57,8 @@ namespace WootrixV2.Controllers
         {
             var _user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();
             var cp = _user.companyID;
-            DatabaseAccessLayer dla = new DatabaseAccessLayer(_context, cp);
-            return dla.GetGroups();
+            DatabaseAccessLayer dla = new DatabaseAccessLayer(_context);
+            return dla.GetGroups(cp);
 
         }
 

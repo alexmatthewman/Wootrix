@@ -12,6 +12,9 @@ namespace WootrixV2.Models
         public int ID { get; set; }
 
         [ScaffoldColumn(false)]
+        public int CompanyID { get; set; }
+
+        [ScaffoldColumn(false)]
         public int SegmentArticleID { get; set; }
 
         [Required]
@@ -22,6 +25,9 @@ namespace WootrixV2.Models
 
         [ScaffoldColumn(false)]
         public int UserID { get; set; }
+
+        [ScaffoldColumn(false)]
+        public int UserName { get; set; }
 
         [ScaffoldColumn(false)]
         public DateTime CreatedDate { get; set; }

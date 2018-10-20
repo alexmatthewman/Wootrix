@@ -43,7 +43,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="ArticleContent" class="control-label"></label>
-                <textarea asp-for="ArticleContent" class="form-control" ></textarea>
+                <textarea asp-for="ArticleContent" class="form-control"></textarea>
                 <span asp-validation-for="ArticleContent" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -71,6 +71,16 @@
                 <label asp-for="Author" class="control-label"></label>
                 <input asp-for="Author" class="form-control" />
                 <span asp-validation-for="Author" class="text-danger"></span>
+            </div>
+            <div class="form-group checkbox-box">
+                @foreach (var item in Model.AvailableSegments)
+                {
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" name="SelectedSegments" checked="@item.Selected" value="@item.Value" /> @item.Text
+                        </label>
+                    </div>
+                }
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-default" />

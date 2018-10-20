@@ -1,12 +1,18 @@
 ﻿@{
     ViewData["Title"] = "Wootrix 2.0 Home Page";
+
+    var companyID = -1;
+
+
 }
 @using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Http;
+@using System.Security.Claims
 @using WootrixV2.Data;
+@using System.Net
 
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
-
 
 
 <!-- Banner -->
@@ -14,16 +20,48 @@
 
     @if (SignInManager.IsSignedIn(User))
     {
-        <div class="container clearfix">
-            <div class="span7 left">
-                <figure class="main-home-image">
-                    <img src="~/images/website_images/home-screen.png" alt="" />
-                </figure>
+        @if (User.HasClaim(ClaimTypes.Role, "Admin"))
+        {
+            <!--Should build in the old style interface for consistency-->
+            <div class="fix-container clearfix">
+                <div class="super-admin-cont">
+                    <div class="admin-profile clearfix">
+                        <h4>Super Admin</h4>
+                        <h5>@UserManager.GetUserName(User)</h5>
+
+                    </div>
+                    <div class="categories">
+                        <ul>
+                            <li>
+                                <a href="">
+                                    <span><img src="~/images/icon-3.png" alt="" /></span>
+                                    <strong>Manage Company Admins</strong>
+                                </a>
+                            </li>
+                            <li>
+                                <a asp-area="" asp-controller="Company" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
+                                    <span><img src="~/images/icon-5.png" alt="Manage Companies" /></span>
+                                    <strong>Manage Companies</strong>
+                                </a>
+                            </li>
+                            @if (!SignInManager.IsSignedIn(User))
+                            {
+                                var _user = UserManager.GetUserAsync(User).GetAwaiter().GetResult();
+                                companyID = _user.companyID;
+                            }
+                            <li>
+                                <a asp-area="" asp-controller="CompanyDepartments" asp-action="Index"  style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
+                                    <span><img src="~/images/icon-1.png" alt="Department Filters" /></span>
+                                    <strong>Department Filters</strong>
+                                </a>
+                            </li>
+                        </ul>
+
+
+                    </div>
+                </div>
             </div>
-            <div class="span5 right welcomeMessage">
-                <h3>Welcome to Wootrix</h3>
-            </div>
-        </div>
+        }
     }
     else
     {

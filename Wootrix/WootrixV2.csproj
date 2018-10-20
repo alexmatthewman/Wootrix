@@ -33,6 +33,12 @@
 
 
   <ItemGroup>
+    <Content Update="Views\CompanySegments\ArticleList.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\SegmentArticles\Article.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Views\Shared\_LayoutCompany.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
@@ -40,7 +46,9 @@
 
 
   <ItemGroup>
+    <Folder Include="Views\Shared\Components\" />
     <Folder Include="wwwroot\images\Uploads\Articles\" />
+    <Folder Include="wwwroot\fonts\" />
   </ItemGroup>
 
 
