@@ -1,0 +1,85 @@
+﻿@model IEnumerable<WootrixV2.Models.SegmentArticleComment>
+
+
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    ViewData["Title"] = "Comment Admin";
+    Layout = "~/Views/Shared/_LayoutCompany.cshtml";
+    //Roses are red, violets are blue, here on the weekend, I'm commenting on you
+    //Roses are red, violets are blue, it's so sunny outside, but I'm stuck here with you
+    //Roses are red, violets are blue, if you're reading this now, then you're really bored too
+    ApplicationUser _user = (SignInManager.IsSignedIn(User) ? UserManager.GetUserAsync(User).GetAwaiter().GetResult() : new ApplicationUser());
+}
+
+@using Microsoft.AspNetCore.Identity
+@using WootrixV2.Data;
+
+
+<div class="bodyBox">
+    <h2>Comments Needing Review</h2>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.UserName)
+                </th>
+                <th>
+
+                    <div>View Article</div>
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Comment)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Status)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CreatedDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.EditDate)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.UserName)
+                    </td>
+                    <td>
+
+                        <a asp-area="" asp-controller="SegmentArticles" asp-action="Article" asp-route-id="@item.SegmentArticleID">
+                            <div>View</div>
+                        </a>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Comment)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Status)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CreatedDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EditDate)
+                    </td>
+                    <td>
+                        <a asp-action="Approve" asp-route-id="@item.ID">Approve</a>
+                        <a asp-action="AdminDelete" asp-route-id="@item.ID"> Delete </a>
+                    </td>
+                </tr>
+
+            }
+        </tbody>
+    </table>
+
+</div>

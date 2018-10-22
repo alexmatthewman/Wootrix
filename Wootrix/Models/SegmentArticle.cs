@@ -59,6 +59,9 @@ namespace WootrixV2.Models
         [Display(Name = "Publisher Name", Prompt = "Will default to creator user name", Description = "Publisher Name")]
         public string Author { get; set; }
 
+        [ScaffoldColumn(false)]
+        public string CreatedBy { get; set; }
+
         [Display(Name = "Segments which have this Article", Prompt = "Segments which have this Article", Description = "Segments which have this Article")]
         public string Segments { get; set; }
     }
@@ -113,6 +116,9 @@ namespace WootrixV2.Models
         [Display(Name = "Publisher Name", Prompt = "Will default to creator user name", Description = "Publisher Name")]
         public string Author { get; set; }
 
+        [ScaffoldColumn(false)]
+        public string CreatedBy { get; set; }
+
         [Display(Name = "Article appears in these segments", Prompt = "Article appears in these segments", Description = "Article appears in these segments")]
         public string Segments { get; set; }
         //{
@@ -145,5 +151,7 @@ namespace WootrixV2.Models
 
         //    SelectedSegments = new[] { "Google" };
         //}
+
+        public int? ArticleApprovedCommentCount { get; set; }
     }
 }

@@ -31,8 +31,8 @@ namespace WootrixV2.Controllers
             _context = context;
             _env = env;
             _rootpath = _env.WebRootPath;
-           _userManager = userManager;
-            
+            _userManager = userManager;
+
         }
 
         // GET: CompanySegments
@@ -52,14 +52,31 @@ namespace WootrixV2.Controllers
             {
                 return NotFound();
             }
+
+            HttpContext.Session.SetString("SegmentListID", id);
             _companyID = HttpContext.Session.GetInt32("CompanyID") ?? 0;
             var segmentArticle = _context.SegmentArticle
                 .Where(n => n.CompanyID == _companyID)
                 .Where(m => m.Segments.Contains(id));
 
+
+            ////To save from having to alter the model im passing in a list of articleIDs and the comment counts
+            //// which can then be checked on display
+            //DatabaseAccessLayer dla = new DatabaseAccessLayer(_context);
+            //List<SelectListItem> articleCount = await _context.SegmentArticle.AsNoTracking()
+            //    .Where(n => n.CompanyID == _companyID)
+            //        .OrderBy(n => n.Title)
+            //            .Select(n =>
+            //            new SelectListItem
+            //            {
+            //                Value = n.ID.ToString(),
+            //                Text = dla.GetArticleApprovedCommentCount(n.ID).ToString()
+            //            }).ToListAsync();
+            //ViewBag.ArticleCountList = articleCount;
+
             if (segmentArticle == null)
             {
-                return NotFound(); 
+                return NotFound();
             }
 
             return View(await segmentArticle.ToListAsync());
@@ -97,8 +114,8 @@ namespace WootrixV2.Controllers
             s.ClientName = _user.name;
             //s.ClientLogoImage = _user.photoUrl;
             var cp = _user.companyID;
-            
-            DatabaseAccessLayer dla = new DatabaseAccessLayer(_context);               
+
+            DatabaseAccessLayer dla = new DatabaseAccessLayer(_context);
             s.Departments = dla.GetDepartments(cp);
             return View(s);
         }
@@ -190,13 +207,13 @@ namespace WootrixV2.Controllers
             CompanySegmentViewModel s = new CompanySegmentViewModel();
 
             s.Order = companySegment.Order;
-            s.Title = companySegment.Title;            
+            s.Title = companySegment.Title;
             s.PublishDate = companySegment.PublishDate;
             s.FinishDate = companySegment.FinishDate;
             s.StandardColor = companySegment.StandardColor;
             s.ThemeColor = companySegment.ThemeColor;
             s.ClientName = (companySegment.ClientName == null ? _user.name : companySegment.ClientName);
-           // s.ClientLogoImage = FormFileHelper.PhysicalToIFormFile(new FileInfo(companySegment.ClientLogoImage));
+            // s.ClientLogoImage = FormFileHelper.PhysicalToIFormFile(new FileInfo(companySegment.ClientLogoImage));
             s.Department = companySegment.Department;
             s.Tags = companySegment.Tags;
 
@@ -216,11 +233,11 @@ namespace WootrixV2.Controllers
             {
                 return NotFound();
             }
-            
+
             _user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();
             //Initialise a new companysegment
-            CompanySegment mySegment = await _context.CompanySegment.FindAsync(id);            
-            
+            CompanySegment mySegment = await _context.CompanySegment.FindAsync(id);
+
             if (ModelState.IsValid)
             {
                 //ID,Order,Title,CoverImage,CoverImageMobileFriendly,PublishDate,FinishDate,ClientName,ClientLogoImage,ThemeColor,StandardColor,Draft,Department,Tags

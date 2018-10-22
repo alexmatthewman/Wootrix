@@ -82,6 +82,7 @@ namespace WootrixV2.Controllers
             {
                 ViewBag.Segments = _dla.GetSegmentsList(_user.companyID);
                 ViewBag.Articles = _dla.GetArticlesList(_user.companyID);
+                ViewBag.CommentUnderReviewCount = _dla.GetArticleReviewCommentCount(_user.companyID);
             }
             return View(company);
         }

@@ -136,6 +136,32 @@ namespace WootrixV2.Data
             return segments;
         }
 
+        /// <summary>
+        /// Get the approved comments count for the article 
+        /// </summary>
+        /// <param name="ArticleID">The article to get the comment count for</param>
+        /// <returns></returns>
+        public int GetArticleApprovedCommentCount(int ArticleID)
+        {           
+           var commentCount =  _context.SegmentArticleComment
+                .Where(m => m.SegmentArticleID == ArticleID && m.Status == "Approved")
+                .Count();
+            return commentCount;
+        }
+
+        /// <summary>
+        /// Get the "Review" status comments count for the company 
+        /// </summary>
+        /// <param name="ArticleID">The article to get the comment count for</param>
+        /// <returns></returns>
+        public int GetArticleReviewCommentCount(int CompanyID)
+        {
+            var commentCount = _context.SegmentArticleComment
+                 .Where(m => m.CompanyID == CompanyID && m.Status == "Review")
+                 .Count();
+            return commentCount;
+        }
+
 
     }
 }

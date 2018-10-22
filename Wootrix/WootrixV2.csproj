@@ -36,6 +36,9 @@
     <Content Update="Views\CompanySegments\ArticleList.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="Views\SegmentArticleComments\Admin.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Views\SegmentArticles\Article.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>

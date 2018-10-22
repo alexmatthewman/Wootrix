@@ -121,10 +121,16 @@
                                 </li>
 
                                 <li>
-                                    <a href="">
+
+                                    <a asp-area="" asp-controller="SegmentArticleComments" asp-action="Admin" asp-route-id="@Model.ID" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
                                         <span><img src="~/images/icon-6.png" alt="" /></span>
-                                        <strong>Article Comments</strong>
+                                        <strong>Articles Comments</strong>
                                     </a>
+                                    @if (ViewBag.CommentUnderReviewCount > 0)
+                                    {
+                                        //if there are un-reviewed comments show an alert with the counr
+                                        <div class="notification-alert" style="background-color: @Context.Session.GetString("CompanyHighlightColor")">@ViewBag.CommentUnderReviewCount</div>
+                                    }
 
                                 </li>
 
@@ -253,25 +259,25 @@
                             {
 
                                 <td class="magazine" style="border:4px solid @item.ThemeColor;  background:@item.StandardColor;">
-                                    <a asp-controller="CompanySegments" asp-action="ArticleList" asp-route-id="@item.Title">                                       
-                                            <div class="magazine-pic">
-                                                @{
-                                                    var fn = companyName + "_" + item.CoverImage;
-                                                }
-                                                <img src="~/images/Uploads/@fn" />
+                                    <a asp-controller="CompanySegments" asp-action="ArticleList" asp-route-id="@item.Title">
+                                        <div class="magazine-pic">
+                                            @{
+                                                var fn = companyName + "_" + item.CoverImage;
+                                            }
+                                            <img src="~/images/Uploads/@fn" />
+                                        </div>
+                                        <div class="magazine-text">
+                                            <div class="magazine-text-title">
+                                                @item.Title
                                             </div>
-                                            <div class="magazine-text">
-                                                <div class="magazine-text-title">
-                                                    @item.Title
-                                                </div>
-                                                <div class="publishStuff">
-                                                    <span class="glyphicon glyphicon-user"></span>
-                                                    <div class="author">Posted&nbsp;by @(item.ClientName == null ? "Anon" : item.ClientName)</div>
-                                                    <div class="publishDate">&nbsp;@item.PublishDate.ToString("dd MMM yyyy")</div>
-                                                </div>
+                                            <div class="publishStuff">
+                                                <span class="glyphicon glyphicon-user"></span>
+                                                <div class="author">Posted&nbsp;by @(item.ClientName == null ? "Anon" : item.ClientName)</div>
+                                                <div class="publishDate">&nbsp;@item.PublishDate.ToString("dd MMM yyyy")</div>
                                             </div>
-                                        </a>
-</td>
+                                        </div>
+                                    </a>
+                                </td>
                             }
                         </tr>
                     </tbody>

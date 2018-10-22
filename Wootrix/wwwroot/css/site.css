@@ -22,7 +22,6 @@
     max-width: 1248px;
     position: relative;
     margin: 0px auto;
-    
 }
 
 #UserView .articleContainerSub {
@@ -35,7 +34,6 @@
     justify-content: center;
     position: relative;
     margin: 0px auto;
-   
 }
 
 
@@ -145,6 +143,7 @@
     padding-right: 5px;
     text-align: left;
 }
+
 #UserView .articleContainer .articleBox .article div span {
     padding-top: .15em;
     padding-right: .5em;
@@ -499,6 +498,19 @@
                     text-decoration: none;
                 }
 
+.notification-alert {
+    float: right;
+    background: #00A1E5;
+    position: absolute;
+    margin-left: 8em;
+    margin-top: -1em;
+    border-radius: .5em;
+    /*box-shadow: 0em 0em 1em #000;*/
+    padding: 1em;
+    color: #fff;
+    font-weight: bold;
+}
+
 /* ADMIN MENU STYLING - END */
 
 
@@ -745,7 +757,13 @@ header.major h2, header.major h3, header.major h4, header.major h5, header.major
 }
 
 #footer {
-    padding: 1em 0 5em 0 !important;
+    padding:unset !important;
+    padding-bottom: 1em;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%; 
+    text-align: center;
 }
 
     #footer .powered {
@@ -770,9 +788,18 @@ body {
 }
 
     body .body-stuff {
-        min-height: 45em;
+        /*min-height: 45em;*/
         display: grid;
     }
+
+        body .body-stuff .bodyBox {
+            padding-left: 2em;
+            padding-right: 2em;
+            padding-top: 2em;
+        }
+
+
+
 
 
 *, *:before, *:after {

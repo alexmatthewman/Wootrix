@@ -1,36 +1,90 @@
 ﻿@model IEnumerable<WootrixV2.Models.SegmentArticleComment>
 
+
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_LayoutCompany.cshtml";
+    //Roses are red, violets are blue, here on the weekend, I'm commenting on you
+    //Roses are red, violets are blue, it's so sunny outside, but I'm stuck here with you
+    //Roses are red, violets are blue, if you're reading this now, then you're really bored too
+    ApplicationUser _user = (SignInManager.IsSignedIn(User) ? UserManager.GetUserAsync(User).GetAwaiter().GetResult() : new ApplicationUser());
 }
 
-<h2>Index</h2>
+@using Microsoft.AspNetCore.Identity
+@using WootrixV2.Data;
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Comment)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Comment)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+
+<div class="articleBackButtonContainer">
+    <a asp-controller="SegmentArticles" asp-action="Article" asp-route-id="@ViewBag.ArticleID"><button class="articleBackButton button"><span class="glyphicon glyphicon-menu-left"></span>&nbsp;Back to Article</button></a>
+</div>
+<div class="bodyBox">
+    <h2>Index</h2>
+
+    <p>
+        <a asp-action="Create" asp-route-id="@ViewBag.ArticleID">Create New</a>
+    </p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.UserName)
+                </th>
+
+                <th>
+                    @Html.DisplayNameFor(model => model.Comment)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Status)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CreatedDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.EditDate)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                //Only show the items if it is state approved or the current user created it
+                @if (item.Status == "Approved" || _user.UserName == item.UserName)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.UserName)
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Comment)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Status)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CreatedDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.EditDate)
+                        </td>
+                        <td>
+                            @if (_user.UserName == item.UserName)
+                            {
+                                //Only show edit and delete if the current user is the creator
+
+                                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a>
+                                <a asp-action="Delete" asp-route-id="@item.ID"> Delete </a>
+                            }
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+    <p>N.B. Only approved comments can be seen by all people. Comments in Review state can be seen and edited only by the creator.</p>
+</div>

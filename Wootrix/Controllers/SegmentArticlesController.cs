@@ -69,6 +69,9 @@ namespace WootrixV2.Controllers
                 return NotFound();
             }
 
+            DatabaseAccessLayer dla = new DatabaseAccessLayer(_context);
+            ViewBag.CommentCount = dla.GetArticleApprovedCommentCount(id ?? 0);
+
             var segmentArticle = await _context.SegmentArticle
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (segmentArticle == null)
@@ -134,6 +137,8 @@ namespace WootrixV2.Controllers
                 myArticle.AllowComments = sa.AllowComments;
                 myArticle.ArticleContent = sa.ArticleContent;
                 myArticle.Author = (sa.Author == null ? _user.name : sa.Author); //if null set to be user name
+                myArticle.CreatedBy = _user.UserName; 
+                
                 myArticle.Tags = sa.Tags;
                 myArticle.Segments = string.Join(",", sa.SelectedSegments);
                 
@@ -207,6 +212,7 @@ namespace WootrixV2.Controllers
             s.Author = (segmentArticle.Author == null || segmentArticle.Author == "" ? _user.name : segmentArticle.Author);
             s.AllowComments = segmentArticle.AllowComments;
             s.Tags = segmentArticle.Tags;
+            s.CreatedBy = _user.UserName;
 
             if (segmentArticle.Segments != null && segmentArticle.Segments != "")
             {

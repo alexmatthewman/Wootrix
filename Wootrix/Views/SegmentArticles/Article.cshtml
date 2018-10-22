@@ -16,10 +16,12 @@
     Layout = "~/Views/Shared/_LayoutCompany.cshtml";
 
     var _companyName = Context.Session.GetString("CompanyName");
+    var _SegmentListID = Context.Session.GetString("SegmentListID");
 
 }
+
 <div class="articleBackButtonContainer">
-    <a href="javascript:history.go(-1)"><button class="articleBackButton button"><span class="glyphicon glyphicon-menu-left"></span>&nbsp;Back to Article List</button></a>
+    <a asp-controller="CompanySegments" asp-action="ArticleList" asp-route-id="@_SegmentListID"><button class="articleBackButton button"><span class="glyphicon glyphicon-menu-left"></span>&nbsp;Back to Article List</button></a>
 </div>
 <main id="UserView">
     <div class="articleContainer">
@@ -43,14 +45,17 @@
                                     <span class="glyphicon glyphicon-user"></span>
                                     <div class="author">Posted by @Model.Author&nbsp;</div><div class="publishDate">@Model.PublishFrom</div>
                                 </div>
-                                <div class="commentStuff">
-                                    <a asp-area="" asp-controller="SegmentArticleComment" asp-action="Index">
-                                        <span class="glyphicon glyphicon-comment"></span>
-                                        <div class="commentCount">0&nbsp;</div><div class="commentView">
-                                            Comments
-                                        </div>
-                                    </a>
-                                </div>
+                                @if (Model.AllowComments ?? false)
+                                {
+                                    <div class="commentStuff">
+                                        <a asp-controller="SegmentArticleComments" asp-action="Index" asp-route-id="@Model.ID">
+                                            <span class="glyphicon glyphicon-comment"></span>
+                                            <div class="commentCount">@ViewBag.CommentCount &nbsp;</div><div class="commentView">
+                                                Comments
+                                            </div>
+                                        </a>
+                                    </div>
+                                }
                             </div>
                         </div>
 
@@ -60,7 +65,6 @@
         </div>
     </div>
 </main>
-
 <div class="articleBackButtonContainer">
-    <a href="javascript:history.go(-1)"><button class="articleBackButton button"><span class="glyphicon glyphicon-menu-left"></span>&nbsp;Back to Article List</button></a>
+    <a asp-controller="CompanySegments" asp-action="ArticleList" asp-route-id="@_SegmentListID"><button class="articleBackButton button"><span class="glyphicon glyphicon-menu-left"></span>&nbsp;Back to Article List</button></a>
 </div>

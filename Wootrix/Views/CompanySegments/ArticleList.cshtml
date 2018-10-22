@@ -30,34 +30,45 @@
                 <div class="articleBox">
                     <section style="display: block">
                         @foreach (var item in Model)
-        {
-                        <div class="article articleDetails">
-                            <div>
-                                <a asp-controller="SegmentArticles" asp-action="Article" asp-route-id="@item.ID">
-                                    @{
-                                    var fn = _companyName + "_" + WebUtility.HtmlEncode(item.Title) + "_" + item.Image;
-                                    }
+                        {
+                            <div class="article articleDetails">
+                                <div>
+                                    <a asp-controller="SegmentArticles" asp-action="Article" asp-route-id="@item.ID">
+                                        @{
+                                            var fn = _companyName + "_" + WebUtility.HtmlEncode(item.Title) + "_" + item.Image;
+                                        }
 
-                                    <h1>@item.Title</h1>
-                                    <div class="imageStuff">
-                                        <img src="~/images/Uploads/Articles/@fn" class="UserArticleImage" />
-                                    </div>
-                                    @*@Html.Raw(Model.ArticleContent)*@
-                                    <div class="publishStuff">
-                                        <span class="glyphicon glyphicon-user"></span>
-                                        <div class="author">Posted by @item.Author&nbsp;</div><div class="publishDate">@item.PublishFrom</div>
-                                    </div>
-                                    <div class="commentStuff">
-                                        <a asp-area="" asp-controller="SegmentArticleComment" asp-action="Index">
-                                            <span class="glyphicon glyphicon-comment"></span>
-                                            <div class="commentCount">0&nbsp;</div><div class="commentView">
-                                                Comments
-                                            </div>
-                                        </a>
-                                    </div>
-                                </a>
+                                        <h1>@item.Title</h1>
+                                        <div class="imageStuff">
+                                            <img src="~/images/Uploads/Articles/@fn" class="UserArticleImage" />
+                                        </div>
+                                        @*@Html.Raw(Model.ArticleContent)*@
+                                        <div class="publishStuff">
+                                            <span class="glyphicon glyphicon-user"></span>
+                                            <div class="author">Posted by @item.Author&nbsp;</div><div class="publishDate">@item.PublishFrom</div>
+                                        </div>
+                                    </a>
+                                    @*@if (item.AllowComments ?? false)
+                                    {
+                                        //This is a special list of articleIDs and their comment counts
+                                        var commentCount = "0";
+                                        foreach (var art in ViewBag.ArticleCountList)
+                                        {
+                                            if (art.Value == item.ID) { commentCount = art.Text; }
+                                        }
+
+                                        <div class="commentStuff">
+                                            <a asp-controller="SegmentArticleComments" asp-action="Index" asp-route-id="@item.ID">
+                                                <span class="glyphicon glyphicon-comment"></span>
+                                                <div class="commentCount">@commentCount&nbsp;</div><div class="commentView">
+                                                    Comments
+                                                </div>
+                                            </a>
+                                        </div>
+                                    }*@
+
+                                </div>
                             </div>
-                        </div>
                         }
                     </section>
                 </div>
