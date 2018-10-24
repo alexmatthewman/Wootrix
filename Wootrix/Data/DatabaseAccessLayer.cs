@@ -46,6 +46,38 @@ namespace WootrixV2.Data
             //}
         }
 
+        public IEnumerable<SelectListItem> GetGenders()
+        {
+            List<SelectListItem> gen = new List<SelectListItem>();
+            var gentip = new SelectListItem()
+            {
+                Value = "Not Identified",
+                Text = "Not Identified"
+            };
+            var gen1 = new SelectListItem()
+            {
+                Value = "Male",
+                Text = "Male"
+            };
+            var gen2 = new SelectListItem()
+            {
+                Value = "Female",
+                Text = "Female"
+            };
+            var gen3 = new SelectListItem()
+            {
+                Value = "Other",
+                Text = "Other"
+            };
+            gen.Insert(0, gentip);
+            gen.Insert(1, gen1);
+            gen.Insert(2, gen2);
+            gen.Insert(3, gen3);
+            return new SelectList(gen, "Value", "Text");
+           
+        }
+
+
 
         public IEnumerable<SelectListItem> GetCompanies()
         {

@@ -77,7 +77,7 @@
                                 <a asp-area="" asp-controller="Company" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">Manage Companies</a>
                                 <ul class="dropdown-content">
                                     <li><a asp-controller="CompanyDepartments" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">Company Departments</a></li>
-                                    <li><a asp-controller="Users" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">Company Admins</a></li>
+                                    <li><a asp-controller="Users" asp-action="Index" asp-route-id="CompanyAdmin"  style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">Company Admins</a></li>
                                 </ul>
                             </li>
 
@@ -95,7 +95,7 @@
                                     <li><a asp-controller="SegmentArticleComments" asp-action="Admin" asp-route-id="@companyID" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Article Comments</a></li>
                                     <li><a asp-controller="CompanyPushNotifications" asp-action="Index" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Push Notifications</a></li>
                                     <li><a asp-controller="Reports" asp-action="Index" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Reports</a></li>
-
+                                    <li><a asp-controller="Users" asp-action="Index" asp-route-id="User" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">User Management</a></li>
                                 </ul>
                             </li>
                         }

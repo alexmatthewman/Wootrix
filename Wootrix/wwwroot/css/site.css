@@ -522,7 +522,7 @@
     height: 25em;
     padding: 1em;
     margin: 1em;
-    display: inline-flex;
+    display: inline-block;
     min-width: 20em;
     box-shadow: 1.1em 1.1em 1.1em #ccc;
     border-radius: .5em;
@@ -788,8 +788,8 @@ body {
 }
 
     body .body-stuff {
-        /*min-height: 45em;*/
         display: grid;
+        margin-bottom: 5em;
     }
 
         body .body-stuff .bodyBox {

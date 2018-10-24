@@ -1,0 +1,106 @@
+﻿@model IEnumerable<WootrixV2.Models.User>
+
+
+
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Http;
+@using System.Security.Claims
+@using WootrixV2.Data;
+
+@{
+    ViewData["Title"] = "User Management";
+    Layout = "~/Views/Shared/_LayoutCompany.cshtml";
+    var _type = Context.Session.GetString("ManageType");
+
+    var _companyName = Context.Session.GetString("CompanyName");
+}
+<div class="articleBackButtonContainer">
+    <a asp-controller="Company" asp-action="Home" asp-route-id="@_companyName"><button class="articleBackButton button"><span class="glyphicon glyphicon-menu-left"></span>&nbsp;Back to Admin Menu</button></a>
+</div>
+
+<div class="bodyBox">
+
+
+    <p>
+        <a asp-action="Create" class="button">Create New @_type</a>
+    </p>
+    <h2>List of @_type</h2>
+
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.EmailAddress)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+
+                <th>
+                    @Html.DisplayNameFor(model => model.Role)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PhoneNumber)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Gender)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Photo)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.WebsiteLanguage)
+                </th>
+                @if (_type == "CompanyAdmin")
+                {
+                    <th>
+                        @Html.DisplayNameFor(model => model.Categories)
+                    </th>
+                }
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EmailAddress)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Role)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PhoneNumber)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Gender)
+                    </td>
+                    <td>
+
+                        @{
+                            var fn = item.CompanyName + "_" + item.Photo;
+                        }
+                        <img src="~/images/Uploads/@fn" class="tableimg" />
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.WebsiteLanguage)
+                    </td>
+                    @if (_type == "CompanyAdmin")
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Categories)
+                        </td>
+                    }
+                    <td>
+                        <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

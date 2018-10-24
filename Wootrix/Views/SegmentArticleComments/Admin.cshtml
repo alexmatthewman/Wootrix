@@ -1,6 +1,10 @@
 ﻿@model IEnumerable<WootrixV2.Models.SegmentArticleComment>
 
 
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Http;
+@using WootrixV2.Data;
+@using System.Net
 
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
@@ -12,11 +16,15 @@
     //Roses are red, violets are blue, it's so sunny outside, but I'm stuck here with you
     //Roses are red, violets are blue, if you're reading this now, then you're really bored too
     ApplicationUser _user = (SignInManager.IsSignedIn(User) ? UserManager.GetUserAsync(User).GetAwaiter().GetResult() : new ApplicationUser());
+
+
+    var _companyName = Context.Session.GetString("CompanyName");
 }
 
-@using Microsoft.AspNetCore.Identity
-@using WootrixV2.Data;
 
+<div class="articleBackButtonContainer">
+    <a asp-controller="Company" asp-action="Home" asp-route-id="@_companyName"><button class="articleBackButton button"><span class="glyphicon glyphicon-menu-left"></span>&nbsp;Back to Admin Menu</button></a>
+</div>
 
 <div class="bodyBox">
     <h2>Comments Needing Review</h2>
@@ -56,7 +64,7 @@
                     </td>
                     <td>
 
-                        <a asp-area="" asp-controller="SegmentArticles" asp-action="Article" asp-route-id="@item.SegmentArticleID">
+                        <a class="button" asp-area="" asp-controller="SegmentArticles" asp-action="Article" asp-route-id="@item.SegmentArticleID">
                             <div>View</div>
                         </a>
                     </td>
@@ -73,8 +81,8 @@
                         @Html.DisplayFor(modelItem => item.EditDate)
                     </td>
                     <td>
-                        <a asp-action="Approve" asp-route-id="@item.ID">Approve</a>
-                        <a asp-action="AdminDelete" asp-route-id="@item.ID"> Delete </a>
+                        <a class="button" asp-action="Approve" asp-route-id="@item.ID">Approve</a>
+                        <a class="button" asp-action="AdminDelete" asp-route-id="@item.ID"> Delete </a>
                     </td>
                 </tr>
 

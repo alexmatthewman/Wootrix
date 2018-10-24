@@ -128,12 +128,13 @@ namespace WootrixV2.Controllers
         public async Task<IActionResult> Create(CompanySegmentViewModel cps)
         {
             _user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();
+            var companyID = HttpContext.Session.GetInt32("CompanyID") ?? 0;
             //Initialise a new companysegment
             var mySegment = new CompanySegment();
             if (ModelState.IsValid)
             {
                 //ID,Order,Title,CoverImage,CoverImageMobileFriendly,PublishDate,FinishDate,ClientName,ClientLogoImage,ThemeColor,StandardColor,Draft,Department,Tags
-                mySegment.CompanyID = HttpContext.Session.GetInt32("CompanyID") ?? 0;
+                mySegment.CompanyID = companyID;
                 mySegment.Order = cps.Order ?? 1;
                 mySegment.Title = cps.Title;
                 mySegment.PublishDate = cps.PublishDate;
@@ -186,6 +187,8 @@ namespace WootrixV2.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            DatabaseAccessLayer dla = new DatabaseAccessLayer(_context);
+            cps.Departments = dla.GetDepartments(companyID);
             return View(cps);
         }
 

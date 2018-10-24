@@ -31,5 +31,8 @@ namespace Wootrix.Data
         
         
         public DbSet<ApplicationUser> ApplicationUser { get; set; }
+        
+        
+        public DbSet<WootrixV2.Models.User> User { get; set; }
     }
 }
