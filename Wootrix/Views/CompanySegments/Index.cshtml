@@ -72,14 +72,18 @@
                             <div class="magazine-text-draft btn btn-default" style="background:@color">
                                 @draftOrNot
                             </div>
+                            <a asp-action="Edit" class="btn btn-default" asp-route-id="@item.ID">
+                                <div class="magazine-text-edit" style="background:@Html.DisplayFor(modelItem => item.StandardColor)">
+                                    Edit
 
-                            <div class="magazine-text-edit" style="background:@Html.DisplayFor(modelItem => item.StandardColor)">
-                                <a asp-action="Edit" class="btn btn-default" asp-route-id="@item.ID">Edit</a>
-                            </div>
-                            <div class="magazine-text-delete" style="background:@Html.DisplayFor(modelItem => item.StandardColor)">
-                                <a asp-action="Delete" class="btn btn-default" asp-route-id="@item.ID">Delete</a>
-                            </div>
+                                </div>
+                            </a>
+                            <a asp-action="Delete" class="btn btn-default" asp-route-id="@item.ID">
+                                <div class="magazine-text-delete" style="background:@Html.DisplayFor(modelItem => item.StandardColor)">
+                                    Delete
 
+                                </div>
+                            </a>
                         </div>
                     </a>
                 </td>

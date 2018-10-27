@@ -178,10 +178,12 @@ namespace WootrixV2.Models
         [Display(Name = "Avatar Photo", Prompt = "Avatar Photo", Description = "Avatar Photo")]
         public IFormFile Photo { get; set; }
 
-        [RegularExpression(@"^[A-Z]+[a-zA-Z""'\s-]*$", ErrorMessage = "Please only enter a string")]
-        [StringLength(100)]
-        [Display(Name = "Website Language", Prompt = "Website Language", Description = "Website Language")]
+        
+        
+        [Display(Name = "Languages")]
         public string WebsiteLanguage { get; set; }
+        public IList<string> SelectedLanguages { get; set; }
+        public IList<SelectListItem> AvailableLanguages { get; set; }
 
         [ScaffoldColumn(false)]
         public string WebsiteLanguageID { get; set; }
@@ -190,23 +192,52 @@ namespace WootrixV2.Models
         public string Categories { get; set; }
         public IEnumerable<SelectListItem> Departments { get; set; }
 
-      
-        [Display(Name = "Topics", Prompt = "Topics", Description = "Topics")]
-        public CompanyTopics Topics { get; set; }
+        [Display(Name = "User groups", Prompt = "User groups", Description = "User groups")]
+        public string Groups { get; set; }
+        public IList<string> SelectedGroups { get; set; }
+        public IList<SelectListItem> AvailableGroups { get; set; }
 
-        [Display(Name = "Groups", Prompt = "Groups", Description = "Groups")]
-        public CompanyGroups Groups { get; set; }
+        [Display(Name = "User Topics", Prompt = "User Topics", Description = "User Topics")]
+        public string Topics { get; set; }
+        public IList<string> SelectedTopics { get; set; }
+        public IList<SelectListItem> AvailableTopics { get; set; }
 
-        [Display(Name = "User Type", Prompt = "User Type", Description = "User Type")]
-        public CompanyTypeOfUser TypeOfUser { get; set; }
+        [Display(Name = "Type Of User", Prompt = "Type Of User", Description = "Type Of User")]
+        public string TypeOfUser { get; set; }
+        public IList<string> SelectedTypeOfUser { get; set; }
+        public IList<SelectListItem> AvailableTypeOfUser { get; set; }
 
-        [Display(Name = "Country", Prompt = "Country", Description = "Country")]
-        public CompanyLocCountries Country { get; set; }
+        [Display(Name = "User Country", Prompt = "User Country", Description = "User Country")]
+        public string Country { get; set; }
+        public IEnumerable<SelectListItem> Countries { get; set; }
 
+       
         [Display(Name = "State", Prompt = "State", Description = "State")]
-        public CompanyLocStates State { get; set; }
+        public string State { get; set; }
+        public IEnumerable<SelectListItem> States { get; set; }
 
         [Display(Name = "City", Prompt = "City", Description = "City")]
-        public CompanyLocCities City { get; set; }
+        public string City { get; set; }
+        public IEnumerable<SelectListItem> Cities { get; set; }
+
+        public UserViewModel()
+        {
+            SelectedGroups = new List<string>();
+            AvailableGroups = new List<SelectListItem>();
+
+            SelectedTopics = new List<string>();
+            AvailableTopics = new List<SelectListItem>();
+
+            SelectedTypeOfUser = new List<string>();
+            AvailableTypeOfUser = new List<SelectListItem>();
+
+            SelectedLanguages = new List<string>();
+            AvailableLanguages = new List<SelectListItem>();
+            
+            Countries = new List<SelectListItem>();
+            States = new List<SelectListItem>();
+            Cities = new List<SelectListItem>();
+
+        }
     }
 }

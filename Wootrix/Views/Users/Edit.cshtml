@@ -1,8 +1,63 @@
-﻿@model WootrixV2.Models.User
+﻿@model WootrixV2.Models.UserViewModel
 
+@using Microsoft.AspNetCore.Http;
 @{
     ViewData["Title"] = "Edit";
     Layout = "~/Views/Shared/_LayoutCompany.cshtml";
+
+    var _type = Context.Session.GetString("ManageType");
+}
+
+@section Scripts {
+    @*https://www.pluralsight.com/guides/asp-net-mvc-populating-dropdown-lists-in-razor-views-using-the-mvvm-design-pattern-entity-framework-and-ajax*@
+    <script type="text/javascript">
+
+
+$("#Countries").change(function () {
+    var selectedCountry = $("#Countries").val();
+    var regionsSelect = $("#States");
+    regionsSelect.empty();
+    var citySelect = $("#Cities");
+    citySelect.empty();
+    if (selectedCountry != null && selectedCountry != "") {
+        $.getJSON('@Url.Action("GetStates")', { countryCode: selectedCountry }, function (states) {
+
+            if (states != null && !jQuery.isEmptyObject(states))
+            {
+                regionsSelect.append($('<option/>', {
+                    value: null,
+                    text: ""
+                }));
+                $.each(states, function (index, state) {
+
+                    regionsSelect.append($("<option />").val(this.value).text(this.text));
+                });
+            }
+        });
+    }
+});
+
+
+$("#States").change(function () {
+    var selectedState = $("#States").val();
+    var citySelect = $("#Cities");
+    citySelect.empty();
+    if (selectedState != null && selectedState != "") {
+        $.getJSON('@Url.Action("GetCities")', { stateCode: selectedState }, function (cities) {
+            if (cities != null && !jQuery.isEmptyObject(cities)) {
+                citySelect.append($("<option />", {
+                    value: null,
+                    text: ""
+                }));
+                $.each(cities, function (index, city) {
+                    citySelect.append($("<option />").val(this.value).text(this.text));
+                });
+            }
+        });
+    }
+});
+    </script>
+
 }
 
 <h2>Edit</h2>
@@ -11,7 +66,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="ID" />
             <div class="form-group">
@@ -20,35 +75,116 @@
                 <span asp-validation-for="EmailAddress" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="Password" class="control-label"></label>
+                <input asp-for="Password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ConfirmPassword" class="control-label"></label>
+                <input asp-for="ConfirmPassword" class="form-control" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Role" class="control-label"></label>
-                <select asp-for="Role" class="form-control"></select>
-                <span asp-validation-for="Role" class="text-danger"></span>
-            </div>
+            @if (_type == "CompanyAdmin")
+            {
+                <div class="form-group">
+                    @Html.LabelFor(x => Model.Categories, htmlAttributes: new { @class = "control-label" })
+
+                    @Html.DropDownListFor(x => Model.Categories, new SelectList(Model.Departments, "Value", "Text"), htmlAttributes: new { @class = "form-control", id = "Departments" })
+                    @Html.ValidationMessageFor(x => x.Categories, "", new { @class = "text-danger" })
+
+                </div>
+            }
             <div class="form-group">
                 <label asp-for="PhoneNumber" class="control-label"></label>
                 <input asp-for="PhoneNumber" class="form-control" />
                 <span asp-validation-for="PhoneNumber" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Gender" class="control-label"></label>
-                <input asp-for="Gender" class="form-control" />
-                <span asp-validation-for="Gender" class="text-danger"></span>
+                @Html.LabelFor(x => Model.Gender, htmlAttributes: new { @class = "control-label" })
+                @Html.DropDownListFor(x => Model.Gender, new SelectList(Model.Genders, "Value", "Text"), htmlAttributes: new { @class = "form-control", id = "Genders" })
+                @Html.ValidationMessageFor(x => x.Gender, "", new { @class = "text-danger" })
             </div>
             <div class="form-group">
                 <label asp-for="Photo" class="control-label"></label>
-                <input asp-for="Photo" class="form-control" />
+                @Html.EditorFor(x => x.Photo)
                 <span asp-validation-for="Photo" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="WebsiteLanguage" class="control-label"></label>
-                <input asp-for="WebsiteLanguage" class="form-control" />
-                <span asp-validation-for="WebsiteLanguage" class="text-danger"></span>
-            </div>
+
+            @if (_type == "User")
+            {
+                <div class="form-group checkbox-box">
+                    <label asp-for="Groups" class="control-label"></label>
+                    @foreach (var item in Model.AvailableGroups)
+                    {
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="SelectedGroups" checked="@item.Selected" value="@item.Value" /> @item.Text
+                            </label>
+                        </div>
+                    }
+                </div>
+
+                <div class="form-group checkbox-box">
+                    <label asp-for="Topics" class="control-label"></label>
+                    @foreach (var item in Model.AvailableTopics)
+                    {
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="SelectedTopics" checked="@item.Selected" value="@item.Value" /> @item.Text
+                            </label>
+                        </div>
+                    }
+                </div>
+
+                <div class="form-group checkbox-box">
+                    <label asp-for="TypeOfUser" class="control-label"></label>
+                    @foreach (var item in Model.AvailableTypeOfUser)
+                    {
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="SelectedTypeOfUser" checked="@item.Selected" value="@item.Value" /> @item.Text
+                            </label>
+                        </div>
+                    }
+                </div>
+
+                <div class="form-group checkbox-box">
+                    <label asp-for="WebsiteLanguage" class="control-label"></label>
+                    @foreach (var item in Model.AvailableLanguages)
+                    {
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="SelectedLanguages" checked="@item.Selected" value="@item.Value" /> @item.Text
+                            </label>
+                        </div>
+                    }
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(x => Model.Country, htmlAttributes: new { @class = "control-label" })
+                    @Html.DropDownListFor(x => Model.Country, new SelectList(Model.Countries, "Value", "Text"), htmlAttributes: new { @class = "form-control", id = "Countries" })
+                    @Html.ValidationMessageFor(x => x.Country, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(x => Model.State, htmlAttributes: new { @class = "control-label" })
+                    @Html.DropDownListFor(x => Model.State, new SelectList(Model.States, "Value", "Text"), htmlAttributes: new { @class = "form-control", id = "States" })
+                    @Html.ValidationMessageFor(x => x.State, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(x => Model.City, htmlAttributes: new { @class = "control-label" })
+                    @Html.DropDownListFor(x => Model.City, new SelectList(Model.Cities, "Value", "Text"), htmlAttributes: new { @class = "form-control", id = "Cities" })
+                    @Html.ValidationMessageFor(x => x.City, "", new { @class = "text-danger" })
+                </div>
+
+
+            }
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-default" />
             </div>
@@ -57,6 +193,6 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" asp-route-id="@_type">Back to List</a>
 </div>
 

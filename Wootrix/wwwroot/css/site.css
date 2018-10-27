@@ -1,4 +1,4 @@
-﻿@import url("http://fonts.googleapis.com/css?family=Open+Sans:300,400,400italic,600,600italic,700,800,800italic");
+﻿@import url("https://fonts.googleapis.com/css?family=Open+Sans:300,400,400italic,600,600italic,700,800,800italic");
 @import url(font-awesome.min.css);
 
 
@@ -611,6 +611,7 @@
         }
 
         .checkbox-box .checkbox input[type="checkbox"] {
+            -moz-appearance: checkbox;
             -webkit-appearance: checkbox;
             opacity: unset;
             z-index: unset;
@@ -657,8 +658,9 @@ input[type="file"] {
     background: #fff;
     width: 100%;
     padding: 10px;
-    height: 50px;
+    height: 4em;
     font-size: 13px;
+    padding:unset;
 }
 
 .navbar-inverse {

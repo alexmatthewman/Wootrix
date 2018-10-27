@@ -10,7 +10,12 @@
 @{
     ViewData["Title"] = "User Management";
     Layout = "~/Views/Shared/_LayoutCompany.cshtml";
-    var _type = Context.Session.GetString("ManageType");
+    var t = Context.Session.GetString("ManageType");
+    var _type = t;
+    if (t == "CompanyAdmin" || t == "Admin")
+    {
+        _type = "Company Admins";
+    }
 
     var _companyName = Context.Session.GetString("CompanyName");
 }
@@ -18,28 +23,57 @@
     <a asp-controller="Company" asp-action="Home" asp-route-id="@_companyName"><button class="articleBackButton button"><span class="glyphicon glyphicon-menu-left"></span>&nbsp;Back to Admin Menu</button></a>
 </div>
 
+
+
 <div class="bodyBox">
+    @if (t == "Admin")
+    {
+        // Need to create a dropdownlist of companies so a Super Admin can create the new Company Admins
+        <div id="ChooseYourCompany" class="col-lg-offset-1">
+            <label>Create new Company Admin in:</label>
+            <select class="form-control" id="CompanyChoose" name="CompanyChoose">
+                @foreach (var comp in ViewBag.Companies)
+                {
+                    <option value="@comp.Value">@comp.Text</option>
+                }
+            </select>
+        </div>
+        <p></p>
+    }
+    else
+    {
 
+        <p>Note that if a filter like Group, Language, User type, Topic or Location is not set all articles will be shown as opposed to those marked with a particular filter</p>
 
-    <p>
-        <a asp-action="Create" class="button">Create New @_type</a>
-    </p>
+        <p>
+            <a asp-action="Create" class="button">Create New @_type</a>
+        </p>
+    }
     <h2>List of @_type</h2>
 
 
     <table class="table">
         <thead>
             <tr>
+                @if (t == "Admin")
+                {
+                    <th>
+                        @Html.DisplayNameFor(model => model.CompanyName)
+                    </th>
+                }
                 <th>
                     @Html.DisplayNameFor(model => model.EmailAddress)
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.Name)
                 </th>
+                @if (t == "CompanyAdmin")
+                {
+                    <th>
+                        @Html.DisplayNameFor(model => model.Categories)
+                    </th>
+                }
 
-                <th>
-                    @Html.DisplayNameFor(model => model.Role)
-                </th>
                 <th>
                     @Html.DisplayNameFor(model => model.PhoneNumber)
                 </th>
@@ -49,14 +83,37 @@
                 <th>
                     @Html.DisplayNameFor(model => model.Photo)
                 </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.WebsiteLanguage)
-                </th>
+
                 @if (_type == "CompanyAdmin")
                 {
                     <th>
                         @Html.DisplayNameFor(model => model.Categories)
                     </th>
+                }
+                @if (_type == "User")
+                {
+                    <th>
+                        @Html.DisplayNameFor(model => model.Groups)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Topics)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.TypeOfUser)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.WebsiteLanguage)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Country)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.State)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.City)
+                    </th>
+
                 }
                 <th></th>
             </tr>
@@ -64,42 +121,74 @@
         <tbody>
             @foreach (var item in Model)
             {
-                <tr>
+            <tr>
+                @if (t == "Admin")
+                {
                     <td>
-                        @Html.DisplayFor(modelItem => item.EmailAddress)
+                        @Html.DisplayFor(modelItem => item.CompanyName)
                     </td>
+                }
+                <td>
+                    @Html.DisplayFor(modelItem => item.EmailAddress)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                @if (t == "CompanyAdmin")
+                {
                     <td>
-                        @Html.DisplayFor(modelItem => item.Name)
+                        @Html.DisplayFor(modelItem => item.Categories)
                     </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Role)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.PhoneNumber)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Gender)
-                    </td>
-                    <td>
+                }
+                <td>
+                    @Html.DisplayFor(modelItem => item.PhoneNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Gender)
+                </td>
+                <td>
 
-                        @{
-                            var fn = item.CompanyName + "_" + item.Photo;
-                        }
-                        <img src="~/images/Uploads/@fn" class="tableimg" />
+                    @{
+                        var fn = item.CompanyName + "_" + item.Photo;
+                    }
+                    <img src="~/images/Uploads/Users/@fn" class="tableimg" />
+                </td>
+
+                @if (_type == "CompanyAdmin")
+                {
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Categories)
+                    </td>
+                }
+                @if (_type == "User")
+                {
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Groups)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Topics)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TypeOfUser)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.WebsiteLanguage)
                     </td>
-                    @if (_type == "CompanyAdmin")
-                    {
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Categories)
-                        </td>
-                    }
                     <td>
-                        <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                        @Html.DisplayFor(modelItem => item.Country)
                     </td>
-                </tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.State)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.City)
+                    </td>
+                }
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                    <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                </td>
+            </tr>
             }
         </tbody>
     </table>

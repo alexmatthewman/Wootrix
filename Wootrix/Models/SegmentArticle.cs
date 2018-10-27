@@ -121,6 +121,9 @@ namespace WootrixV2.Models
 
         [Display(Name = "Article appears in these segments", Prompt = "Article appears in these segments", Description = "Article appears in these segments")]
         public string Segments { get; set; }
+        public IList<string> SelectedSegments { get; set; }
+        public IList<SelectListItem> AvailableSegments { get; set; }
+
         //{
         //    get { new List<string>();
         //              string.Join(",", Segments)
@@ -128,8 +131,6 @@ namespace WootrixV2.Models
         //    set { SegmentList = value.Split(',').Select(x => new SelectListItem { Text = x, Value = x }).ToList();
         //    }
         //}
-        public IList<string> SelectedSegments { get; set; }
-        public IList<SelectListItem> AvailableSegments { get; set; }
 
         public SegmentArticleViewModel()
     {

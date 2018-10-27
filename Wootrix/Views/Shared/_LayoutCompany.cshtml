@@ -90,12 +90,14 @@
                                     <li><a asp-controller="CompanyGroups" asp-action="Index" asp-route-id="@Context.Session.GetString("CompanyName")" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Groups</a></li>
                                     <li><a asp-controller="CompanyTopics" asp-action="Index" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Topics</a></li>
                                     <li><a asp-controller="CompanyTypeOfUsers" asp-action="Index" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Type of Users</a></li>
+                                    <li><a asp-controller="CompanyLanguages" asp-action="Index" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Languages</a></li>
                                     <li><a asp-controller="CompanySegments" asp-action="Index" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Segments</a></li>
                                     <li><a asp-controller="SegmentArticles" asp-action="Index" asp-route-id="@companyName" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Articles</a></li>
                                     <li><a asp-controller="SegmentArticleComments" asp-action="Admin" asp-route-id="@companyID" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Article Comments</a></li>
                                     <li><a asp-controller="CompanyPushNotifications" asp-action="Index" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Push Notifications</a></li>
                                     <li><a asp-controller="Reports" asp-action="Index" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Reports</a></li>
                                     <li><a asp-controller="Users" asp-action="Index" asp-route-id="User" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">User Management</a></li>
+                                    <li><a asp-controller="Users" asp-action="Index" asp-route-id="CompanyAdmin" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Company Admin Management</a></li>
                                 </ul>
                             </li>
                         }

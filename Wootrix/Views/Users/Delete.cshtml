@@ -1,8 +1,13 @@
 ﻿@model WootrixV2.Models.User
 
+
+@using Microsoft.AspNetCore.Http;
+
 @{
     ViewData["Title"] = "Delete";
     Layout = "~/Views/Shared/_LayoutCompany.cshtml";
+
+    var _type = Context.Session.GetString("ManageType");
 }
 
 <h2>Delete</h2>
@@ -55,10 +60,10 @@
             @Html.DisplayFor(model => model.WebsiteLanguage)
         </dd>
     </dl>
-    
+
     <form asp-action="Delete">
         <input type="hidden" asp-for="ID" />
         <input type="submit" value="Delete" class="btn btn-default" /> |
-        <a asp-action="Index">Back to List</a>
+        <a asp-action="Index" asp-route-id="@_type">Back to List</a>
     </form>
 </div>

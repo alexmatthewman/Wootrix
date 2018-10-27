@@ -8,22 +8,20 @@ namespace WootrixV2.Models
 {
     public class CompanyLocCountries
     {
+
+        //[ScaffoldColumn(false)]
+        //public int ID { get; set; }
+
+        //[ScaffoldColumn(false)]
+        //public int CompanyID { get; set; }
+
         [Key]
-        public int ID { get; set; }
+        [StringLength(2)]
+        public string country_code { get; set; }
 
-        [ScaffoldColumn(false)]
-        public int CompanyID { get; set; }
-
-        [Required]
-        [RegularExpression(@"^[A-Z]+[a-zA-Z""'\s-]*$", ErrorMessage = "Please only enter a string")]
-        [StringLength(1000)]
-        [Display(Name = "CountryName Name", Prompt = "Enter the Country name", Description = "Country Name")]
-        public string CountryName { get; set; }
-
-        
-
-        //Might have to have these pull from a list but for now just entry should suffice
-
+        [Display(Name = "Country Name", Prompt = "Enter the Country name", Description = "Country Name")]
+        [StringLength(500)]
+        public string country_name { get; set; }
 
     }
 }

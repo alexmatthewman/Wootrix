@@ -46,17 +46,58 @@ namespace WootrixV2.Controllers
         }
 
 
-        // GET: Users
+        // GET: Users        
         public async Task<IActionResult> Index(string id)
         {
 
             _companyID = HttpContext.Session.GetInt32("CompanyID") ?? 0;
             var role = (Roles)Enum.Parse(typeof(Roles), id);
             HttpContext.Session.SetString("ManageType", role.ToString());
-            return View(await _context.User
-                .Where(m => m.CompanyID == _companyID)
-                .Where(n => n.Role == role)
-                .ToListAsync());
+            DatabaseAccessLayer dla = new DatabaseAccessLayer(_context);
+            List<User> data = new List<User>();
+
+            ViewBag.Companies = dla.GetCompanies();
+            if (role.ToString() == "Admin")
+            {
+                Roles cpa = Roles.CompanyAdmin;
+                // just return all CompanyAdmins for all companies
+                data = await _context.User
+                    .Where(n => n.Role == cpa)
+                    .OrderBy(n => n.CompanyName)
+                    .ToListAsync();
+
+            }
+            else
+            {
+                data = await _context.User
+                   .Where(m => m.CompanyID == _companyID)
+                   .Where(n => n.Role == role)
+                   .OrderBy(n => n.EmailAddress)
+                   .ToListAsync();
+                foreach (var item in data)
+                {
+                    if (!string.IsNullOrWhiteSpace(item.Categories) && item.Categories != "User")
+                    {
+                        DatabaseAccessLayer dla1 = new DatabaseAccessLayer(_context);
+
+                        item.Categories = dla1.GetCompanyDepartmentName(item.Categories);
+                    }
+                    //if (!string.IsNullOrWhiteSpace(item.Country))
+                    //{
+                    //    DatabaseAccessLayer dla2 = new DatabaseAccessLayer(_context);
+
+                    //    item.Country = dla2.GetCountryName(item.Country);
+                    //}
+                    //if (!string.IsNullOrWhiteSpace(item.State))
+                    //{
+                    //    DatabaseAccessLayer dla3 = new DatabaseAccessLayer(_context);
+
+                    //    item.State = dla3.GetStateName(item.State);
+                    //}
+
+                }
+            }
+            return View(data);
         }
 
         // GET: Users/Details/5
@@ -78,20 +119,108 @@ namespace WootrixV2.Controllers
         }
 
         // GET: Users/Create
-        public IActionResult Create()
+        public IActionResult Create(int? id)
         {
+            if (!string.IsNullOrWhiteSpace(id.ToString()))
+            {
+                //Admin user has selected a companyID so set the current session stuff appropriately
+                var companyID = id ?? 0;
+                var companyName = _context.Company.FirstOrDefaultAsync(n => n.ID == companyID).GetAwaiter().GetResult().CompanyName;
+                HttpContext.Session.SetInt32("CompanyID", companyID);
+                HttpContext.Session.SetString("CompanyName", companyName);
+            }
+
             var r = HttpContext.Session.GetString("ManageType");
             DatabaseAccessLayer dla = new DatabaseAccessLayer(_context);
             _user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();
             UserViewModel s = new UserViewModel();
-            var cp = _user.companyID;
+
+            var cp = HttpContext.Session.GetInt32("CompanyID") ?? 0;
             s.CompanyID = HttpContext.Session.GetInt32("CompanyID") ?? 0;
             s.CompanyName = HttpContext.Session.GetString("CompanyName") ?? "";
             s.Role = (Roles)Enum.Parse(typeof(Roles), r);
             s.Departments = dla.GetDepartments(cp);
             s.Genders = dla.GetGenders();
+
+            if (r == "User")
+            {
+
+                // Add group checkboxes
+                var listOfAllGroups = dla.GetListGroups(_user.companyID);
+                foreach (var seg in listOfAllGroups)
+                {
+                    s.AvailableGroups.Add(new SelectListItem { Text = seg.Value, Value = seg.Value });
+                }
+
+                // Add topic checkboxes
+                var listOfAllTopics = dla.GetListTopics(_user.companyID);
+                foreach (var seg in listOfAllTopics)
+                {
+                    s.AvailableTopics.Add(new SelectListItem { Text = seg.Value, Value = seg.Value });
+                }
+
+                // Add type checkboxes
+                var listOfAllTypeOfUser = dla.GetListTypeOfUser(_user.companyID);
+                foreach (var seg in listOfAllTypeOfUser)
+                {
+                    s.AvailableTypeOfUser.Add(new SelectListItem { Text = seg.Value, Value = seg.Value });
+                }
+
+                // Add language checkboxes
+                var listOfAllLanguages = dla.GetListLanguages(_user.companyID);
+                foreach (var seg in listOfAllLanguages)
+                {
+                    s.AvailableLanguages.Add(new SelectListItem { Text = seg.Value, Value = seg.Value });
+                }
+
+                // Get location dropdown data
+                s.Countries = dla.GetCountries();
+                s.States = dla.GetNullStatesOrCities();
+                s.Cities = dla.GetNullStatesOrCities();
+            }
             return View(s);
         }
+
+        public IEnumerable<SelectListItem> GetRegions()
+        {
+            List<SelectListItem> regions = new List<SelectListItem>()
+            {
+                new SelectListItem
+                {
+                    Value = null,
+                    Text = " "
+                }
+            };
+            return regions;
+        }
+
+
+        [HttpGet]
+        public JsonResult GetStates(string countryCode)
+        {
+            if (!string.IsNullOrWhiteSpace(countryCode) && countryCode.Length == 2)
+            {
+                HttpContext.Session.SetString("countryCode", countryCode);
+                DatabaseAccessLayer dla = new DatabaseAccessLayer(_context);
+                IEnumerable<SelectListItem> states = dla.GetStates(countryCode);
+                return Json(states);
+            }
+            return null;
+        }
+
+        [HttpGet]
+        public JsonResult GetCities(string stateCode)
+        {
+            if (!string.IsNullOrWhiteSpace(stateCode))
+            {
+                string countryCode = HttpContext.Session.GetString("countryCode");
+                DatabaseAccessLayer dla = new DatabaseAccessLayer(_context);
+                IEnumerable<SelectListItem> cities = dla.GetCities(countryCode, stateCode);
+                return Json(cities);
+            }
+            return null;
+        }
+
 
         // POST: Users/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
@@ -104,6 +233,7 @@ namespace WootrixV2.Controllers
             if (ModelState.IsValid)
             {
                 var r = HttpContext.Session.GetString("ManageType");
+                if (r == "Admin") r = "CompanyAdmin";
                 _user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();
                 User un = new User();
                 un.CompanyID = HttpContext.Session.GetInt32("CompanyID") ?? 0;
@@ -116,12 +246,20 @@ namespace WootrixV2.Controllers
                 un.WebsiteLanguage = user.WebsiteLanguage;
                 un.CreatedOn = DateTime.Now;
                 un.CreatedBy = _user.UserName;
-               // un.CategoriesID = user.Categories;
+                un.Categories = user.Categories;
+
+                un.Groups = string.Join(",", user.SelectedGroups);
+                un.Topics = string.Join(",", user.SelectedTopics);
+                un.TypeOfUser = string.Join(",", user.SelectedTypeOfUser);
+                un.WebsiteLanguage = string.Join(",", user.SelectedLanguages);
+                un.Country = user.Country;
+                un.State = user.State;
+                un.City = user.City;
 
                 IFormFile avatar = user.Photo;
                 if (avatar != null)
                 {
-                    var filePath = Path.Combine(_rootpath, "images/Uploads", _user.companyName + "_" + avatar.FileName);
+                    var filePath = Path.Combine(_rootpath, "images/Uploads/Users", HttpContext.Session.GetString("CompanyName") + "_" + avatar.FileName);
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
                         await avatar.CopyToAsync(stream);
@@ -148,11 +286,48 @@ namespace WootrixV2.Controllers
                 //Add the user to the user table as well at the identity tables
                 _context.Add(un);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Index", "Users", new { id = r });
+                return RedirectToAction("Index", "Users", new { id = HttpContext.Session.GetString("ManageType") });
             }
             DatabaseAccessLayer dla = new DatabaseAccessLayer(_context);
             user.Departments = dla.GetDepartments(companyID);
             user.Genders = dla.GetGenders();
+
+            if (HttpContext.Session.GetString("ManageType") == "User")
+            {
+
+                // Add group checkboxes
+                var listOfAllGroups = dla.GetListGroups(companyID);
+                foreach (var seg in listOfAllGroups)
+                {
+                    user.AvailableGroups.Add(new SelectListItem { Text = seg.Value, Value = seg.Value });
+                }
+
+                // Add topic checkboxes
+                var listOfAllTopics = dla.GetListTopics(companyID);
+                foreach (var seg in listOfAllTopics)
+                {
+                    user.AvailableTopics.Add(new SelectListItem { Text = seg.Value, Value = seg.Value });
+                }
+
+                // Add type checkboxes
+                var listOfAllTypeOfUser = dla.GetListTypeOfUser(companyID);
+                foreach (var seg in listOfAllTypeOfUser)
+                {
+                    user.AvailableTypeOfUser.Add(new SelectListItem { Text = seg.Value, Value = seg.Value });
+                }
+
+                // Add language checkboxes
+                var listOfAllLanguages = dla.GetListLanguages(companyID);
+                foreach (var seg in listOfAllLanguages)
+                {
+                    user.AvailableLanguages.Add(new SelectListItem { Text = seg.Value, Value = seg.Value });
+                }
+
+                // Get location dropdown data
+                user.Countries = dla.GetCountries();
+                user.States = dla.GetNullStatesOrCities();
+                user.Cities = dla.GetNullStatesOrCities();
+            }
             return View(user);
         }
 
@@ -192,12 +367,108 @@ namespace WootrixV2.Controllers
                 return NotFound();
             }
 
+            var r = HttpContext.Session.GetString("ManageType");
+
+            //If admin user get companyID/Name of the selected user
+            if (!string.IsNullOrWhiteSpace(id.ToString()) && r == "Admin")
+            {
+                //Admin user has selected a companyID so set the current session stuff appropriately
+                var companyID = id ?? 0;
+                var _user = _context.User.AsNoTracking().Where(n => n.ID == id).SingleAsync().GetAwaiter().GetResult();
+
+                //var companyName = _context.Company.FirstOrDefaultAsync(n => n.ID == companyID).GetAwaiter().GetResult().CompanyName;
+                HttpContext.Session.SetInt32("CompanyID", _user.CompanyID);
+                HttpContext.Session.SetString("CompanyName", _user.CompanyName);
+            }
+
             var user = await _context.User.FindAsync(id);
+            DatabaseAccessLayer dla = new DatabaseAccessLayer(_context);
+            _user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();
+            UserViewModel s = new UserViewModel();
+            var cp = HttpContext.Session.GetInt32("CompanyID") ?? 0;
+            s.CompanyID = HttpContext.Session.GetInt32("CompanyID") ?? 0;
+            s.CompanyName = HttpContext.Session.GetString("CompanyName") ?? "";
+            s.Role = user.Role;
+            s.Departments = dla.GetDepartments(cp);
+            s.Genders = dla.GetGenders();
+            s.EmailAddress = user.EmailAddress;
+            s.Name = user.Name;
+            //s.ID = user.ID;
+            s.PhoneNumber = user.PhoneNumber;
+
+            if (r == "User")
+            {
+                // Get location dropdown data
+                s.Countries = dla.GetCountries();
+                s.States = dla.GetNullStatesOrCities();
+                s.Cities = dla.GetNullStatesOrCities();
+
+                if (user.Groups != null && user.Groups != "")
+                {
+                    s.AvailableGroups = user.Groups.Split(',').Select(x => new SelectListItem { Text = x, Value = x, Selected = true }).ToList();
+                }
+                //Add any options not already in the segmentlist
+                var listOfAllGroups = dla.GetListGroups(_user.companyID);
+                foreach (var seg in listOfAllGroups)
+                {
+                    if (s.AvailableGroups.FirstOrDefault(stringToCheck => stringToCheck.Value.Contains(seg.Value)) == null)
+                    {
+                        //if no match (not in the list) then add it
+                        s.AvailableGroups.Add(new SelectListItem { Text = seg.Value, Value = seg.Value });
+                    }
+                }
+
+
+                if (user.Topics != null && user.Topics != "")
+                {
+                    s.AvailableTopics = user.Topics.Split(',').Select(x => new SelectListItem { Text = x, Value = x, Selected = true }).ToList();
+                }
+                //Add any options not already in the segmentlist
+                var listOfAllTopics = dla.GetListTopics(_user.companyID);
+                foreach (var seg in listOfAllTopics)
+                {
+                    if (s.AvailableTopics.FirstOrDefault(stringToCheck => stringToCheck.Value.Contains(seg.Value)) == null)
+                    {
+                        //if no match (not in the list) then add it
+                        s.AvailableTopics.Add(new SelectListItem { Text = seg.Value, Value = seg.Value });
+                    }
+                }
+
+                if (user.TypeOfUser != null && user.TypeOfUser != "")
+                {
+                    s.AvailableTypeOfUser = user.TypeOfUser.Split(',').Select(x => new SelectListItem { Text = x, Value = x, Selected = true }).ToList();
+                }
+                //Add any options not already in the segmentlist
+                var listOfAllTypeOfUser = dla.GetListTypeOfUser(_user.companyID);
+                foreach (var seg in listOfAllTypeOfUser)
+                {
+                    if (s.AvailableTypeOfUser.FirstOrDefault(stringToCheck => stringToCheck.Value.Contains(seg.Value)) == null)
+                    {
+                        //if no match (not in the list) then add it
+                        s.AvailableTypeOfUser.Add(new SelectListItem { Text = seg.Value, Value = seg.Value });
+                    }
+                }
+
+                if (user.WebsiteLanguage != null && user.WebsiteLanguage != "")
+                {
+                    s.AvailableLanguages = user.WebsiteLanguage.Split(',').Select(x => new SelectListItem { Text = x, Value = x, Selected = true }).ToList();
+                }
+                //Add any options not already in the segmentlist
+                var listOfAllLanguages = dla.GetListLanguages(_user.companyID);
+                foreach (var seg in listOfAllLanguages)
+                {
+                    if (s.AvailableLanguages.FirstOrDefault(stringToCheck => stringToCheck.Value.Contains(seg.Value)) == null)
+                    {
+                        //if no match (not in the list) then add it
+                        s.AvailableLanguages.Add(new SelectListItem { Text = seg.Value, Value = seg.Value });
+                    }
+                }
+            }
             if (user == null)
             {
                 return NotFound();
             }
-            return View(user);
+            return View(s);
         }
 
         // POST: Users/Edit/5
@@ -205,18 +476,67 @@ namespace WootrixV2.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("EmailAddress,Name,Role,PhoneNumber,Gender,Photo,WebsiteLanguage")] User user)
+        public async Task<IActionResult> Edit(int id, UserViewModel user)
         {
             if (id != user.ID)
             {
                 return NotFound();
             }
-
             if (ModelState.IsValid)
             {
+                User un = _context.User.Where(x => x.ID == id).FirstOrDefault();
+                var r = HttpContext.Session.GetString("ManageType");
+
+                if (r == "Admin") r = "CompanyAdmin";
+
                 try
                 {
-                    _context.Update(user);
+                    _user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();
+
+                    //un.ID = user.ID;
+                    un.CompanyID = HttpContext.Session.GetInt32("CompanyID") ?? 0;
+                    un.CompanyName = HttpContext.Session.GetString("CompanyName") ?? "";
+                    un.Role = (Roles)Enum.Parse(typeof(Roles), r);
+                    un.Gender = user.Gender;
+                    un.EmailAddress = user.EmailAddress;
+                    un.Name = user.Name;
+                    un.PhoneNumber = user.PhoneNumber;
+                    un.WebsiteLanguage = user.WebsiteLanguage;
+                    un.CreatedOn = DateTime.Now;
+                    un.CreatedBy = _user.UserName;
+                    un.Categories = user.Categories;
+                    un.Country = user.Country;
+                    un.State = user.State;
+                    un.City = user.City;
+
+                    un.Groups = string.Join(",", user.SelectedGroups);
+                    un.Topics = string.Join(",", user.SelectedTopics);
+                    un.TypeOfUser = string.Join(",", user.SelectedTypeOfUser);
+                    un.WebsiteLanguage = string.Join(",", user.SelectedLanguages);
+
+                    IFormFile avatar = user.Photo;
+                    if (avatar != null)
+                    {
+                        var filePath = Path.Combine(_rootpath, "images/Uploads/Users", HttpContext.Session.GetString("CompanyName") + "_" + avatar.FileName);
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await avatar.CopyToAsync(stream);
+                        }
+                        //The file has been saved to disk - now save the file name to the DB
+                        un.Photo = avatar.FileName;
+                    }
+
+                    //Update the .net user every time
+                    var usr = _context.User.FirstOrDefaultAsync(m => m.ID == id).GetAwaiter().GetResult();
+                    var thisUser = await _userManager.FindByEmailAsync(usr.EmailAddress);
+                    var result = await _userManager.UpdateAsync(thisUser);
+                    var userId = await _userManager.GetUserIdAsync(thisUser);
+                    if (!result.Succeeded)
+                    {
+                        throw new InvalidOperationException($"Unexpected error occurred deleteing user with ID '{userId}'.");
+                    }
+
+                    _context.Update(un);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -230,8 +550,12 @@ namespace WootrixV2.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Users", new { id = HttpContext.Session.GetString("ManageType") });
             }
+
+            DatabaseAccessLayer dla = new DatabaseAccessLayer(_context);
+            user.Departments = dla.GetDepartments(HttpContext.Session.GetInt32("CompanyID") ?? 0);
+            user.Genders = dla.GetGenders();
             return View(user);
         }
 

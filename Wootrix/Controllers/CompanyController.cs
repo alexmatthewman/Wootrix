@@ -145,16 +145,6 @@ namespace WootrixV2.Controllers
                     myCompany.CompanyFocusImage = focus.FileName;
                 }
 
-                ////Optional so check if there first
-                //if (model.CompanyBackgroundImage != null)
-                //{
-                //    using (var memoryStream = new MemoryStream())
-                //    {
-                //        await model.CompanyBackgroundImage.CopyToAsync(memoryStream);
-                //        myCompany.CompanyBackgroundImage = memoryStream.ToArray();
-                //    }
-                //}
-
                 _context.Add(myCompany);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -188,22 +178,7 @@ namespace WootrixV2.Controllers
             return View();
         }
 
-        //// POST: Company/Create
-        //// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        //// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create([Bind("ID,CompanyName,CompanyLogoImage,CompanyBackgroundColor,CompanyBackgroundImage,CompanyFocusImage,CompanyTextMain,CompanyTextSecondary,CompanyHighlightColor,CompanyHeaderBackgroundColor,CompanyMainFontColor,CompanyHeaderFontColor")] Company company)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        _context.Add(company);
-        //        await _context.SaveChangesAsync();
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(company);
-        //}
-
+      
         // GET: Company/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -217,22 +192,7 @@ namespace WootrixV2.Controllers
             {
                 return NotFound();
             }
-            //var logo = company.CompanyLogoImage;
-            //CompanyViewModel cpy = new CompanyViewModel();
-            //cpy.CompanyName = company.CompanyName;
-            //cpy.CompanyTextMain = company.CompanyTextMain;
-            //cpy.CompanyTextSecondary = company.CompanyTextSecondary;
-            //cpy.CompanyNumberOfUsers = company.CompanyNumberOfUsers;
-            //cpy.CompanyNumberOfPushNotifications = company.CompanyNumberOfPushNotifications;
-            //cpy.CompanyMainFontColor = company.CompanyMainFontColor;
-            //cpy.CompanyHighlightColor = company.CompanyHighlightColor;
-            //cpy.CompanyHeaderFontColor = company.CompanyHeaderFontColor;
-            //cpy.CompanyHeaderBackgroundColor = company.CompanyHeaderBackgroundColor;
-            //cpy.CompanyBackgroundColor = company.CompanyBackgroundColor;
-
-            //var filePath = Path.Combine(_rootpath, "images/Uploads", cpy.CompanyName + "_" + company.CompanyLogoImage);
-            //cpy.CompanyLogoImage = System.IO.File..GetFiles(filePath);
-
+          
             return View(company);
         }
 
@@ -298,17 +258,7 @@ namespace WootrixV2.Controllers
                     myCompany.CompanyFocusImage = focus.FileName;
                 }
 
-                //There should probably be some separation by company for files but fuck it
-
-
-                ////Copy the IFormFiles to stream and save it to the byte arrays
-                //using (var memoryStream = new MemoryStream())
-                //{
-                //    await model.CompanyLogoImage.CopyToAsync(memoryStream);
-                //    myCompany.CompanyLogoImage = memoryStream.ToArray();
-                //}
-
-
+              
                 try
                 {
                     _context.Update(myCompany);
