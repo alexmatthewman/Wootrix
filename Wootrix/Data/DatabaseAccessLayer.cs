@@ -22,7 +22,7 @@ namespace WootrixV2.Data
         {
             _context = context;
         }
-        
+
 
         public IEnumerable<SelectListItem> GetCountries()
         {
@@ -262,21 +262,19 @@ namespace WootrixV2.Data
 
         public List<SelectListItem> GetArticleSegments(int companyID)
         {
-            using (var context = _context)
-            {
-                List<SelectListItem> deps = context.CompanySegment.AsNoTracking()
-                .Where(n => n.CompanyID == companyID)
-                    .OrderBy(n => n.Title)
-                        .Select(n =>
-                        new SelectListItem
-                        {
-                            //Value = n.ID.ToString(),
-                            Value = n.Title,
-                            Text = n.Title
-                        }).ToList();
+            List<SelectListItem> deps = _context.CompanySegment.AsNoTracking()
+            .Where(n => n.CompanyID == companyID)
+                .OrderBy(n => n.Title)
+                    .Select(n =>
+                    new SelectListItem
+                    {
+                        //Value = n.ID.ToString(),
+                        Value = n.Title,
+                        Text = n.Title
+                    }).ToList();
 
-                return deps;
-            }
+            return deps;
+
         }
 
 
@@ -292,15 +290,89 @@ namespace WootrixV2.Data
 
         }
 
-        public List<WootrixV2.Models.CompanySegment> GetSegmentsList(int companyID)
+        public List<WootrixV2.Models.CompanySegment> GetSegmentsList(int companyID, User usr)
         {
+            // Have to do this backwards - get all the articles the user can see, then get a list of all segments which have articles
+            List<CompanySegment> segments = new List<CompanySegment>();
+            List<SegmentArticle> articles = new List<SegmentArticle>();
 
-            List<WootrixV2.Models.CompanySegment> segments = _context.CompanySegment.AsNoTracking()
-            .Where(n => n.CompanyID == companyID)
-                .OrderBy(n => n.Order)
-                    .ToList();
+            // Our filters are Country, State, City, Language, Topics, Groups, TypeOfUser....also publish date
+            // IF an article has a country set, only show it if the user also has it set
+            // OR IF neither article or user have it set, show it 
+
+            foreach (SegmentArticle art in _context.SegmentArticle)
+            {
+                if (art.CompanyID == usr.CompanyID)
+                {
+                    // If the article is published
+                    if (art.PublishFrom < DateTime.Now)
+                    {
+                        // Should work for null == null too I think
+                        if (art.Country == usr.Country
+                            && art.State == usr.State
+                            && art.City == usr.City)
+                        {
+                            // For groups, If both are null or equal it's fine. If not cycle through the user Groups and if the Article groups match one then if it allowed
+                            if (PassesFilter(art.Groups, usr.Groups) && PassesFilter(art.TypeOfUser, usr.TypeOfUser) && PassesFilter(art.Topics, usr.Topics) && PassesFilter(art.Languages, usr.WebsiteLanguage))
+                            {
+                                articles.Add(art);
+                            }
+                        }
+
+
+                    }
+                }
+
+            }
+
+            // So now we have the articles that are valid for the user
+            // We need to loop through them and for each Segement found, if it is not already in the list, add it
+            foreach (SegmentArticle item in articles)
+            {
+                var articleSegments = item.Segments.Split(',').ToList();
+                foreach (var segmentTitle in articleSegments)
+                {
+                    // Check if the segment itle is in the existing segment list
+                    if (segments.FirstOrDefault(p => p.Title == segmentTitle) == null)
+                    {
+                        // Not in list so add it
+                        segments.Add(_context.CompanySegment.FirstOrDefault(p => p.Title == segmentTitle));
+                    }
+                }
+            }
+
             //TODO Add all the user and article filtering here
             return segments;
+        }
+
+        public bool PassesFilter(string articleCSVFilter, string userCSVFilter)
+        {
+            bool isInFilter = false;
+            // For groups, If both are null or equal it's fine. If not cycle through the user Groups and if the Article groups match one then if it allowed
+            if (string.IsNullOrEmpty(articleCSVFilter) && string.IsNullOrEmpty(userCSVFilter)) return true;
+
+            var filterList = userCSVFilter.Split(',').ToList();
+            foreach (var filter in filterList)
+            {
+                if (articleCSVFilter.Contains(filter))
+                {
+                    // Crap have to do this stupid loop for each type of filter - at least it should be fast
+                    return true;
+                }
+            }
+
+            return isInFilter;
+        }
+
+        public List<WootrixV2.Models.SegmentArticleComment> GetArticleCommentsList(int ArticleID)
+        {
+
+            List<WootrixV2.Models.SegmentArticleComment> comments = _context.SegmentArticleComment.AsNoTracking()
+            .Where(n => n.SegmentArticleID == ArticleID && n.Status == "Approved")
+                .OrderBy(n => n.CreatedDate)
+                    .ToList();
+            //TODO Add all the user and article filtering here
+            return comments;
         }
 
         /// <summary>

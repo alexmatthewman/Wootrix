@@ -8,107 +8,151 @@
 @inject UserManager<ApplicationUser> UserManager
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Article List";
     Layout = "~/Views/Shared/_LayoutCompany.cshtml";
 
     var _companyName = UserManager.GetUserAsync(User).GetAwaiter().GetResult().companyName;
 }
 
+<div class="bodyBox">
+    <h2>Article List</h2>
 
-<h2>Index</h2>
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Order)
+                </th>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Order)
-            </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Title)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Image)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.EmbeddedVideo)
+                </th>
 
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Image)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EmbeddedVideo)
-            </th>
-            
-            <th>
-                @Html.DisplayNameFor(model => model.PublishFrom)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PublishTill)
-            </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PublishFrom)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PublishTill)
+                </th>
 
-            <th>
-                @Html.DisplayNameFor(model => model.Tags)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AllowComments)
-            </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Tags)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.AllowComments)
+                </th>
 
-            <th>
-                @Html.DisplayNameFor(model => model.Author)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Segments)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Order)
-            </td>
+                <th>
+                    @Html.DisplayNameFor(model => model.Author)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Segments)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Groups)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Topics)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.TypeOfUser)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Languages)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Country)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.State)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.City)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Order)
+                    </td>
 
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @{
-                    var fn = _companyName + "_" + WebUtility.HtmlEncode(item.Title) + "_" + item.Image;
-                }
-                <img src="~/images/Uploads/Articles/@fn" class="tableimg" />
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EmbeddedVideo)
-            </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </td>
+                    <td>
+                        @{
+                            var fn = _companyName + "_" + WebUtility.HtmlEncode(item.Title) + "_" + item.Image;
+                        }
+                        <img src="~/images/Uploads/Articles/@fn" class="tableimg" />
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EmbeddedVideo)
+                    </td>
 
-            <td>
-                @Html.DisplayFor(modelItem => item.PublishFrom)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PublishTill)
-            </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PublishFrom)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PublishTill)
+                    </td>
 
-            <td>
-                @Html.DisplayFor(modelItem => item.Tags)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AllowComments)
-            </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Tags)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AllowComments)
+                    </td>
 
-            <td>
-                @Html.DisplayFor(modelItem => item.Author)
-            </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Author)
+                    </td>
 
-            <td>
-                @Html.DisplayFor(modelItem => item.Segments)
-            </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Segments)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Groups)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Topics)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TypeOfUser)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Languages)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Country)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.State)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.City)
+                    </td>
 
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-            </td>
-        </tr>
-        }
-    </tbody>
-</table>
+
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

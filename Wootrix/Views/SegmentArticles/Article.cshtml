@@ -55,6 +55,30 @@
                                             </div>
                                         </a>
                                     </div>
+                                    <div class="commentsList">
+                                        @foreach (WootrixV2.Models.SegmentArticleComment com in ViewBag.Comments)
+                                        {
+                                            // If not a reply
+                                            if (string.IsNullOrEmpty(com.ReplyingToCommentID.ToString()))
+                                            {
+                                                <div class="comment-box">
+
+                                                   
+                                                    <div class="comment-date">@com.CreatedDate</div>
+                                                    <div class="comment-person">@com.UserName</div>
+                                                    <div class="comment-text">@com.Comment</div>
+                                                </div>
+                                            }
+                                            // If it is a reply
+                                            @if (!string.IsNullOrWhiteSpace(com.ReplyingToCommentID.ToString()))
+                                            {
+                                                <div class="reply-box">
+                                                    <div class="comment-person">Reply from Admin: @com.UserName</div>
+                                                    <div class="comment-text">@com.Comment</div>
+                                                </div>
+                                            }
+                                        }
+                                    </div>
                                 }
                             </div>
                         </div>

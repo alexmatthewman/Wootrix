@@ -41,6 +41,11 @@ namespace WootrixV2.Models
         [ScaffoldColumn(false)]
         [Display(Name = "Comment Status")]
         public string Status { get; set; }
+
+        [ScaffoldColumn(false)]
+        public int? ReplyingToCommentID { get; set; }
+
+        
     }
 
     public class SegmentArticleCommentViewModel
@@ -78,5 +83,8 @@ namespace WootrixV2.Models
         [Display(Name = "Comment Status")]
         public string Status { get; set; }
         public IEnumerable<SelectListItem> StatusOptions { get; set; }
+
+        [ScaffoldColumn(false)]
+        public int? ReplyingToCommentID { get; set; }
     }
 }

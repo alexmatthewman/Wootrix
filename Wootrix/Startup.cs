@@ -121,8 +121,8 @@ namespace Wootrix
             //});
 
             //app.UseStaticFiles();
-            //app.UseDeveloperExceptionPage();
-            //app.UseDatabaseErrorPage();
+            app.UseDeveloperExceptionPage();
+            
 
             app.UseHttpsRedirection();            
             app.UseCookiePolicy();

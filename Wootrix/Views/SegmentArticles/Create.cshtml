@@ -4,99 +4,221 @@
     ViewData["Title"] = "Create";
     Layout = "~/Views/Shared/_LayoutCompany.cshtml";
 }
-<script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
+
+<script src="//cdn.ckeditor.com/4.10.1/full/ckeditor.js"></script>
+
+
+@*https://www.pluralsight.com/guides/asp-net-mvc-populating-dropdown-lists-in-razor-views-using-the-mvvm-design-pattern-entity-framework-and-ajax*@
+<script type="text/javascript">
+
+
+$("#Countries").change(function () {
+    var selectedCountry = $("#Countries").val();
+    var regionsSelect = $("#States");
+    regionsSelect.empty();
+    var citySelect = $("#Cities");
+    citySelect.empty();
+    if (selectedCountry != null && selectedCountry != "") {
+        $.getJSON('@Url.Action("GetStates")', { countryCode: selectedCountry }, function (states) {
+
+            if (states != null && !jQuery.isEmptyObject(states))
+            {
+                regionsSelect.append($('<option/>', {
+                    value: null,
+                    text: ""
+                }));
+                $.each(states, function (index, state) {
+
+                    regionsSelect.append($("<option />").val(this.value).text(this.text));
+                });
+            }
+        });
+    }
+});
+
+
+$("#States").change(function () {
+    var selectedState = $("#States").val();
+    var citySelect = $("#Cities");
+    citySelect.empty();
+    if (selectedState != null && selectedState != "") {
+        $.getJSON('@Url.Action("GetCities")', { stateCode: selectedState }, function (cities) {
+            if (cities != null && !jQuery.isEmptyObject(cities)) {
+                citySelect.append($("<option />", {
+                    value: null,
+                    text: ""
+                }));
+                $.each(cities, function (index, city) {
+                    citySelect.append($("<option />").val(this.value).text(this.text));
+                });
+            }
+        });
+    }
+});
+</script>
+
+
+
 
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-<h2>Create</h2>
 
-<h4>SegmentArticle</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Order" class="control-label"></label>
-                <input asp-for="Order" class="form-control" />
-                <span asp-validation-for="Order" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ArticleUrl" class="control-label"></label>
-                <input asp-for="ArticleUrl" class="form-control" />
-                <span asp-validation-for="ArticleUrl" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Image" class="control-label"></label>
-                @Html.EditorFor(x => x.Image)
-                @*<input asp-for="Image" type="file" class="form-control" />*@
-                <span asp-validation-for="Image" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="EmbeddedVideo" class="control-label"></label>
-                <input asp-for="EmbeddedVideo" type="file" class="form-control" />
-                <span asp-validation-for="EmbeddedVideo" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ArticleContent" class="control-label"></label>
-                <textarea asp-for="ArticleContent" class="form-control"></textarea>
-                <span asp-validation-for="ArticleContent" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PublishFrom" class="control-label"></label>
-                <input asp-for="PublishFrom" class="form-control" />
-                <span asp-validation-for="PublishFrom" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PublishTill" class="control-label"></label>
-                <input asp-for="PublishTill" class="form-control" />
-                <span asp-validation-for="PublishTill" class="text-danger"></span>
-            </div>
+<div class="bodyBox">
+    <h2>Create</h2>
 
-            <div class="form-group">
-                <label asp-for="Tags" class="control-label"></label>
-                <input asp-for="Tags" class="form-control" />
-                <span asp-validation-for="Tags" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="AllowComments" class="control-label"></label>
-                @Html.EditorFor(x => x.AllowComments)
-                <span asp-validation-for="AllowComments" class="text-danger"></span>
-            </div>
+    <h4>Article</h4>
+    <hr />
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="Create" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Order" class="control-label"></label>
+                    <input asp-for="Order" class="form-control" />
+                    <span asp-validation-for="Order" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ArticleUrl" class="control-label"></label>
+                    <input asp-for="ArticleUrl" class="form-control" />
+                    <span asp-validation-for="ArticleUrl" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Title" class="control-label"></label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Image" class="control-label"></label>
+                    @Html.EditorFor(x => x.Image)
+                    @*<input asp-for="Image" type="file" class="form-control" />*@
+                    <span asp-validation-for="Image" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="EmbeddedVideo" class="control-label"></label>
+                    <input asp-for="EmbeddedVideo" type="file" class="form-control" />
+                    <span asp-validation-for="EmbeddedVideo" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ArticleContent" class="control-label"></label>
+                    <textarea id="editor1" asp-for="ArticleContent" class="form-control"></textarea>
+                    <span asp-validation-for="ArticleContent" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="PublishFrom" class="control-label"></label>
+                    <input asp-for="PublishFrom" class="form-control hasDatepicker" name="Date" />
+                    <span asp-validation-for="PublishFrom" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="PublishTill" class="control-label"></label>
+                    <input asp-for="PublishTill" class="form-control hasDatepicker" name="Date" />
+                    <span asp-validation-for="PublishTill" class="text-danger"></span>
+                </div>
 
-            <div class="form-group">
-                <label asp-for="Author" class="control-label"></label>
-                <input asp-for="Author" class="form-control" />
-                <span asp-validation-for="Author" class="text-danger"></span>
-            </div>
-            @Html.LabelFor(x => Model.Segments, htmlAttributes: new { @class = "control-label" })
-            <div class="form-group checkbox-box">
+                <div class="form-group">
+                    <label asp-for="Tags" class="control-label"></label>
+                    <input asp-for="Tags" class="form-control" />
+                    <span asp-validation-for="Tags" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="AllowComments" class="control-label"></label>
+                    @Html.EditorFor(x => x.AllowComments)
+                    <span asp-validation-for="AllowComments" class="text-danger"></span>
+                </div>
 
-                @foreach (var item in Model.AvailableSegments)
-                {
-                    <div class="checkbox">
-                        <label><input type="checkbox" name="SelectedSegments" value="@item.Value">@item.Text</label>
-                    </div>
-                }
-            </div>
-            
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-default" />
-            </div>
+                <div class="form-group">
+                    <label asp-for="Author" class="control-label"></label>
+                    <input asp-for="Author" class="form-control" />
+                    <span asp-validation-for="Author" class="text-danger"></span>
+                </div>
+                @Html.LabelFor(x => Model.Segments, htmlAttributes: new { @class = "control-label" })
+                <div class="form-group checkbox-box">
 
-        </form>
+                    @foreach (var item in Model.AvailableSegments)
+                    {
+                        <div class="checkbox">
+                            <label><input type="checkbox" name="SelectedSegments" value="@item.Value">@item.Text</label>
+                        </div>
+                    }
+                </div>
+
+                @Html.LabelFor(x => Model.Groups, htmlAttributes: new { @class = "control-label" })
+                <div class="form-group checkbox-box">
+
+                    @foreach (var item in Model.AvailableGroups)
+                    {
+                        <div class="checkbox">
+                            <label><input type="checkbox" name="SelectedGroups" value="@item.Value">@item.Text</label>
+                        </div>
+                    }
+                </div>
+
+
+
+                @Html.LabelFor(x => Model.Topics, htmlAttributes: new { @class = "control-label" })
+                <div class="form-group checkbox-box">
+
+                    @foreach (var item in Model.AvailableTopics)
+                    {
+                        <div class="checkbox">
+                            <label><input type="checkbox" name="SelectedTopics" value="@item.Value">@item.Text</label>
+                        </div>
+                    }
+                </div>
+
+
+
+                @Html.LabelFor(x => Model.TypeOfUser, htmlAttributes: new { @class = "control-label" })
+                <div class="form-group checkbox-box">
+
+                    @foreach (var item in Model.AvailableTypeOfUser)
+                    {
+                        <div class="checkbox">
+                            <label><input type="checkbox" name="SelectedTypeOfUser" value="@item.Value">@item.Text</label>
+                        </div>
+                    }
+                </div>
+
+                @Html.LabelFor(x => Model.Languages, htmlAttributes: new { @class = "control-label" })
+                <div class="form-group checkbox-box">
+
+                    @foreach (var item in Model.AvailableLanguages)
+                    {
+                        <div class="checkbox">
+                            <label><input type="checkbox" name="SelectedLanguages" value="@item.Value">@item.Text</label>
+                        </div>
+                    }
+                </div>
+
+
+                <div class="form-group">
+                    @Html.LabelFor(x => Model.Country, htmlAttributes: new { @class = "control-label" })
+                    @Html.DropDownListFor(x => Model.Country, new SelectList(Model.Countries, "Value", "Text"), htmlAttributes: new { @class = "form-control", id = "Countries" })
+                    @Html.ValidationMessageFor(x => x.Country, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(x => Model.State, htmlAttributes: new { @class = "control-label" })
+                    @Html.DropDownListFor(x => Model.State, new SelectList(Model.States, "Value", "Text"), htmlAttributes: new { @class = "form-control", id = "States" })
+                    @Html.ValidationMessageFor(x => x.State, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(x => Model.City, htmlAttributes: new { @class = "control-label" })
+                    @Html.DropDownListFor(x => Model.City, new SelectList(Model.Cities, "Value", "Text"), htmlAttributes: new { @class = "form-control", id = "Cities" })
+                    @Html.ValidationMessageFor(x => x.City, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-default" />
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <div>
+        <a asp-action="Index">Back to List</a>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+<script>CKEDITOR.replace('editor1');</script>
 
-@section Scripts
-    {
-    <script>tinymce.init({ selector: 'textarea' });</script>
-}

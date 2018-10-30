@@ -5,112 +5,115 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Index</h2>
+<div class="bodyBox">
+    <h2>Index</h2>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.CompanyName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CompanyLogoImage)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CompanyBackgroundColor)
-            </th>
-            <th>                
-                @Html.DisplayNameFor(model => model.CompanyBackgroundImage)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CompanyFocusImage)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CompanyTextMain)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CompanyTextSecondary)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CompanyHighlightColor)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CompanyHeaderBackgroundColor)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CompanyMainFontColor)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CompanyHeaderFontColor)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CompanyNumberOfUsers)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CompanyNumberOfPushNotifications)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.CompanyName)
-            </td>
-            <td>
-                @{
-                    var fn = item.CompanyName + "_" + item.CompanyLogoImage;
-                }
-                <img src="~/images/Uploads/@fn"  class="tableimg"/>
-                     @*@Html.DisplayFor(modelItem => item.CompanyLogoImage)*@
-            </td>
-            <td style="background:@item.CompanyBackgroundColor">
-                @Html.DisplayFor(modelItem => item.CompanyBackgroundColor)
-            </td>
-            <td>
-                @{var fnb = item.CompanyName + "_" + item.CompanyBackgroundImage;}
-                <img src="~/images/Uploads/@fnb" class="tableimg"/>
-                @*@Html.DisplayFor(modelItem => item.CompanyBackgroundImage)*@
-            </td>
-            <td>
-                @{var fnf = item.CompanyName + "_" + item.CompanyFocusImage;}                
-                <img src="~/images/Uploads/@fnf" class="tableimg" />
-                @*@Html.DisplayFor(modelItem => item.CompanyFocusImage)*@
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CompanyTextMain)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CompanyTextSecondary)
-            </td>
-            <td style="background:@item.CompanyHighlightColor">
-                @Html.DisplayFor(modelItem => item.CompanyHighlightColor)
-            </td>
-            <td style="background:@item.CompanyHeaderBackgroundColor">
-                @Html.DisplayFor(modelItem => item.CompanyHeaderBackgroundColor)
-            </td>
-            <td style="background:@item.CompanyMainFontColor">
-                @Html.DisplayFor(modelItem => item.CompanyMainFontColor)
-            </td>
-            <td style="background:@item.CompanyHeaderFontColor">
-                @Html.DisplayFor(modelItem => item.CompanyHeaderFontColor)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CompanyNumberOfUsers)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CompanyNumberOfPushNotifications)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.CompanyName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CompanyLogoImage)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CompanyBackgroundColor)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CompanyBackgroundImage)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CompanyFocusImage)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CompanyTextMain)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CompanyTextSecondary)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CompanyHighlightColor)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CompanyHeaderBackgroundColor)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CompanyMainFontColor)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CompanyHeaderFontColor)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CompanyNumberOfUsers)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CompanyNumberOfPushNotifications)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CompanyName)
+                    </td>
+                    <td>
+                        @{
+                            var fn = item.CompanyName + "_" + item.CompanyLogoImage;
+                        }
+                        <img src="~/images/Uploads/@fn" class="tableimg" />
+                        @*@Html.DisplayFor(modelItem => item.CompanyLogoImage)*@
+                    </td>
+                    <td style="background:@item.CompanyBackgroundColor">
+                        @Html.DisplayFor(modelItem => item.CompanyBackgroundColor)
+                    </td>
+                    <td>
+                        @{var fnb = item.CompanyName + "_" + item.CompanyBackgroundImage;}
+                        <img src="~/images/Uploads/@fnb" class="tableimg" />
+                        @*@Html.DisplayFor(modelItem => item.CompanyBackgroundImage)*@
+                    </td>
+                    <td>
+                        @{var fnf = item.CompanyName + "_" + item.CompanyFocusImage;}
+                        <img src="~/images/Uploads/@fnf" class="tableimg" />
+                        @*@Html.DisplayFor(modelItem => item.CompanyFocusImage)*@
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CompanyTextMain)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CompanyTextSecondary)
+                    </td>
+                    <td style="background:@item.CompanyHighlightColor">
+                        @Html.DisplayFor(modelItem => item.CompanyHighlightColor)
+                    </td>
+                    <td style="background:@item.CompanyHeaderBackgroundColor">
+                        @Html.DisplayFor(modelItem => item.CompanyHeaderBackgroundColor)
+                    </td>
+                    <td style="background:@item.CompanyMainFontColor">
+                        @Html.DisplayFor(modelItem => item.CompanyMainFontColor)
+                    </td>
+                    <td style="background:@item.CompanyHeaderFontColor">
+                        @Html.DisplayFor(modelItem => item.CompanyHeaderFontColor)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CompanyNumberOfUsers)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CompanyNumberOfPushNotifications)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

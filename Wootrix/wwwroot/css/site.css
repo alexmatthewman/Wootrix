@@ -2,8 +2,76 @@
 @import url(font-awesome.min.css);
 
 
-/* ARTICLES STYLING START */
+/* SEARCH BOX STYLING START */
 
+.body-content .search {
+    display: inline-flex;
+    width: 30em;
+    float: right;
+    padding-bottom: .5em;
+}
+
+    .body-content .search form, .search p {
+        margin: unset;
+        padding: unset;
+        display: inline-flex;
+        width: 100%;
+    }
+
+    .body-content .search input {
+        height: unset;
+    }
+
+    .body-content .search .search-string {
+        width: 70%;
+    }
+
+    .body-content .search .search-submit {
+        width: 30%;
+        margin-left: .5em;
+    }
+
+
+.body-content .searchHeadTable {
+    margin: unset;
+    border-width: unset;
+}
+    .body-content .searchHeadTable thead {
+        display: flex;
+        border-bottom: none;
+    }
+
+        .body-content .searchHeadTable thead th {
+            border: none;
+            display: flex;
+        }
+        .body-content .searchHeadTable thead tr {
+            width: 100%;
+        }
+
+            .body-content .searchHeadTable thead tr th {
+                display: block;
+            }
+
+
+.top-head {
+    display: inline-block;
+    background: #DAE0E6;
+}
+
+    .top-head .articleBackButtonContainer {
+        float: left;
+    }
+
+    .top-head .search-container {
+        padding-top: .5em;
+        padding-right: .5em;
+    }
+/* SEARCH BOX STYLING END */
+/* ARTICLES STYLING START */
+#UserView {
+    clear: both;
+}
 
 
 #UserView .articleContainer {
@@ -49,6 +117,24 @@
     transition: color 0.5s ease 0s, fill 0.5s ease 0s, box-shadow 0.5s ease 0s;
     border-radius: 4px;
 }
+
+    #UserView .articleBox .segmentHeader {
+        border-bottom: 2em solid #DAE0E6;
+    }
+
+        #UserView .articleBox .segmentHeader h1 {
+            position: relative;
+            background: #EEE;
+            display: flex;
+            padding: 1em;
+            color: #000;
+            margin-bottom: 0em !important;
+        }
+
+        #UserView .articleBox .segmentHeader img {
+            min-width: 100%;
+        }
+
 
 
 .articleBackButtonContainer {
@@ -132,6 +218,42 @@
     text-align: left;
     font-size: smaller;
 }
+
+
+#UserView .articleContainer .articleBox .article .commentsList {
+    display: block;
+    text-align: left;
+    font-size: smaller;
+}
+
+    #UserView .articleContainer .articleBox .article .commentsList .comment-box {
+        display: block;
+        width: 94%;
+        background: lemonchiffon;
+        padding: 2em;
+        text-align: left;
+        margin-left: 3em;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-bottom: 1em;
+    }
+
+
+    #UserView .articleContainer .articleBox .article .commentsList .reply-box {
+        display: block;
+        width: 91%;
+        background: #f3f3be;
+        padding: 2em;
+        text-align: left;
+        margin-left: 6em;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-bottom: 1em;
+    }
+
+    #UserView .articleContainer .articleBox .article .commentsList .comment-text {
+        color: #000;
+    }
 
 #UserView .articleContainer .articleBox .article h1 {
     display: block;
@@ -519,7 +641,7 @@
 
 .magazine {
     max-width: 5em;
-    height: 25em;
+    height: 28em;
     padding: 1em;
     margin: 1em;
     display: inline-block;
@@ -542,22 +664,23 @@
         font-weight: 900;
         max-height: 3em;
         overflow: auto;
+        word-break: normal;
     }
 
     .magazine .magazine-pic {
         border: .1em .1em .1em #ccc;
         border-radius: .5em;
-        border: .5em solid #fff;
-        min-height: 16em;
+        /*border: .5em solid #fff;*/
+        height: 20em;
         vertical-align: middle;
         margin: 0 auto;
     }
 
         .magazine .magazine-pic img {
-            max-height: 15em;
+            max-height: 20em;
             display: flex;
             margin: 0 auto;
-            max-width: 17em;
+            /*max-width: 17em;*/
             vertical-align: middle;
             width: unset;
         }
@@ -620,6 +743,17 @@
 
 /* ARTICLE STYLING END */
 
+.upload-log {
+    width: 80%;
+    min-height: 30em;
+    border: 3px solid #CCC;
+    border-radius: 5px;
+    box-shadow: .3em .3em .3em #ccc;
+}
+
+.upload-example-file {
+    float:right;
+}
 
 .tableimg {
     max-height: 4em;
@@ -660,7 +794,7 @@ input[type="file"] {
     padding: 10px;
     height: 4em;
     font-size: 13px;
-    padding:unset;
+    padding: unset;
 }
 
 .navbar-inverse {
@@ -759,24 +893,23 @@ header.major h2, header.major h3, header.major h4, header.major h5, header.major
 }
 
 #footer {
-    padding:unset !important;
+    padding: unset !important;
     padding-bottom: 1em;
     position: fixed;
     left: 0;
     bottom: 0;
-    width: 100%; 
+    width: 100%;
     text-align: center;
 }
 
-    #footer .powered {
+    #footer #companyHighlight2 {
         color: #ccc;
         padding-right: 1em;
+        text-align: right;
+        font-size: smaller;
+        font-weight: bold;
     }
 
-    #footer img {
-        max-height: 3em;
-        max-width: 15em;
-    }
 
 
 body {

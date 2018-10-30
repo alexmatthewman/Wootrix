@@ -12,8 +12,7 @@ namespace WootrixV2.Models
         [Key]
         public int ID { get; set; }
 
-        [Required]
-        [RegularExpression(@"^[A-Z]+[a-zA-Z""'\s-]*$", ErrorMessage = "Please enter the company name (max length 100)")]
+        [Required]        
         [StringLength(100)]
         [Display(Name = "Company Name", Prompt = "Enter the Company name", Description = "Company Name")]
         public string CompanyName { get; set; }
@@ -91,8 +90,7 @@ namespace WootrixV2.Models
     public class CompanyViewModel
     {
 
-        [Required]
-        [RegularExpression(@"^[A-Z]+[a-zA-Z""'\s-]*$", ErrorMessage = "Please enter the company name (max length 100)")]
+        [Required]        
         [StringLength(100)]
         [Display(Name = "Company Name", Prompt = "Enter the Company name", Description = "Company Name")]
         public string CompanyName { get; set; }

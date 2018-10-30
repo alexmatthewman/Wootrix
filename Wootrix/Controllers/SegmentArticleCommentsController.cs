@@ -117,7 +117,58 @@ namespace WootrixV2.Controllers
             return View(segmentArticleComment);
         }
 
-       
+
+        // GET: SegmentArticleComments/Create
+        public IActionResult ApproveReply(int id)
+        {
+            HttpContext.Session.SetInt32("CommentToApprove", id);
+            var sac = _context.SegmentArticleComment.Find(id);
+            ViewBag.OriginalComment = sac.Comment;
+            return View();
+        }
+
+        // POST: SegmentArticleComments/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ApproveReply(SegmentArticleComment segmentArticleComment)
+        {
+            if (ModelState.IsValid)
+            {
+                var articleID = HttpContext.Session.GetInt32("ArticleID") ?? 0;
+                var commentToApproveID = HttpContext.Session.GetInt32("CommentToApprove") ?? 0;
+                _user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();
+                SegmentArticleComment sgc = new SegmentArticleComment();
+
+                //First of all approve the orignal comment
+                var sac = await _context.SegmentArticleComment.FindAsync(commentToApproveID);
+                if (sac == null)
+                {
+                    return NotFound();
+                }
+                sac.Status = "Approved";
+
+                // Create the new comment but set the ReplyingToCommentID field
+                sgc.CompanyID = _user.companyID;
+                sgc.UserID = _user.Id;
+                sgc.UserName = _user.UserName;
+                //set the created date to be just after the original message so it is next
+                sgc.CreatedDate = sac.CreatedDate.AddMilliseconds(1);
+                sgc.Status = "Approved";
+                sgc.Comment = segmentArticleComment.Comment;
+                sgc.ReplyingToCommentID = commentToApproveID;
+
+                sgc.SegmentArticleID = sac.SegmentArticleID;
+                _context.Add(sgc);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Admin", new { id = _user.companyID });
+
+            }
+            return View(segmentArticleComment);
+        }
+
+
 
 
         // GET: SegmentArticleComments/Edit/5
@@ -209,6 +260,14 @@ namespace WootrixV2.Controllers
         {
             var articleID = HttpContext.Session.GetInt32("ArticleID") ?? 0;
             var segmentArticleComment = await _context.SegmentArticleComment.FindAsync(id);
+
+            //So we also need to delete any replies that reference this
+            var commentList = _context.SegmentArticleComment.Where(n => n.ReplyingToCommentID == id).ToList();
+            foreach (SegmentArticleComment x in commentList)
+            {
+                _context.SegmentArticleComment.Remove(x);
+            }
+
             _context.SegmentArticleComment.Remove(segmentArticleComment);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index", new { id = articleID });

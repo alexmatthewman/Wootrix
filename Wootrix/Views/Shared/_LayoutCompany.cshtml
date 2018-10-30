@@ -23,13 +23,32 @@
     <link rel="icon" href="~/favicon.png" type="image/png">
 
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
+
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link href="~/css/OldWootrix.css" rel="stylesheet" />
     <!-- jQUERY -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js" type="text/javascript"></script>
 
 
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+    @*<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js" type="text/javascript"></script>*@
+    <script src="~/js/jquery-sessionTimeout/jquery.sessionTimeout.js" type="text/javascript"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $.sessionTimeout({
+                warnAfter: 900000, /*15mins*/
+                redirAfter: 1200000, /*20 minutes*/
+                logoutUrl: '/Identity/Account/Logout?returnUrl=/Company/Home/@companyName',
+                redirUrl: '/Identity/Account/Logout?returnUrl=/Company/Home/@companyName',
+                logoutUrl: '/Identity/Account/Logout?returnUrl=/Company/Home/@companyName',
+            });
+        });        
+    </script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
 </head>
 <body style="background-color:@Context.Session.GetString("CompanyBackgroundColor"); color:@Context.Session.GetString("CompanyMainFontColor")">
 
@@ -61,14 +80,7 @@
                     @if (SignInManager.IsSignedIn(User))
                     {
 
-                        // SO to handle the user company I think we should create a company claim when the user is created.
-
-                        @*<li><a asp-controller="Fruit" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">Fruit</a></li>*@
-                        @*<li><a asp-controller="Company" asp-action="Home" asp-route-id="@companyName style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">Home</a></li>*@
-
-                        //So apparently you can't find the user's roles but you can find their claims to specific roles...
-                        //That or they need to document this shit a bit better....definitely they do in any case...sigh
-
+                    
                         @if (User.HasClaim(ClaimTypes.Role, "Admin"))
                         {
                           
@@ -91,7 +103,7 @@
                                     <li><a asp-controller="CompanyTopics" asp-action="Index" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Topics</a></li>
                                     <li><a asp-controller="CompanyTypeOfUsers" asp-action="Index" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Type of Users</a></li>
                                     <li><a asp-controller="CompanyLanguages" asp-action="Index" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Languages</a></li>
-                                    <li><a asp-controller="CompanySegments" asp-action="Index" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Segments</a></li>
+                                    <li><a asp-controller="CompanySegments" asp-action="Index" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Magazines</a></li>
                                     <li><a asp-controller="SegmentArticles" asp-action="Index" asp-route-id="@companyName" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Articles</a></li>
                                     <li><a asp-controller="SegmentArticleComments" asp-action="Admin" asp-route-id="@companyID" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Article Comments</a></li>
                                     <li><a asp-controller="CompanyPushNotifications" asp-action="Index" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Push Notifications</a></li>
@@ -118,7 +130,7 @@
                 else
                 {
                     <ul class="nav navbar-nav navbar-right">
-                        <li><a asp-area="Identity" asp-page="/Account/Register" asp-route-id="@Context.Session.GetString("CompanyName")" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">Register</a></li>
+                        @*<li><a asp-area="Identity" asp-page="/Account/Register" asp-route-id="@Context.Session.GetString("CompanyName")" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">Register</a></li>*@
                         <li><a asp-area="Identity" class="sign-in" asp-page="/Account/Login" asp-route-id="@Context.Session.GetString("CompanyName")" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">Login</a></li>
                     </ul>
                 }
@@ -136,35 +148,12 @@
         <!-- Footer -->
         <footer id="footer" style="background-color:@Context.Session.GetString("CompanyHeaderBackgroundColor") !important; border-bottom: 0.5em solid @Context.Session.GetString("CompanyHighlightColor"); ">
             <div id="companyHighlight2">
-                @*<ul class="icons">
-                        <li><a href="https://twitter.com/wootrixoficial" class="icon f-twitter"><img src="~/images/footicon-twitter.png" alt="Twitter" /></a></li>
-                        <li><a href="https://www.facebook.com/wootrix/" class="icon f-facebook"><img src="~/images/footicon-facebook.png" alt="Faceboook" /></a></li>
-                        <li><a href="https://plus.google.com/109310151849035195482" class="icon f-google"><img src="~/images/footicon-google.png" alt="Google+" /></a></li>
-                        <li><a href="https://www.linkedin.com/company/wootrix/" class="icon f-linkedin"><img src="~/images/footicon-linkedin.png" alt="LinkedIn" /></a></li>
-                        <li><a href="mailto:wootrix@wootrix.com" class="icon f-envelope-o"><img src="~/images/footicon-email.png" alt="Email" /></a></li>
-                    </ul>*@
-                @*<ul class="copyright">
-                        <li>&copy;<a href="#">WOOTRIX</a></li>
-                    </ul>*@
-                <ul>
-                    <li class="left">
-                        @{
-                            var footerlogo = Context.Session.GetString("CompanyName") + "_" + @Context.Session.GetString("CompanyLogoImage");
-                        }
-                        <a asp-controller="Company" asp-action="Home" asp-route-id="@Context.Session.GetString("CompanyName")">
-                            <img id="companyLogo" src="~/images/Uploads/@footerlogo" height="35" alt="Company Logo" class="img-responsive" />
-                        </a>
-                    </li>
-                    <li class="right powered">
-                        Powered by Wootrix @@ @DateTime.Now.Year
-                    </li>
-                </ul>
+                <div class="right"></div>
+                Powered by Wootrix @@ @DateTime.Now.Year
             </div>
         </footer>
     </div>
-    <script src="~/lib/jquery/dist/jquery.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    
 
 
     @RenderSection("Scripts", required: false)

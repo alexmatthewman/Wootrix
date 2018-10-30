@@ -90,8 +90,8 @@
                         <div class="categories">
                             <ul>
                                 <li>
-                                   <a asp-controller="Users" asp-action="Index" asp-route-id="CompanyAdmin" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
-                                         <span><img src="~/images/icon-2.png" alt="" /></span>
+                                    <a asp-controller="Users" asp-action="Index" asp-route-id="CompanyAdmin" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
+                                        <span><img src="~/images/icon-2.png" alt="" /></span>
                                         <strong>Manage Company Admins</strong>
                                     </a>
                                 </li>
@@ -107,7 +107,7 @@
                                     <a asp-area="" asp-controller="CompanySegments" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
 
                                         <span><img src="~/images/icon-5.png" alt="" /></span>
-                                        <strong>Segments</strong>
+                                        <strong>Magazines</strong>
                                     </a>
                                 </li>
 
@@ -141,12 +141,12 @@
                                     </a>
                                 </li>
 
-                                <li>
-                                    <a href="">
-                                        <span><img src="~/images/icon-8.png" alt="" /></span>
-                                        <strong>History</strong>
-                                    </a>
-                                </li>
+                                @*<li>
+                                        <a href="">
+                                            <span><img src="~/images/icon-8.png" alt="" /></span>
+                                            <strong>History</strong>
+                                        </a>
+                                    </li>*@
 
                                 <li>
                                     <a href="">
@@ -162,12 +162,12 @@
                                     </a>
                                 </li>
 
-                                <li>
-                                    <a asp-area="" asp-controller="CompanyDepartments" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
-                                        <span><img src="~/images/icon-1.png" alt="Department Filters" /></span>
-                                        <strong>Department Filters</strong>
-                                    </a>
-                                </li>
+                                @*<li>
+                                        <a asp-area="" asp-controller="CompanyDepartments" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
+                                            <span><img src="~/images/icon-1.png" alt="Department Filters" /></span>
+                                            <strong>Department Filters</strong>
+                                        </a>
+                                    </li>*@
                                 <li>
                                     <a asp-area="" asp-controller="CompanyGroups" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
                                         <span><img src="~/images/icon-1.png" alt="Group Filters" /></span>
@@ -193,11 +193,11 @@
                                     </a>
                                 </li>
                                 @*<li>
-                                    <a asp-area="" asp-controller="Fruit" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
-                                        <span><img src="~/images/icon-2.png" alt="Department Filters" /></span>
-                                        <strong>Fruit</strong>
-                                    </a>
-                                </li>*@
+                                        <a asp-area="" asp-controller="Fruit" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
+                                            <span><img src="~/images/icon-2.png" alt="Department Filters" /></span>
+                                            <strong>Fruit</strong>
+                                        </a>
+                                    </li>*@
                             </ul>
 
 
@@ -250,11 +250,20 @@
             @if (!User.HasClaim(ClaimTypes.Role, "CompanyAdmin") && !User.HasClaim(ClaimTypes.Role, "Admin"))
             {
 
-                <table class="table">
+               
+                <table class="table searchHeadTable">
                     <thead>
                         <tr>
                             <th class="magazine-header-text">
-                                <h2>Segments</h2>
+                                <h2>Magazines</h2>
+                                <div class="search">
+                                    <form asp-controller="CompanySegments" asp-action="UserSegmentSearch">
+                                        <p>
+                                            <input class="search-string" type="text" name="SearchString" title="Search String">
+                                            <input class="search-submit" type="submit" value="Search" />
+                                        </p>
+                                    </form>
+                                </div>
                             </th>
                         </tr>
                     </thead>
@@ -264,7 +273,7 @@
                             @foreach (var item in ViewBag.Segments)
                             {
 
-                                <td class="magazine" style="border:4px solid @item.ThemeColor;  background:@item.StandardColor;">
+                                <td class="magazine" @*style="border:4px solid @item.ThemeColor;  background:@item.StandardColor;" *@>
                                     <a asp-controller="CompanySegments" asp-action="ArticleList" asp-route-id="@item.Title">
                                         <div class="magazine-pic">
                                             @{
@@ -276,11 +285,11 @@
                                             <div class="magazine-text-title">
                                                 @item.Title
                                             </div>
-                                            <div class="publishStuff">
-                                                <span class="glyphicon glyphicon-user"></span>
-                                                <div class="author">Posted&nbsp;by @(item.ClientName == null ? "Anon" : item.ClientName)</div>
-                                                <div class="publishDate">&nbsp;@item.PublishDate.ToString("dd MMM yyyy")</div>
-                                            </div>
+                                            @*<div class="publishStuff">
+                                                    <span class="glyphicon glyphicon-user"></span>
+                                                    <div class="author">Posted&nbsp;by @(item.ClientName == null ? "Anon" : item.ClientName)</div>
+                                                    <div class="publishDate">&nbsp;@item.PublishDate.ToString("dd MMM yyyy")</div>
+                                                </div>*@
                                         </div>
                                     </a>
                                 </td>

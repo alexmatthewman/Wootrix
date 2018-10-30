@@ -16,6 +16,10 @@ namespace Wootrix.Data
 
         }
 
+
+        public DbSet<WootrixV2.Models.LocationCountry> LocationCountries { get; set; }
+        public DbSet<WootrixV2.Models.LocationStates> LocationStates { get; set; }
+
         public DbSet<WootrixV2.Models.Company> Company { get; set; }
         public DbSet<WootrixV2.Models.CompanyDepartments> CompanyDepartments { get; set; }
         public DbSet<WootrixV2.Models.CompanyGroups> CompanyGroups { get; set; }

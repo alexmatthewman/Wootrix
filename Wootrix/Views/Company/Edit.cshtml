@@ -3,94 +3,96 @@
 @{
     ViewData["Title"] = "Edit";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    
+
 }
 
-<h2>Edit</h2>
+<div class="bodyBox">
+    <h2>Edit</h2>
 
-<h4>Company</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="ID" />
-            <div class="form-group">
-                <label asp-for="CompanyName" class="control-label"></label>
-                <input asp-for="CompanyName" class="form-control" />
-                <span asp-validation-for="CompanyName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CompanyLogoImage" class="control-label"></label>
-                <input asp-for="CompanyLogoImage" type="file" class="form-control" />
-                <span asp-validation-for="CompanyLogoImage" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CompanyBackgroundColor" class="control-label"></label>
-                <input asp-for="CompanyBackgroundColor" type="color" class="form-control" />
-                <span asp-validation-for="CompanyBackgroundColor" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CompanyBackgroundImage" class="control-label"></label>
-                <input asp-for="CompanyBackgroundImage" type="file" class="form-control" />
-                <span asp-validation-for="CompanyBackgroundImage" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CompanyFocusImage" class="control-label"></label>
-                <input asp-for="CompanyFocusImage" type="file" class="form-control" />
-                <span asp-validation-for="CompanyFocusImage" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CompanyTextMain" class="control-label"></label>
-                <input asp-for="CompanyTextMain" class="form-control" />
-                <span asp-validation-for="CompanyTextMain" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CompanyTextSecondary" class="control-label"></label>
-                <input asp-for="CompanyTextSecondary" class="form-control" />
-                <span asp-validation-for="CompanyTextSecondary" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CompanyHighlightColor" class="control-label"></label>
-                <input asp-for="CompanyHighlightColor" type="color" class="form-control" />
-                <span asp-validation-for="CompanyHighlightColor" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CompanyHeaderBackgroundColor" class="control-label"></label>
-                <input asp-for="CompanyHeaderBackgroundColor" type="color" class="form-control" />
-                <span asp-validation-for="CompanyHeaderBackgroundColor" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CompanyMainFontColor" class="control-label"></label>
-                <input asp-for="CompanyMainFontColor" type="color" class="form-control" />
-                <span asp-validation-for="CompanyMainFontColor" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CompanyHeaderFontColor" class="control-label"></label>
-                <input asp-for="CompanyHeaderFontColor" type="color" class="form-control" />
-                <span asp-validation-for="CompanyHeaderFontColor" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CompanyNumberOfUsers" class="control-label"></label>
-                <input asp-for="CompanyNumberOfUsers" class="form-control" />
-                <span asp-validation-for="CompanyNumberOfUsers" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CompanyNumberOfPushNotifications" class="control-label"></label>
-                <input asp-for="CompanyNumberOfPushNotifications" class="form-control" />
-                <span asp-validation-for="CompanyNumberOfPushNotifications" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-default" />
-            </div>
-        </form>
+    <h4>Company</h4>
+    <hr />
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="Edit" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="ID" />
+                <div class="form-group">
+                    <label asp-for="CompanyName" class="control-label"></label>
+                    <input asp-for="CompanyName" class="form-control" />
+                    <span asp-validation-for="CompanyName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="CompanyLogoImage" class="control-label"></label>
+                    <input asp-for="CompanyLogoImage" type="file" class="form-control" />
+                    <span asp-validation-for="CompanyLogoImage" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="CompanyBackgroundColor" class="control-label"></label>
+                    <input asp-for="CompanyBackgroundColor" type="color" class="form-control" />
+                    <span asp-validation-for="CompanyBackgroundColor" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="CompanyBackgroundImage" class="control-label"></label>
+                    <input asp-for="CompanyBackgroundImage" type="file" class="form-control" />
+                    <span asp-validation-for="CompanyBackgroundImage" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="CompanyFocusImage" class="control-label"></label>
+                    <input asp-for="CompanyFocusImage" type="file" class="form-control" />
+                    <span asp-validation-for="CompanyFocusImage" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="CompanyTextMain" class="control-label"></label>
+                    <input asp-for="CompanyTextMain" class="form-control" />
+                    <span asp-validation-for="CompanyTextMain" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="CompanyTextSecondary" class="control-label"></label>
+                    <input asp-for="CompanyTextSecondary" class="form-control" />
+                    <span asp-validation-for="CompanyTextSecondary" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="CompanyHighlightColor" class="control-label"></label>
+                    <input asp-for="CompanyHighlightColor" type="color" class="form-control" />
+                    <span asp-validation-for="CompanyHighlightColor" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="CompanyHeaderBackgroundColor" class="control-label"></label>
+                    <input asp-for="CompanyHeaderBackgroundColor" type="color" class="form-control" />
+                    <span asp-validation-for="CompanyHeaderBackgroundColor" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="CompanyMainFontColor" class="control-label"></label>
+                    <input asp-for="CompanyMainFontColor" type="color" class="form-control" />
+                    <span asp-validation-for="CompanyMainFontColor" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="CompanyHeaderFontColor" class="control-label"></label>
+                    <input asp-for="CompanyHeaderFontColor" type="color" class="form-control" />
+                    <span asp-validation-for="CompanyHeaderFontColor" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="CompanyNumberOfUsers" class="control-label"></label>
+                    <input asp-for="CompanyNumberOfUsers" class="form-control" />
+                    <span asp-validation-for="CompanyNumberOfUsers" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="CompanyNumberOfPushNotifications" class="control-label"></label>
+                    <input asp-for="CompanyNumberOfPushNotifications" class="form-control" />
+                    <span asp-validation-for="CompanyNumberOfPushNotifications" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Save" class="btn btn-default" />
+                </div>
+            </form>
+        </div>
     </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+    <div>
+        <a asp-action="Index">Back to List</a>
+    </div>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+    @section Scripts {
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    }
+</div>

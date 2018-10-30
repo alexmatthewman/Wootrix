@@ -37,8 +37,18 @@ namespace WootrixV2.Controllers
         {
             //Get the company name out the session and use it as a filter for the groups returned
             var id = HttpContext.Session.GetInt32("CompanyID");
-            var ctx = _context.SegmentArticle.Where(m => m.CompanyID == id);
-            return View(await ctx.ToListAsync());
+            var ctx = await _context.SegmentArticle.Where(m => m.CompanyID == id).ToListAsync();
+            foreach (SegmentArticle item in ctx)
+            {
+                if (!string.IsNullOrWhiteSpace(item.Languages)) item.Languages.Replace(",", ", ");
+                if (!string.IsNullOrWhiteSpace(item.Groups)) item.Groups.Replace(",", ", ");
+                if (!string.IsNullOrWhiteSpace(item.Segments)) item.Segments.Replace(",", ", ");
+                if (!string.IsNullOrWhiteSpace(item.TypeOfUser)) item.TypeOfUser.Replace(",", ", ");
+                if (!string.IsNullOrWhiteSpace(item.Topics)) item.Topics.Replace(",", ", ");
+            }
+
+
+            return View(ctx);
         }
 
         // GET: SegmentArticles/Details/5
@@ -58,7 +68,7 @@ namespace WootrixV2.Controllers
 
             return View(segmentArticle);
         }
-        
+
 
 
         // GET: SegmentArticles/Article/5
@@ -71,6 +81,8 @@ namespace WootrixV2.Controllers
 
             DatabaseAccessLayer dla = new DatabaseAccessLayer(_context);
             ViewBag.CommentCount = dla.GetArticleApprovedCommentCount(id ?? 0);
+
+            ViewBag.Comments = dla.GetArticleCommentsList(id ?? 0);
 
             var segmentArticle = await _context.SegmentArticle
                 .FirstOrDefaultAsync(m => m.ID == id);
@@ -85,7 +97,6 @@ namespace WootrixV2.Controllers
         // GET: SegmentArticles/Create
         public IActionResult Create()
         {
-
             _user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();
             SegmentArticleViewModel s = new SegmentArticleViewModel();
             s.Order = 1;
@@ -94,21 +105,47 @@ namespace WootrixV2.Controllers
             s.CompanyID = _user.companyID;
             s.Author = _user.name;
             s.AllowComments = true;
-            //s.ClientLogoImage = _user.photoUrl;
-            //var cp = _user.companyID;
-
+            
             DatabaseAccessLayer dla = new DatabaseAccessLayer(_context);
-           //s.SegmentList = dla.GetArticleSegments(_user.companyID).Select(x => new SelectListItem { Text = x.Value, Value = x.Value }).ToList();
-
-
-
+          
             var listOfAllSegements = dla.GetArticleSegments(_user.companyID);
             foreach (var seg in listOfAllSegements)
             {
                 s.AvailableSegments.Add(new SelectListItem { Text = seg.Value, Value = seg.Value });
             }
 
+            // Add group checkboxes
+            var listOfAllGroups = dla.GetListGroups(_user.companyID);
+            foreach (var seg in listOfAllGroups)
+            {
+                s.AvailableGroups.Add(new SelectListItem { Text = seg.Value, Value = seg.Value });
+            }
 
+            // Add topic checkboxes
+            var listOfAllTopics = dla.GetListTopics(_user.companyID);
+            foreach (var seg in listOfAllTopics)
+            {
+                s.AvailableTopics.Add(new SelectListItem { Text = seg.Value, Value = seg.Value });
+            }
+
+            // Add type checkboxes
+            var listOfAllTypeOfUser = dla.GetListTypeOfUser(_user.companyID);
+            foreach (var seg in listOfAllTypeOfUser)
+            {
+                s.AvailableTypeOfUser.Add(new SelectListItem { Text = seg.Value, Value = seg.Value });
+            }
+
+            // Add language checkboxes
+            var listOfAllLanguages = dla.GetListLanguages(_user.companyID);
+            foreach (var seg in listOfAllLanguages)
+            {
+                s.AvailableLanguages.Add(new SelectListItem { Text = seg.Value, Value = seg.Value });
+            }
+
+            // Get location dropdown data
+            s.Countries = dla.GetCountries();
+            s.States = dla.GetNullStatesOrCities();
+            s.Cities = dla.GetNullStatesOrCities();
             return View(s);
         }
 
@@ -137,11 +174,19 @@ namespace WootrixV2.Controllers
                 myArticle.AllowComments = sa.AllowComments;
                 myArticle.ArticleContent = sa.ArticleContent;
                 myArticle.Author = (sa.Author == null ? _user.name : sa.Author); //if null set to be user name
-                myArticle.CreatedBy = _user.UserName; 
-                
+                myArticle.CreatedBy = _user.UserName;
+
                 myArticle.Tags = sa.Tags;
                 myArticle.Segments = string.Join(",", sa.SelectedSegments);
-                
+
+                myArticle.Languages = string.Join(",", sa.SelectedLanguages);
+                myArticle.Groups = string.Join(",", sa.SelectedGroups);
+                myArticle.Topics = string.Join(",", sa.SelectedTopics);
+                myArticle.TypeOfUser = string.Join(",", sa.SelectedTypeOfUser);
+                if (sa.Country != null && sa.Country != "") myArticle.Country = _context.LocationCountries.FirstOrDefault(m => m.country_code == sa.Country).country_name;
+                if (sa.State != null && sa.State != "") myArticle.State = _context.LocationStates.FirstOrDefault(n => n.country_code == sa.Country && n.state_code == sa.State).state_name;
+                myArticle.City = sa.City;
+
                 IFormFile img = sa.Image;
                 if (img != null)
                 {
@@ -172,8 +217,6 @@ namespace WootrixV2.Controllers
             }
 
             DatabaseAccessLayer dla = new DatabaseAccessLayer(_context);
-            // s.SegmentList = dla.GetArticleSegments(_user.companyID).Select(x => new SelectListItem { Text = x.Value, Value = x.Value }).ToList();
-
 
 
             var listOfAllSegements = dla.GetArticleSegments(_user.companyID);
@@ -181,6 +224,42 @@ namespace WootrixV2.Controllers
             {
                 sa.AvailableSegments.Add(new SelectListItem { Text = seg.Value, Value = seg.Value });
             }
+
+
+
+
+            // Add group checkboxes
+            var listOfAllGroups = dla.GetListGroups(_user.companyID);
+            foreach (var seg in listOfAllGroups)
+            {
+                sa.AvailableGroups.Add(new SelectListItem { Text = seg.Value, Value = seg.Value });
+            }
+
+            // Add topic checkboxes
+            var listOfAllTopics = dla.GetListTopics(_user.companyID);
+            foreach (var seg in listOfAllTopics)
+            {
+                sa.AvailableTopics.Add(new SelectListItem { Text = seg.Value, Value = seg.Value });
+            }
+
+            // Add type checkboxes
+            var listOfAllTypeOfUser = dla.GetListTypeOfUser(_user.companyID);
+            foreach (var seg in listOfAllTypeOfUser)
+            {
+                sa.AvailableTypeOfUser.Add(new SelectListItem { Text = seg.Value, Value = seg.Value });
+            }
+
+            // Add language checkboxes
+            var listOfAllLanguages = dla.GetListLanguages(_user.companyID);
+            foreach (var seg in listOfAllLanguages)
+            {
+                sa.AvailableLanguages.Add(new SelectListItem { Text = seg.Value, Value = seg.Value });
+            }
+
+            // Get location dropdown data
+            sa.Countries = dla.GetCountries();
+            sa.States = dla.GetNullStatesOrCities();
+            sa.Cities = dla.GetNullStatesOrCities();
             return View(sa);
         }
 
@@ -198,6 +277,7 @@ namespace WootrixV2.Controllers
                 return NotFound();
             }
 
+            DatabaseAccessLayer dla = new DatabaseAccessLayer(_context);
             _user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();
             SegmentArticleViewModel s = new SegmentArticleViewModel();
             s.Order = segmentArticle.Order;
@@ -214,12 +294,18 @@ namespace WootrixV2.Controllers
             s.Tags = segmentArticle.Tags;
             s.CreatedBy = _user.UserName;
 
+            // Get location dropdown data
+            s.Countries = dla.GetCountries();
+            s.States = dla.GetNullStatesOrCities();
+            s.Cities = dla.GetNullStatesOrCities();
+
+
             if (segmentArticle.Segments != null && segmentArticle.Segments != "")
             {
                 s.AvailableSegments = segmentArticle.Segments.Split(',').Select(x => new SelectListItem { Text = x, Value = x, Selected = true }).ToList();
             }
-                //Add any options not already in the segmentlist
-            DatabaseAccessLayer dla = new DatabaseAccessLayer(_context);
+            //Add any options not already in the segmentlist
+
             var listOfAllSegements = dla.GetArticleSegments(_user.companyID);
             foreach (var seg in listOfAllSegements)
             {
@@ -229,6 +315,67 @@ namespace WootrixV2.Controllers
                 {
                     //if no match (not in the list) then add it
                     s.AvailableSegments.Add(new SelectListItem { Text = seg.Value, Value = seg.Value });
+                }
+            }
+
+            if (segmentArticle.Groups != null && segmentArticle.Groups != "")
+            {
+                s.AvailableGroups = segmentArticle.Groups.Split(',').Select(x => new SelectListItem { Text = x, Value = x, Selected = true }).ToList();
+            }
+            //Add any options not already in the segmentlist
+            var listOfAllGroups = dla.GetListGroups(_user.companyID);
+            foreach (var seg in listOfAllGroups)
+            {
+                if (s.AvailableGroups.FirstOrDefault(stringToCheck => stringToCheck.Value.Contains(seg.Value)) == null)
+                {
+                    //if no match (not in the list) then add it
+                    s.AvailableGroups.Add(new SelectListItem { Text = seg.Value, Value = seg.Value });
+                }
+            }
+
+
+            if (segmentArticle.Topics != null && segmentArticle.Topics != "")
+            {
+                s.AvailableTopics = segmentArticle.Topics.Split(',').Select(x => new SelectListItem { Text = x, Value = x, Selected = true }).ToList();
+            }
+            //Add any options not already in the segmentlist
+            var listOfAllTopics = dla.GetListTopics(_user.companyID);
+            foreach (var seg in listOfAllTopics)
+            {
+                if (s.AvailableTopics.FirstOrDefault(stringToCheck => stringToCheck.Value.Contains(seg.Value)) == null)
+                {
+                    //if no match (not in the list) then add it
+                    s.AvailableTopics.Add(new SelectListItem { Text = seg.Value, Value = seg.Value });
+                }
+            }
+
+            if (segmentArticle.TypeOfUser != null && segmentArticle.TypeOfUser != "")
+            {
+                s.AvailableTypeOfUser = segmentArticle.TypeOfUser.Split(',').Select(x => new SelectListItem { Text = x, Value = x, Selected = true }).ToList();
+            }
+            //Add any options not already in the segmentlist
+            var listOfAllTypeOfUser = dla.GetListTypeOfUser(_user.companyID);
+            foreach (var seg in listOfAllTypeOfUser)
+            {
+                if (s.AvailableTypeOfUser.FirstOrDefault(stringToCheck => stringToCheck.Value.Contains(seg.Value)) == null)
+                {
+                    //if no match (not in the list) then add it
+                    s.AvailableTypeOfUser.Add(new SelectListItem { Text = seg.Value, Value = seg.Value });
+                }
+            }
+
+            if (segmentArticle.Languages != null && segmentArticle.Languages != "")
+            {
+                s.AvailableLanguages = segmentArticle.Languages.Split(',').Select(x => new SelectListItem { Text = x, Value = x, Selected = true }).ToList();
+            }
+            //Add any options not already in the segmentlist
+            var listOfAllLanguages = dla.GetListLanguages(_user.companyID);
+            foreach (var seg in listOfAllLanguages)
+            {
+                if (s.AvailableLanguages.FirstOrDefault(stringToCheck => stringToCheck.Value.Contains(seg.Value)) == null)
+                {
+                    //if no match (not in the list) then add it
+                    s.AvailableLanguages.Add(new SelectListItem { Text = seg.Value, Value = seg.Value });
                 }
             }
 
@@ -264,6 +411,15 @@ namespace WootrixV2.Controllers
                 myArticle.Author = sa.Author;
                 myArticle.Segments = string.Join(",", sa.SelectedSegments);
                 myArticle.Tags = sa.Tags;
+
+                myArticle.Languages = string.Join(",", sa.SelectedLanguages);
+                myArticle.Groups = string.Join(",", sa.SelectedGroups);
+                myArticle.Topics = string.Join(",", sa.SelectedTopics);
+                myArticle.TypeOfUser = string.Join(",", sa.SelectedTypeOfUser);
+                  myArticle.City = sa.City;
+                if (sa.Country != null && sa.Country != "") myArticle.Country = _context.LocationCountries.FirstOrDefault(m => m.country_code == sa.Country).country_name;
+                if (sa.State != null && sa.State != "") myArticle.State = _context.LocationStates.FirstOrDefault(n => n.country_code == sa.Country && n.state_code == sa.State).state_name;
+
 
                 IFormFile img = sa.Image;
                 if (img != null)
@@ -347,6 +503,32 @@ namespace WootrixV2.Controllers
         private bool SegmentArticleExists(int id)
         {
             return _context.SegmentArticle.Any(e => e.ID == id);
+        }
+
+        [HttpGet]
+        public JsonResult GetStates(string countryCode)
+        {
+            if (!string.IsNullOrWhiteSpace(countryCode) && countryCode.Length == 2)
+            {
+                HttpContext.Session.SetString("countryCode", countryCode);
+                DatabaseAccessLayer dla = new DatabaseAccessLayer(_context);
+                IEnumerable<SelectListItem> states = dla.GetStates(countryCode);
+                return Json(states);
+            }
+            return null;
+        }
+
+        [HttpGet]
+        public JsonResult GetCities(string stateCode)
+        {
+            if (!string.IsNullOrWhiteSpace(stateCode))
+            {
+                string countryCode = HttpContext.Session.GetString("countryCode");
+                DatabaseAccessLayer dla = new DatabaseAccessLayer(_context);
+                IEnumerable<SelectListItem> cities = dla.GetCities(countryCode, stateCode);
+                return Json(cities);
+            }
+            return null;
         }
     }
 }

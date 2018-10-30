@@ -42,6 +42,9 @@
     }
     else
     {
+        <div class="articleBackButtonContainer">
+            <a asp-controller="Users" asp-action="BulkUpload"><button class="articleBackButton button"><span class="glyphicon glyphicon-glyphicon-open"></span>&nbsp;Bulk Upload Users</button></a>
+        </div>
 
         <p>Note that if a filter like Group, Language, User type, Topic or Location is not set all articles will be shown as opposed to those marked with a particular filter</p>
 
@@ -121,74 +124,74 @@
         <tbody>
             @foreach (var item in Model)
             {
-            <tr>
-                @if (t == "Admin")
-                {
-                    <td>
-                        @Html.DisplayFor(modelItem => item.CompanyName)
-                    </td>
-                }
-                <td>
-                    @Html.DisplayFor(modelItem => item.EmailAddress)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                @if (t == "CompanyAdmin")
-                {
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Categories)
-                    </td>
-                }
-                <td>
-                    @Html.DisplayFor(modelItem => item.PhoneNumber)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Gender)
-                </td>
-                <td>
-
-                    @{
-                        var fn = item.CompanyName + "_" + item.Photo;
+                <tr>
+                    @if (t == "Admin")
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CompanyName)
+                        </td>
                     }
-                    <img src="~/images/Uploads/Users/@fn" class="tableimg" />
-                </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EmailAddress)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    @if (t == "CompanyAdmin")
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Categories)
+                        </td>
+                    }
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PhoneNumber)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Gender)
+                    </td>
+                    <td>
 
-                @if (_type == "CompanyAdmin")
-                {
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Categories)
+                        @{
+                            var fn = item.CompanyName + "_" + item.Photo;
+                        }
+                        <img src="~/images/Uploads/Users/@fn" class="tableimg" />
                     </td>
-                }
-                @if (_type == "User")
-                {
+
+                    @if (_type == "CompanyAdmin")
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Categories)
+                        </td>
+                    }
+                    @if (_type == "User")
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Groups)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Topics)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.TypeOfUser)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.WebsiteLanguage)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Country)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.State)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.City)
+                        </td>
+                    }
                     <td>
-                        @Html.DisplayFor(modelItem => item.Groups)
+                        <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                        <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
                     </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Topics)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.TypeOfUser)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.WebsiteLanguage)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Country)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.State)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.City)
-                    </td>
-                }
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                    <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-                </td>
-            </tr>
+                </tr>
             }
         </tbody>
     </table>

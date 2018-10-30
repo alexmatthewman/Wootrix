@@ -35,13 +35,53 @@ namespace WootrixV2.Controllers
 
         }
 
+
+
+        // GET: CompanySegments
+        public async Task<IActionResult> UserSegmentSearch(string SearchString)
+        {
+            _companyID = HttpContext.Session.GetInt32("CompanyID") ?? 0;
+
+            var ctx = _context.CompanySegment
+                 .Where(m => m.CompanyID == _companyID && (m.Title.Contains(SearchString) || m.Tags.Contains(SearchString)));
+            return View(await ctx.ToListAsync());
+        }
+
+
         // GET: CompanySegments
         public async Task<IActionResult> Index()
         {
             //Get the company name out the session and use it as a filter for the groups returned
+
+            // We also need to filter on department.
+            // So if a segment is set to only be Editable by Company Admins of Department IT, 
+            // then if the current Company Admin is in Department Marketing they wont see it.
+            // Note that if the segment doesn't have a department set, everyone sees it
+
+
             _companyID = HttpContext.Session.GetInt32("CompanyID") ?? 0;
-            var ctx = _context.CompanySegment.Where(m => m.CompanyID == _companyID);
+
+            // Get current user department
             _user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();
+            WootrixV2.Models.User un = _context.User.Where(x => x.EmailAddress == _user.Email).FirstOrDefaultAsync().GetAwaiter().GetResult();
+
+            var department = un.Categories; //bad naming for the old DB i know
+            IQueryable<CompanySegment> ctx;
+
+
+            // If the user doesn't have a department don't filter on it
+            if (!string.IsNullOrWhiteSpace(department))
+            {
+                ctx = _context.CompanySegment
+                  .Where(m => m.CompanyID == _companyID)
+                  .Where(m => m.Department == department);
+            }
+            else
+            {
+                ctx = _context.CompanySegment
+                .Where(m => m.CompanyID == _companyID);
+            }
+
             return View(await ctx.ToListAsync());
         }
 
@@ -59,21 +99,35 @@ namespace WootrixV2.Controllers
                 .Where(n => n.CompanyID == _companyID)
                 .Where(m => m.Segments.Contains(id));
 
+            //Also add the Segment to the Viewbag so we can get the Image
+            CompanySegment cs = await _context.CompanySegment.FirstOrDefaultAsync(m => m.Title == id && m.CompanyID == _companyID);
+            ViewBag.Segment = cs;      
+            if (segmentArticle == null)
+            {
+                return NotFound();
+            }
 
-            ////To save from having to alter the model im passing in a list of articleIDs and the comment counts
-            //// which can then be checked on display
-            //DatabaseAccessLayer dla = new DatabaseAccessLayer(_context);
-            //List<SelectListItem> articleCount = await _context.SegmentArticle.AsNoTracking()
-            //    .Where(n => n.CompanyID == _companyID)
-            //        .OrderBy(n => n.Title)
-            //            .Select(n =>
-            //            new SelectListItem
-            //            {
-            //                Value = n.ID.ToString(),
-            //                Text = dla.GetArticleApprovedCommentCount(n.ID).ToString()
-            //            }).ToListAsync();
-            //ViewBag.ArticleCountList = articleCount;
+            return View(await segmentArticle.ToListAsync());
+        }
 
+        // GET: SegmentArticles/Articlelist/id of segment
+        public async Task<IActionResult> UserArticleSearch(string searchString)
+        {
+            if (searchString == null)
+            {
+                return NotFound();
+            }
+
+            var segmentTitle = HttpContext.Session.GetString("SegmentListID");
+            _companyID = HttpContext.Session.GetInt32("CompanyID") ?? 0;
+
+            var segmentArticle = _context.SegmentArticle
+                .Where(n => n.CompanyID == _companyID)
+                .Where(m => m.Segments.Contains(segmentTitle) && (m.Title.Contains(searchString) || m.Tags.Contains(searchString)));
+
+            //Also add the Segment to the Viewbag so we can get the Image
+            CompanySegment cs = await _context.CompanySegment.FirstOrDefaultAsync(m => m.Title == segmentTitle && m.CompanyID == _companyID);
+            ViewBag.Segment = cs;
             if (segmentArticle == null)
             {
                 return NotFound();
@@ -84,21 +138,25 @@ namespace WootrixV2.Controllers
 
 
         // GET: CompanySegments/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int id)
         {
-            if (id == null)
+
+            _companyID = HttpContext.Session.GetInt32("CompanyID") ?? 0;
+            CompanySegment cs = await _context.CompanySegment.FirstOrDefaultAsync(m => m.ID == id && m.CompanyID == _companyID);
+
+            var segmentArticle = _context.SegmentArticle
+                .Where(n => n.CompanyID == cs.CompanyID)
+                .Where(m => m.Segments.Contains(cs.Title));
+
+            //Also add the Segment to the Viewbag so we can get the Image
+            ViewBag.Segment = cs;
+
+            if (segmentArticle == null)
             {
                 return NotFound();
             }
 
-            var companySegment = await _context.CompanySegment
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (companySegment == null)
-            {
-                return NotFound();
-            }
-
-            return View(companySegment);
+            return View(await segmentArticle.ToListAsync());
         }
 
         // GET: CompanySegments/Create

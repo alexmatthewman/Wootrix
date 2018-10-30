@@ -29,7 +29,7 @@ namespace WootrixV2.Controllers
         {
             _context = context;
             _env = env;
-            _rootpath =_env.WebRootPath;
+            _rootpath = _env.WebRootPath;
             _userManager = userManager;
             _signInManager = signInManager;
             _dla = new DatabaseAccessLayer(_context);
@@ -77,12 +77,16 @@ namespace WootrixV2.Controllers
 
             // Now for users we need to show them articles on the home page so get them in the ViewBag for display
             _user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();
-
+            
             if (_signInManager.IsSignedIn(User))
             {
-                ViewBag.Segments = _dla.GetSegmentsList(_user.companyID);
-                ViewBag.Articles = _dla.GetArticlesList(_user.companyID);
-                ViewBag.CommentUnderReviewCount = _dla.GetArticleReviewCommentCount(_user.companyID);
+                User usr = _context.User.FirstOrDefault(p => p.EmailAddress == _user.Email);
+                if (usr.Role == Roles.User)
+                {
+                    ViewBag.Segments = _dla.GetSegmentsList(_user.companyID, usr);
+                    ViewBag.Articles = _dla.GetArticlesList(_user.companyID);
+                    ViewBag.CommentUnderReviewCount = _dla.GetArticleReviewCommentCount(_user.companyID);
+                }
             }
             return View(company);
         }
@@ -178,7 +182,7 @@ namespace WootrixV2.Controllers
             return View();
         }
 
-      
+
         // GET: Company/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -192,7 +196,7 @@ namespace WootrixV2.Controllers
             {
                 return NotFound();
             }
-          
+
             return View(company);
         }
 
@@ -258,7 +262,7 @@ namespace WootrixV2.Controllers
                     myCompany.CompanyFocusImage = focus.FileName;
                 }
 
-              
+
                 try
                 {
                     _context.Update(myCompany);

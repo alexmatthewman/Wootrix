@@ -1,90 +1,107 @@
 ﻿@model WootrixV2.Models.CompanySegmentViewModel
 
+@using Microsoft.AspNetCore.Identity;
+@using WootrixV2.Data;
+@inject UserManager<ApplicationUser> UserManager
 @{
     ViewData["Title"] = "Create";
     Layout = "~/Views/Shared/_LayoutCompany.cshtml";
 
+    var _companyName = UserManager.GetUserAsync(User).GetAwaiter().GetResult().companyName;
+
 }
 
-<h2>Create</h2>
 
-<h4>CompanySegment</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Order" class="control-label"></label>
-                <input asp-for="Order" class="form-control" />
-                <span asp-validation-for="Order" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CoverImage" class="control-label"></label>
-                @Html.EditorFor(x => x.CoverImage)
-                <span asp-validation-for="CoverImage" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CoverImageMobileFriendly" class="control-label"></label>
-                <input asp-for="CoverImageMobileFriendly" type="file" class="form-control" />
-                <span asp-validation-for="CoverImageMobileFriendly" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PublishDate" class="control-label"></label>
-                <input asp-for="PublishDate" class="form-control" />
-                <span asp-validation-for="PublishDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="FinishDate" class="control-label"></label>
-                <input asp-for="FinishDate" type="datetime" class="form-control" />
-                <span asp-validation-for="FinishDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ClientName" class="control-label"></label>
-                <input asp-for="ClientName" class="form-control" />
-                <span asp-validation-for="ClientName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ClientLogoImage" class="control-label"></label>
-                <input asp-for="ClientLogoImage" type="file" class="form-control" />
-                <span asp-validation-for="ClientLogoImage" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ThemeColor" class="control-label"></label>
-                <input asp-for="ThemeColor" type="color" class="form-control" />
-                <span asp-validation-for="ThemeColor" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="StandardColor" class="control-label"></label>
-                <input asp-for="StandardColor" type="color" class="form-control" />
-                <span asp-validation-for="StandardColor" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                @Html.LabelFor(x => Model.Department, htmlAttributes: new { @class = "control-label" })
+<div class="articleBackButtonContainer">
+    <a asp-controller="CompanySegments" asp-action="Index" asp-route-id="@_companyName">
+        <button class="articleBackButton button">
+            <span class="glyphicon glyphicon-menu-left"></span>
+            Back to Magazines
+        </button>
+    </a>
+</div>
+<div class="bodyBox">
+    <h2>Create</h2>
 
-                @Html.DropDownListFor(x => Model.Department, new SelectList(Model.Departments, "Value", "Text"), htmlAttributes: new { @class = "form-control", id = "Departments" })
-                @Html.ValidationMessageFor(x => x.Department, "", new { @class = "text-danger" })
+    <h4>Create Magazine</h4>
+    <hr />
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="Create" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Order" class="control-label"></label>
+                    <input asp-for="Order" class="form-control" />
+                    <span asp-validation-for="Order" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Title" class="control-label"></label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="CoverImage" class="control-label"></label>
+                    @Html.EditorFor(x => x.CoverImage)
+                    <span asp-validation-for="CoverImage" class="text-danger"></span>
+                    <p>Images with ratio 5 wide x 8 high work best</p>
+                </div>
+                <div class="form-group">
+                    <label asp-for="CoverImageMobileFriendly" class="control-label"></label>
+                    <input asp-for="CoverImageMobileFriendly" type="file" class="form-control" />
+                    <span asp-validation-for="CoverImageMobileFriendly" class="text-danger"></span>
+                    <p>Same image but smaller file size for quicker loading</p>
+                </div>
+                <div class="form-group">
+                    <label asp-for="PublishDate" class="control-label"></label>
+                    <input asp-for="PublishDate" class="form-control" />
+                    <span asp-validation-for="PublishDate" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="FinishDate" class="control-label"></label>
+                    <input asp-for="FinishDate" type="datetime" class="form-control" />
+                    <span asp-validation-for="FinishDate" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ClientName" class="control-label"></label>
+                    <input asp-for="ClientName" class="form-control" />
+                    <span asp-validation-for="ClientName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ClientLogoImage" class="control-label"></label>
+                    <input asp-for="ClientLogoImage" type="file" class="form-control" />
+                    <span asp-validation-for="ClientLogoImage" class="text-danger"></span>
+                </div>
+                @*<div class="form-group">
+                        <label asp-for="ThemeColor" class="control-label"></label>
+                        <input asp-for="ThemeColor" type="color" class="form-control" />
+                        <span asp-validation-for="ThemeColor" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="StandardColor" class="control-label"></label>
+                        <input asp-for="StandardColor" type="color" class="form-control" />
+                        <span asp-validation-for="StandardColor" class="text-danger"></span>
+                    </div>*@
+                <div class="form-group">
+                    @Html.LabelFor(x => Model.Department, htmlAttributes: new { @class = "control-label" })
 
-            </div>
-            <div class="form-group">
-                <label asp-for="Tags" class="control-label"></label>
-                <input asp-for="Tags" class="form-control" />
-                <span asp-validation-for="Tags" class="text-danger"></span>
-            </div>
+                    @Html.DropDownListFor(x => Model.Department, new SelectList(Model.Departments, "Value", "Text"), htmlAttributes: new { @class = "form-control", id = "Departments" })
+                    @Html.ValidationMessageFor(x => x.Department, "", new { @class = "text-danger" })
 
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-default" />
-            </div>
-        </form>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Tags" class="control-label"></label>
+                    <input asp-for="Tags" class="form-control" />
+                    <span asp-validation-for="Tags" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-default" />
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div>
+        <a asp-action="Index">Back to List</a>
     </div>
 </div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-

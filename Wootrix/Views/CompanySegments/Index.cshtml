@@ -14,80 +14,93 @@
     var _companyName = UserManager.GetUserAsync(User).GetAwaiter().GetResult().companyName;
 }
 
-<h2>Index</h2>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th class="magazine-header-text">
-                <h2>Segments</h2>
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
+<div class="articleBackButtonContainer">
+    <a asp-controller="Company" asp-action="Home" asp-route-id="@_companyName">
+        <button class="articleBackButton button">
+            <span class="glyphicon glyphicon-menu-left"></span>
+            Admin Home
+        </button>
+    </a>
 
-            @foreach (var item in Model)
-            {
+</div>
 
-                <td class="magazine" style="border:4px solid @item.ThemeColor;  background:@item.StandardColor;">
-                    <a asp-action="Details" asp-route-id="@item.ID">
-                        <div class="magazine-pic">
-                            @{
-                                var fn = _companyName + "_" + item.CoverImage;
-                            }
-                            <img src="~/images/Uploads/@fn"  />
-                        </div>
-                        <div class="magazine-text">
-                            <div class="magazine-text-title">
-                                @Html.DisplayFor(modelItem => item.Title)
-                            </div>
-                            <div class="magazine-text-dates">
-                                @Html.DisplayFor(modelItem => item.PublishDate) -
-                                @Html.DisplayFor(modelItem => item.FinishDate) - (@Html.DisplayFor(modelItem => item.Order))
-                            </div>
+<div class="bodyBox">
+    <h2>Magazines</h2>
 
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th class="magazine-header-text">
+                    <h2>Magazines</h2>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
 
-                            @{
-                                var draftOrNot = "Publish";
-                                var color = item.ThemeColor;
-                                if (item.Draft == false)
-                                {
+                @foreach (var item in Model)
+                {
 
-                                    draftOrNot = "Published";
-
-
+                    <td class="magazine" @*style="border:4px solid @item.ThemeColor;  background:@item.StandardColor;" *@>
+                        <a asp-action="Details" asp-route-id="@item.ID">
+                            <div class="magazine-pic">
+                                @{
+                                    var fn = _companyName + "_" + item.CoverImage;
                                 }
-                                else
-                                {
-                                    draftOrNot = "Draft";
-                                    color = item.StandardColor;
-
-
-                                }
-                            }
-                            <div class="magazine-text-draft btn btn-default" style="background:@color">
-                                @draftOrNot
+                                <img src="~/images/Uploads/@fn" />
                             </div>
-                            <a asp-action="Edit" class="btn btn-default" asp-route-id="@item.ID">
-                                <div class="magazine-text-edit" style="background:@Html.DisplayFor(modelItem => item.StandardColor)">
-                                    Edit
-
+                            <div class="magazine-text">
+                                <div class="magazine-text-title">
+                                    @Html.DisplayFor(modelItem => item.Title)
                                 </div>
-                            </a>
-                            <a asp-action="Delete" class="btn btn-default" asp-route-id="@item.ID">
-                                <div class="magazine-text-delete" style="background:@Html.DisplayFor(modelItem => item.StandardColor)">
-                                    Delete
-
+                                <div class="magazine-text-dates">
+                                    @Html.DisplayFor(modelItem => item.PublishDate) -
+                                    @Html.DisplayFor(modelItem => item.FinishDate) - (@Html.DisplayFor(modelItem => item.Order))
                                 </div>
-                            </a>
-                        </div>
-                    </a>
-                </td>
-            }
-        </tr>
-    </tbody>
-</table>
+
+
+                                @{
+                                    var draftOrNot = "Publish";
+                                    var color = item.ThemeColor;
+                                    if (item.Draft == false)
+                                    {
+
+                                        draftOrNot = "Published";
+
+
+                                    }
+                                    else
+                                    {
+                                        draftOrNot = "Draft";
+                                        color = item.StandardColor;
+
+
+                                    }
+                                }
+                                <div class="magazine-text-draft btn btn-default" style="background:@color">
+                                    @draftOrNot
+                                </div>
+                                <a asp-action="Edit" class="btn btn-default" asp-route-id="@item.ID">
+                                    <div class="magazine-text-edit" style="background:@Html.DisplayFor(modelItem => item.StandardColor)">
+                                        Edit
+
+                                    </div>
+                                </a>
+                                <a asp-action="Delete" class="btn btn-default" asp-route-id="@item.ID">
+                                    <div class="magazine-text-delete" style="background:@Html.DisplayFor(modelItem => item.StandardColor)">
+                                        Delete
+
+                                    </div>
+                                </a>
+                            </div>
+                        </a>
+                    </td>
+                }
+            </tr>
+        </tbody>
+    </table>
+</div>

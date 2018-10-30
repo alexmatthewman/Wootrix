@@ -64,6 +64,28 @@ namespace WootrixV2.Models
 
         [Display(Name = "Segments which have this Article", Prompt = "Segments which have this Article", Description = "Segments which have this Article")]
         public string Segments { get; set; }
+
+        [Display(Name = "Languages")]
+        public string Languages { get; set; }
+     
+        [Display(Name = "User groups", Prompt = "User groups", Description = "User groups")]
+        public string Groups { get; set; }
+
+        [Display(Name = "User Topics", Prompt = "User Topics", Description = "User Topics")]
+        public string Topics { get; set; }
+   
+        [Display(Name = "Type Of User", Prompt = "Type Of User", Description = "Type Of User")]
+        public string TypeOfUser { get; set; }
+   
+        [Display(Name = "User Country", Prompt = "User Country", Description = "User Country")]
+        public string Country { get; set; }
+
+        [Display(Name = "State", Prompt = "State", Description = "State")]
+        public string State { get; set; }
+  
+        [Display(Name = "City", Prompt = "City", Description = "City")]
+        public string City { get; set; }
+ 
     }
 
     public class SegmentArticleViewModel
@@ -124,19 +146,60 @@ namespace WootrixV2.Models
         public IList<string> SelectedSegments { get; set; }
         public IList<SelectListItem> AvailableSegments { get; set; }
 
-        //{
-        //    get { new List<string>();
-        //              string.Join(",", Segments)
-        //    }
-        //    set { SegmentList = value.Split(',').Select(x => new SelectListItem { Text = x, Value = x }).ToList();
-        //    }
-        //}
+        [Display(Name = "Languages")]
+        public string Languages { get; set; }
+        public IList<string> SelectedLanguages { get; set; }
+        public IList<SelectListItem> AvailableLanguages { get; set; }
+
+        [Display(Name = "User groups", Prompt = "User groups", Description = "User groups")]
+        public string Groups { get; set; }
+        public IList<string> SelectedGroups { get; set; }
+        public IList<SelectListItem> AvailableGroups { get; set; }
+
+        [Display(Name = "User Topics", Prompt = "User Topics", Description = "User Topics")]
+        public string Topics { get; set; }
+        public IList<string> SelectedTopics { get; set; }
+        public IList<SelectListItem> AvailableTopics { get; set; }
+
+        [Display(Name = "Type Of User", Prompt = "Type Of User", Description = "Type Of User")]
+        public string TypeOfUser { get; set; }
+        public IList<string> SelectedTypeOfUser { get; set; }
+        public IList<SelectListItem> AvailableTypeOfUser { get; set; }
+
+        [Display(Name = "User Country", Prompt = "User Country", Description = "User Country")]
+        public string Country { get; set; }
+        public IEnumerable<SelectListItem> Countries { get; set; }
+
+
+        [Display(Name = "State", Prompt = "State", Description = "State")]
+        public string State { get; set; }
+        public IEnumerable<SelectListItem> States { get; set; }
+
+        [Display(Name = "City", Prompt = "City", Description = "City")]
+        public string City { get; set; }
+        public IEnumerable<SelectListItem> Cities { get; set; }
 
         public SegmentArticleViewModel()
-    {
-            //Maybe get data here
+        {
             SelectedSegments = new List<string>();
             AvailableSegments = new List<SelectListItem>();
+            
+            SelectedGroups = new List<string>();
+            AvailableGroups = new List<SelectListItem>();
+
+            SelectedTopics = new List<string>();
+            AvailableTopics = new List<SelectListItem>();
+
+            SelectedTypeOfUser = new List<string>();
+            AvailableTypeOfUser = new List<SelectListItem>();
+
+            SelectedLanguages = new List<string>();
+            AvailableLanguages = new List<SelectListItem>();
+
+            Countries = new List<SelectListItem>();
+            States = new List<SelectListItem>();
+            Cities = new List<SelectListItem>();
+
         }
 
         //// This property contains the available options

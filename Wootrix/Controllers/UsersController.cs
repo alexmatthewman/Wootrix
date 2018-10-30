@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using CsvHelper;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -98,6 +99,102 @@ namespace WootrixV2.Controllers
                 }
             }
             return View(data);
+        }
+
+
+
+        // GET: Users/Details/5
+        public async Task<IActionResult> BulkUpload()
+        {
+            return View();
+        }
+
+        // POST: Users/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> BulkUpload(BulkUploadViewModel uf)
+        {
+            if (ModelState.IsValid)
+            {
+
+
+                _user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();
+
+                CsvReader csv;
+                IEnumerable<BulkUploadDataViewModel> records;
+                IFormFile file = uf.BulkUploadFile;
+
+                if (file != null && file.Length > 0)
+                {
+                    using (var reader = new StreamReader(file.OpenReadStream()))
+                    {
+                        try
+                        {
+                            csv = new CsvReader(reader);
+                            records = csv.GetRecords<BulkUploadDataViewModel>();
+
+
+                            foreach (BulkUploadDataViewModel budvm in records)
+                            {
+                                //Awesome - create a user for each row
+                                User un = new User();
+                                un.CompanyID = HttpContext.Session.GetInt32("CompanyID") ?? 0;
+                                un.CompanyName = HttpContext.Session.GetString("CompanyName") ?? "";
+                                un.Role = Roles.User;
+
+                                un.EmailAddress = budvm.EmailAddress;
+                                un.Name = budvm.Name;
+                                un.PhoneNumber = budvm.PhoneNumber;
+                                un.Gender = budvm.Gender;
+                                un.WebsiteLanguage = budvm.WebsiteLanguage;
+                                un.Topics = budvm.Topics;
+                                un.Groups = budvm.Groups;
+                                un.TypeOfUser = budvm.TypeOfUser;
+                                un.Country = budvm.Country;
+                                un.State = budvm.State;
+                                un.City = budvm.City;
+                                un.CreatedOn = DateTime.Now;
+                                un.CreatedBy = _user.UserName;
+
+
+                                //now for the tricky bit - have to do a normal asp.net registration and if a companyadmin or admin set the appropriate claim type
+                                //Create the user
+                                var user = new UserViewModel { EmailAddress = budvm.EmailAddress, CompanyName = HttpContext.Session.GetString("CompanyName") ?? "", CompanyID = HttpContext.Session.GetInt32("CompanyID") ?? 0, Name = budvm.Name };
+
+                                if (CreateDotNetUser(user, "ChangePassword1!").Succeeded)
+                                {
+                                    //Add the claim type - it will be exactly as per the type passed to the Index in the first place
+                                    var userForClaims = await _userManager.FindByEmailAsync(user.EmailAddress);
+                                    var ac = await _userManager.GetClaimsAsync(userForClaims);
+
+                                    if (ac.Count() <= 0)
+                                    {
+                                        await _userManager.AddToRoleAsync(userForClaims, "User");
+                                        await _userManager.AddClaimAsync(userForClaims, new Claim(ClaimTypes.Role, "User"));
+                                    }
+                                    //Add the user to the user table as well at the identity tables
+                                    _context.Add(un);
+                                    
+                                }
+                             
+                            }
+                            await _context.SaveChangesAsync();
+                            ViewBag.Message = "Users successfully created";
+                            return RedirectToAction("Index", "Users", new { id = HttpContext.Session.GetString("ManageType") });
+
+                        }
+                        catch (Exception e)
+                        {
+                            System.Diagnostics.Debug.WriteLine(e);
+                            ViewBag.Message = e + System.Environment.NewLine;
+                        }
+                    }
+                }
+            }
+            ViewBag.Message +="    User creation failed";
+            return View(uf);
         }
 
         // GET: Users/Details/5
@@ -252,8 +349,11 @@ namespace WootrixV2.Controllers
                 un.Topics = string.Join(",", user.SelectedTopics);
                 un.TypeOfUser = string.Join(",", user.SelectedTypeOfUser);
                 un.WebsiteLanguage = string.Join(",", user.SelectedLanguages);
-                un.Country = user.Country;
-                un.State = user.State;
+                if (user.Country != null && user.Country != "") un.Country = _context.LocationCountries.FirstOrDefault(m => m.country_code == user.Country).country_name;
+                if (user.State != null && user.State != "") un.State = _context.LocationStates.FirstOrDefault(n => n.country_code == user.Country && n.state_code == user.State).state_name;
+
+                // un.Country = user.Country;
+                // un.State = user.State;
                 un.City = user.City;
 
                 IFormFile avatar = user.Photo;
@@ -335,6 +435,32 @@ namespace WootrixV2.Controllers
         {
             var user = new ApplicationUser { UserName = un.EmailAddress, Email = un.EmailAddress, companyName = HttpContext.Session.GetString("CompanyName") ?? "", companyID = HttpContext.Session.GetInt32("CompanyID") ?? 0, name = un.Name };
             var result = _userManager.CreateAsync(user, un.Password).GetAwaiter().GetResult();
+            if (result.Succeeded)
+            {
+                _logger.LogInformation("User created a new account with password.");
+
+                var code = _userManager.GenerateEmailConfirmationTokenAsync(user).GetAwaiter().GetResult();
+                var callbackUrl = Url.Page(
+                    "/Account/ConfirmEmail",
+                    pageHandler: null,
+                    values: new { userId = user.Id, code = code },
+                    protocol: Request.Scheme);
+
+                _emailSender.SendEmailAsync(un.EmailAddress, "Confirm your email",
+                    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.").GetAwaiter().GetResult();
+
+            }
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+            return result;
+        }
+
+        public IdentityResult CreateDotNetUser(UserViewModel un, string password)
+        {
+            var user = new ApplicationUser { UserName = un.EmailAddress, Email = un.EmailAddress, companyName = HttpContext.Session.GetString("CompanyName") ?? "", companyID = HttpContext.Session.GetInt32("CompanyID") ?? 0, name = un.Name };
+            var result = _userManager.CreateAsync(user, password).GetAwaiter().GetResult();
             if (result.Succeeded)
             {
                 _logger.LogInformation("User created a new account with password.");
@@ -505,8 +631,10 @@ namespace WootrixV2.Controllers
                     un.CreatedOn = DateTime.Now;
                     un.CreatedBy = _user.UserName;
                     un.Categories = user.Categories;
-                    un.Country = user.Country;
-                    un.State = user.State;
+                    _user.categories = user.Categories;
+                    // The country and state values are codes which aren't too useful - get the text
+                    if (user.Country != null && user.Country != "") un.Country = _context.LocationCountries.FirstOrDefault(m => m.country_code == user.Country).country_name;
+                    if (user.State != null && user.State != "") un.State = _context.LocationStates.FirstOrDefault(n => n.country_code == user.Country && n.state_code == user.State).state_name;
                     un.City = user.City;
 
                     un.Groups = string.Join(",", user.SelectedGroups);

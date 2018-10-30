@@ -1,0 +1,101 @@
+﻿@model IEnumerable<WootrixV2.Models.SegmentArticle>
+
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Http;
+@using WootrixV2.Data;
+@using System.Net
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    ViewData["Title"] = "Article Search List";
+    Layout = "~/Views/Shared/_LayoutCompany.cshtml";
+
+    var _companyName = Context.Session.GetString("CompanyName");
+
+}
+<div class="top-head">
+    <div class="articleBackButtonContainer">
+        <a asp-controller="Company" asp-action="Home" asp-route-id="@_companyName"><button class="articleBackButton button"><span class="glyphicon glyphicon-menu-left"></span>&nbsp;Back to Newsstand</button></a>
+    </div>
+    <div class="search-container">
+        <div class="search">
+            <form asp-controller="SegmentArticle" asp-action="UserArticleSearch">
+                <p>
+                    <input class="search-string" type="text" name="SearchString" title="Search String">
+                    <input class="search-submit" type="submit" value="Search" />
+                </p>
+            </form>
+        </div>
+    </div>
+</div>
+<main id="UserView">
+    <div class="articleContainer">
+        <div class="articleContainerCentred">
+            <div class="articleContainerSub">
+
+                @* So they want the magazine image to be the first thing displayed *@
+                @{
+                    var magImg = _companyName + "_" + ViewBag.Segment.CoverImage;
+                }
+
+
+
+                <div class="articleBox">
+                    <div class="segmentHeader">
+                        <h1>@ViewBag.Segment.Title</h1>
+                        <img src="~/images/Uploads/@magImg" class="magazineArticleListImage" />
+                    </div>
+                    <section style="display: block">
+                        @foreach (var item in Model)
+                        {
+                            <div class="article articleDetails">
+                                <div>
+                                    <a asp-controller="SegmentArticles" asp-action="Article" asp-route-id="@item.ID">
+                                        @{
+                                            var fn = _companyName + "_" + WebUtility.HtmlEncode(item.Title) + "_" + item.Image;
+                                        }
+
+                                        <h1>@item.Title</h1>
+                                        <div class="imageStuff">
+                                            <img src="~/images/Uploads/Articles/@fn" class="UserArticleImage" />
+                                        </div>
+                                        @*@Html.Raw(Model.ArticleContent)*@
+                                        <div class="publishStuff">
+                                            <span class="glyphicon glyphicon-user"></span>
+                                            <div class="author">Posted by @item.Author&nbsp;</div><div class="publishDate">@item.PublishFrom</div>
+                                        </div>
+                                    </a>
+                                    @*@if (item.AllowComments ?? false)
+                                        {
+                                            //This is a special list of articleIDs and their comment counts
+                                            var commentCount = "0";
+                                            foreach (var art in ViewBag.ArticleCountList)
+                                            {
+                                                if (art.Value == item.ID) { commentCount = art.Text; }
+                                            }
+
+                                            <div class="commentStuff">
+                                                <a asp-controller="SegmentArticleComments" asp-action="Index" asp-route-id="@item.ID">
+                                                    <span class="glyphicon glyphicon-comment"></span>
+                                                    <div class="commentCount">@commentCount&nbsp;</div><div class="commentView">
+                                                        Comments
+                                                    </div>
+                                                </a>
+                                            </div>
+                                        }*@
+
+                                </div>
+                            </div>
+                        }
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div class="articleBackButtonContainer">
+    <a asp-controller="Company" asp-action="Home" asp-route-id="@_companyName"><button class="articleBackButton button"><span class="glyphicon glyphicon-menu-left"></span>&nbsp;Back to Newsstand</button></a>
+</div>
