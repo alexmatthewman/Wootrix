@@ -31,7 +31,7 @@ namespace WootrixV2.Models
         [Display(Name = "Cover Image", Prompt = "Please select the cover image", Description = "Cover Image")]
         public string Image { get; set; }
 
-        [Display(Name = "Embedded Video Url", Prompt = "Please enter the video url if applicable", Description = "Embedded Video Url")]
+        [Display(Name = "Embedded Video File", Prompt = "Please enter a video to embed in the article if applicable", Description = "Embedded Video File")]
         public string EmbeddedVideo { get; set; }
 
         [Required]

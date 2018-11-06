@@ -4,12 +4,14 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Wootrix.Data;
 using WootrixV2.Data;
 using WootrixV2.Models;
@@ -23,13 +25,15 @@ namespace WootrixV2.Controllers
         private readonly string _rootpath;
         private readonly UserManager<ApplicationUser> _userManager;
         private ApplicationUser _user;
+        private readonly IOptions<RequestLocalizationOptions> _rlo;
 
-        public SegmentArticlesController(UserManager<ApplicationUser> userManager, IHostingEnvironment env, ApplicationDbContext context)
+        public SegmentArticlesController(IOptions<RequestLocalizationOptions> rlo, UserManager<ApplicationUser> userManager, IHostingEnvironment env, ApplicationDbContext context)
         {
             _context = context;
             _env = env;
             _rootpath = _env.WebRootPath;
             _userManager = userManager;
+            _rlo = rlo;
         }
 
         // GET: SegmentArticles
@@ -40,14 +44,12 @@ namespace WootrixV2.Controllers
             var ctx = await _context.SegmentArticle.Where(m => m.CompanyID == id).ToListAsync();
             foreach (SegmentArticle item in ctx)
             {
-                if (!string.IsNullOrWhiteSpace(item.Languages)) item.Languages.Replace(",", ", ");
-                if (!string.IsNullOrWhiteSpace(item.Groups)) item.Groups.Replace(",", ", ");
-                if (!string.IsNullOrWhiteSpace(item.Segments)) item.Segments.Replace(",", ", ");
-                if (!string.IsNullOrWhiteSpace(item.TypeOfUser)) item.TypeOfUser.Replace(",", ", ");
-                if (!string.IsNullOrWhiteSpace(item.Topics)) item.Topics.Replace(",", ", ");
+                if (!string.IsNullOrWhiteSpace(item.Languages)) item.Languages.Replace("|", ", ");
+                if (!string.IsNullOrWhiteSpace(item.Groups)) item.Groups.Replace("|", ", ");
+                if (!string.IsNullOrWhiteSpace(item.Segments)) item.Segments.Replace("|", ", ");
+                if (!string.IsNullOrWhiteSpace(item.TypeOfUser)) item.TypeOfUser.Replace("|", ", ");
+                if (!string.IsNullOrWhiteSpace(item.Topics)) item.Topics.Replace("|", ", ");
             }
-
-
             return View(ctx);
         }
 
@@ -136,7 +138,7 @@ namespace WootrixV2.Controllers
             }
 
             // Add language checkboxes
-            var listOfAllLanguages = dla.GetListLanguages(_user.companyID);
+            var listOfAllLanguages = dla.GetListLanguages(_user.companyID, _rlo);
             foreach (var seg in listOfAllLanguages)
             {
                 s.AvailableLanguages.Add(new SelectListItem { Text = seg.Value, Value = seg.Value });
@@ -177,12 +179,12 @@ namespace WootrixV2.Controllers
                 myArticle.CreatedBy = _user.UserName;
 
                 myArticle.Tags = sa.Tags;
-                myArticle.Segments = string.Join(",", sa.SelectedSegments);
+                myArticle.Segments = string.Join("|", sa.SelectedSegments);
 
-                myArticle.Languages = string.Join(",", sa.SelectedLanguages);
-                myArticle.Groups = string.Join(",", sa.SelectedGroups);
-                myArticle.Topics = string.Join(",", sa.SelectedTopics);
-                myArticle.TypeOfUser = string.Join(",", sa.SelectedTypeOfUser);
+                myArticle.Languages = string.Join("|", sa.SelectedLanguages);
+                myArticle.Groups = string.Join("|", sa.SelectedGroups);
+                myArticle.Topics = string.Join("|", sa.SelectedTopics);
+                myArticle.TypeOfUser = string.Join("|", sa.SelectedTypeOfUser);
                 if (sa.Country != null && sa.Country != "") myArticle.Country = _context.LocationCountries.FirstOrDefault(m => m.country_code == sa.Country).country_name;
                 if (sa.State != null && sa.State != "") myArticle.State = _context.LocationStates.FirstOrDefault(n => n.country_code == sa.Country && n.state_code == sa.State).state_name;
                 myArticle.City = sa.City;
@@ -250,7 +252,7 @@ namespace WootrixV2.Controllers
             }
 
             // Add language checkboxes
-            var listOfAllLanguages = dla.GetListLanguages(_user.companyID);
+            var listOfAllLanguages = dla.GetListLanguages(_user.companyID, _rlo);
             foreach (var seg in listOfAllLanguages)
             {
                 sa.AvailableLanguages.Add(new SelectListItem { Text = seg.Value, Value = seg.Value });
@@ -369,7 +371,7 @@ namespace WootrixV2.Controllers
                 s.AvailableLanguages = segmentArticle.Languages.Split(',').Select(x => new SelectListItem { Text = x, Value = x, Selected = true }).ToList();
             }
             //Add any options not already in the segmentlist
-            var listOfAllLanguages = dla.GetListLanguages(_user.companyID);
+            var listOfAllLanguages = dla.GetListLanguages(_user.companyID, _rlo);
             foreach (var seg in listOfAllLanguages)
             {
                 if (s.AvailableLanguages.FirstOrDefault(stringToCheck => stringToCheck.Value.Contains(seg.Value)) == null)
@@ -409,13 +411,13 @@ namespace WootrixV2.Controllers
                 myArticle.AllowComments = sa.AllowComments;
                 myArticle.ArticleContent = sa.ArticleContent;
                 myArticle.Author = sa.Author;
-                myArticle.Segments = string.Join(",", sa.SelectedSegments);
+                myArticle.Segments = string.Join("|", sa.SelectedSegments);
                 myArticle.Tags = sa.Tags;
 
-                myArticle.Languages = string.Join(",", sa.SelectedLanguages);
-                myArticle.Groups = string.Join(",", sa.SelectedGroups);
-                myArticle.Topics = string.Join(",", sa.SelectedTopics);
-                myArticle.TypeOfUser = string.Join(",", sa.SelectedTypeOfUser);
+                myArticle.Languages = string.Join("|", sa.SelectedLanguages);
+                myArticle.Groups = string.Join("|", sa.SelectedGroups);
+                myArticle.Topics = string.Join("|", sa.SelectedTopics);
+                myArticle.TypeOfUser = string.Join("|", sa.SelectedTypeOfUser);
                   myArticle.City = sa.City;
                 if (sa.Country != null && sa.Country != "") myArticle.Country = _context.LocationCountries.FirstOrDefault(m => m.country_code == sa.Country).country_name;
                 if (sa.State != null && sa.State != "") myArticle.State = _context.LocationStates.FirstOrDefault(n => n.country_code == sa.Country && n.state_code == sa.State).state_name;
@@ -440,7 +442,8 @@ namespace WootrixV2.Controllers
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
                         //async upload for now seems best as they want large files to be uploadable
-                        vid.CopyToAsync(stream);
+                        //vid.CopyToAsync(stream);
+                        await vid.CopyToAsync(stream);
                     }
                     //The file has been saved to disk - now save the file name to the DB
                     myArticle.EmbeddedVideo = vid.FileName;

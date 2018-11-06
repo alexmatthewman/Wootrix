@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using CsvHelper;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -15,6 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Wootrix.Data;
 using WootrixV2.Data;
 using WootrixV2.Models;
@@ -32,8 +34,9 @@ namespace WootrixV2.Controllers
         private readonly IEmailSender _emailSender;
         private readonly string _rootpath;
         private readonly IHostingEnvironment _env;
+        private readonly IOptions<RequestLocalizationOptions> _rlo;
 
-        public UsersController(UserManager<ApplicationUser> userManager, IHostingEnvironment env, ApplicationDbContext context, SignInManager<ApplicationUser> signInManager,
+        public UsersController(IOptions<RequestLocalizationOptions> rlo, UserManager<ApplicationUser> userManager, IHostingEnvironment env, ApplicationDbContext context, SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender)
         {
@@ -44,6 +47,7 @@ namespace WootrixV2.Controllers
             _emailSender = emailSender;
             _env = env;
             _rootpath = _env.WebRootPath;
+            _rlo = rlo;
         }
 
 
@@ -148,7 +152,8 @@ namespace WootrixV2.Controllers
                                 un.Name = budvm.Name;
                                 un.PhoneNumber = budvm.PhoneNumber;
                                 un.Gender = budvm.Gender;
-                                un.WebsiteLanguage = budvm.WebsiteLanguage;
+                                un.InterfaceLanguage = budvm.InterfaceLanguage;
+                                un.WebsiteLanguage = budvm.ArticleLanguages;
                                 un.Topics = budvm.Topics;
                                 un.Groups = budvm.Groups;
                                 un.TypeOfUser = budvm.TypeOfUser;
@@ -238,6 +243,7 @@ namespace WootrixV2.Controllers
             s.Role = (Roles)Enum.Parse(typeof(Roles), r);
             s.Departments = dla.GetDepartments(cp);
             s.Genders = dla.GetGenders();
+            s.InterfaceLanguages = dla.GetInterfaceLanguages(cp, _rlo);
 
             if (r == "User")
             {
@@ -264,7 +270,7 @@ namespace WootrixV2.Controllers
                 }
 
                 // Add language checkboxes
-                var listOfAllLanguages = dla.GetListLanguages(_user.companyID);
+                var listOfAllLanguages = dla.GetListLanguages(_user.companyID, _rlo);
                 foreach (var seg in listOfAllLanguages)
                 {
                     s.AvailableLanguages.Add(new SelectListItem { Text = seg.Value, Value = seg.Value });
@@ -344,6 +350,7 @@ namespace WootrixV2.Controllers
                 un.CreatedOn = DateTime.Now;
                 un.CreatedBy = _user.UserName;
                 un.Categories = user.Categories;
+                un.InterfaceLanguage = user.InterfaceLanguage;
 
                 un.Groups = string.Join(",", user.SelectedGroups);
                 un.Topics = string.Join(",", user.SelectedTopics);
@@ -391,7 +398,7 @@ namespace WootrixV2.Controllers
             DatabaseAccessLayer dla = new DatabaseAccessLayer(_context);
             user.Departments = dla.GetDepartments(companyID);
             user.Genders = dla.GetGenders();
-
+            user.InterfaceLanguages = dla.GetInterfaceLanguages(companyID, _rlo);
             if (HttpContext.Session.GetString("ManageType") == "User")
             {
 
@@ -417,7 +424,7 @@ namespace WootrixV2.Controllers
                 }
 
                 // Add language checkboxes
-                var listOfAllLanguages = dla.GetListLanguages(companyID);
+                var listOfAllLanguages = dla.GetListLanguages(companyID, _rlo);
                 foreach (var seg in listOfAllLanguages)
                 {
                     user.AvailableLanguages.Add(new SelectListItem { Text = seg.Value, Value = seg.Value });
@@ -517,6 +524,8 @@ namespace WootrixV2.Controllers
             s.Role = user.Role;
             s.Departments = dla.GetDepartments(cp);
             s.Genders = dla.GetGenders();
+            s.InterfaceLanguages = dla.GetInterfaceLanguages(cp, _rlo);
+
             s.EmailAddress = user.EmailAddress;
             s.Name = user.Name;
             //s.ID = user.ID;
@@ -580,7 +589,7 @@ namespace WootrixV2.Controllers
                     s.AvailableLanguages = user.WebsiteLanguage.Split(',').Select(x => new SelectListItem { Text = x, Value = x, Selected = true }).ToList();
                 }
                 //Add any options not already in the segmentlist
-                var listOfAllLanguages = dla.GetListLanguages(_user.companyID);
+                var listOfAllLanguages = dla.GetListLanguages(_user.companyID, _rlo);
                 foreach (var seg in listOfAllLanguages)
                 {
                     if (s.AvailableLanguages.FirstOrDefault(stringToCheck => stringToCheck.Value.Contains(seg.Value)) == null)
@@ -632,6 +641,9 @@ namespace WootrixV2.Controllers
                     un.CreatedBy = _user.UserName;
                     un.Categories = user.Categories;
                     _user.categories = user.Categories;
+                    un.InterfaceLanguage = user.InterfaceLanguage;
+                    un.Country = user.Country;
+                    un.State = user.State;
                     // The country and state values are codes which aren't too useful - get the text
                     if (user.Country != null && user.Country != "") un.Country = _context.LocationCountries.FirstOrDefault(m => m.country_code == user.Country).country_name;
                     if (user.State != null && user.State != "") un.State = _context.LocationStates.FirstOrDefault(n => n.country_code == user.Country && n.state_code == user.State).state_name;

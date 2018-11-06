@@ -1,11 +1,13 @@
 ﻿@model WootrixV2.Models.Company
 
-
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+
 @{
-    ViewData["Title"] = "Wootrix 2.0 Company Home Page";
     Layout = "~/Views/Shared/_LayoutCompany.cshtml";
 
 
@@ -24,20 +26,16 @@
 @using Microsoft.AspNetCore.Http;
 @using System.Security.Claims
 @using WootrixV2.Data;
-@using System.Net
-@using System.Web;
-@using System.IO;
 
 
 
 <div class="companyHome" company="@companyName">
-    <!-- Banner -->
 
+    <!-- Banner -->
     @if (!SignInManager.IsSignedIn(User))
     {
 
-
-        <section style="height: 92vh; background-repeat: no-repeat; background-image: -webkit-linear-gradient(left, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 20%, rgba(0,0,0,0) 80%, rgba(0,0,0,0.9) 100%), url(../images/Uploads/@bImage);" alt="Home screen background" class="img-responsive">
+        <section class="background" style="height: 92vh; background-repeat: no-repeat; background-image: -webkit-linear-gradient(left, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 20%, rgba(0,0,0,0) 80%, rgba(0,0,0,0.9) 100%), url(../../images/Uploads/@bImage);" alt="Home screen background" >
 
 
             <div class="container clearfix">
@@ -62,7 +60,7 @@
                         @if (!SignInManager.IsSignedIn(User))
                         {
                             <div class="btn-box clearfix">
-                                <a asp-area="Identity" class="register-bttn" asp-page="/Account/Login" asp-route-id="@companyName">Login</a>
+                                <a asp-area="Identity" class="register-bttn" asp-page="/Account/Login" asp-route-id="@companyName">@Localizer["Login"]</a>
                             </div>
                         }
                     </div>
@@ -83,7 +81,7 @@
                     <div class="super-admin-cont">
                         <div class="admin-profile clearfix">
                             <div class="profile-image-cont"><img src="~/images/Uploads/@fImage" id="CompanyFocusImage" alt="Company Focus Image" /></div>
-                            <h4>Company Admin</h4>
+                            <h4>@Localizer["Company Admin"]</h4>
                             <h5>@UserManager.GetUserName(User)</h5>
 
                         </div>
@@ -92,13 +90,13 @@
                                 <li>
                                     <a asp-controller="Users" asp-action="Index" asp-route-id="CompanyAdmin" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
                                         <span><img src="~/images/icon-2.png" alt="" /></span>
-                                        <strong>Manage Company Admins</strong>
+                                        <strong>@Localizer["Manage Company Admins"]</strong>
                                     </a>
                                 </li>
                                 <li>
                                     <a asp-controller="Users" asp-action="Index" asp-route-id="User" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">
                                         <span><img src="~/images/icon-3.png" alt="" /></span>
-                                        <strong>Manage Users</strong>
+                                        <strong>@Localizer["Manage Users"]</strong>
                                     </a>
                                 </li>
 
@@ -107,7 +105,7 @@
                                     <a asp-area="" asp-controller="CompanySegments" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
 
                                         <span><img src="~/images/icon-5.png" alt="" /></span>
-                                        <strong>Magazines</strong>
+                                        <strong>@Localizer["Magazines"]</strong>
                                     </a>
                                 </li>
 
@@ -115,7 +113,7 @@
                                     <a asp-area="" asp-controller="SegmentArticles" asp-action="Index" asp-route-id="@companyName" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
 
                                         <span><img src="~/images/icon-6.png" alt="" /></span>
-                                        <strong>Articles</strong>
+                                        <strong>@Localizer["Articles"]</strong>
                                     </a>
 
                                 </li>
@@ -124,7 +122,7 @@
 
                                     <a asp-area="" asp-controller="SegmentArticleComments" asp-action="Admin" asp-route-id="@Model.ID" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
                                         <span><img src="~/images/icon-6.png" alt="" /></span>
-                                        <strong>Articles Comments</strong>
+                                        <strong>@Localizer["Article Comments"]</strong>
                                     </a>
                                     @if (ViewBag.CommentUnderReviewCount > 0)
                                     {
@@ -134,12 +132,12 @@
 
                                 </li>
 
-                                <li>
-                                    <a class="language" href="">
-                                        <span><img src="~/images/icon-7.png" alt="" /></span>
-                                        <strong>Change Language</strong>
-                                    </a>
-                                </li>
+                                @*<li>
+                                        <a class="language" href="">
+                                            <span><img src="~/images/icon-7.png" alt="" /></span>
+                                            <strong>@Localizer["Logout"]Change Language</strong>
+                                        </a>
+                                    </li>*@
 
                                 @*<li>
                                         <a href="">
@@ -151,14 +149,14 @@
                                 <li>
                                     <a href="">
                                         <span><img src="~/images/icon-9.png" alt="" /></span>
-                                        <strong>Push Notifications</strong>
+                                        <strong>@Localizer["Push Notifications"]</strong>
                                     </a>
                                 </li>
 
                                 <li>
                                     <a href="">
                                         <span><img src="~/images/icon-6.png" alt="" /></span>
-                                        <strong>Reports</strong>
+                                        <strong>@Localizer["Reports"]</strong>
                                     </a>
                                 </li>
 
@@ -171,25 +169,25 @@
                                 <li>
                                     <a asp-area="" asp-controller="CompanyGroups" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
                                         <span><img src="~/images/icon-1.png" alt="Group Filters" /></span>
-                                        <strong>Group Filters</strong>
+                                        <strong>@Localizer["Group Filters"]</strong>
                                     </a>
                                 </li>
                                 <li>
                                     <a asp-area="" asp-controller="CompanyTopics" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
                                         <span><img src="~/images/icon-1.png" alt="Topic Filters" /></span>
-                                        <strong>Topic Filters</strong>
+                                        <strong>@Localizer["Topic Filters"]</strong>
                                     </a>
                                 </li>
                                 <li>
                                     <a asp-area="" asp-controller="CompanyTypeOfUsers" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
                                         <span><img src="~/images/icon-1.png" alt="User Type Filters" /></span>
-                                        <strong>User Type Filters</strong>
+                                        <strong>@Localizer["User Type Filters"]</strong>
                                     </a>
                                 </li>
                                 <li>
                                     <a asp-controller="CompanyLanguages" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
                                         <span><img src="~/images/icon-1.png" alt="Company Languages" /></span>
-                                        <strong>Company Languages</strong>
+                                        <strong>@Localizer["Company Languages"]</strong>
                                     </a>
                                 </li>
                                 @*<li>
@@ -216,7 +214,7 @@
                     <div class="super-admin-cont">
                         <div class="admin-profile clearfix">
                             <div class="profile-image-cont"><img src="~/images/Uploads/@fImage" id="CompanyFocusImage" alt="Company Focus Image" /></div>
-                            <h4>Super Admin</h4>
+                            <h4>@Localizer["Super Admin"]</h4>
                             <h5>@UserManager.GetUserName(User)</h5>
 
                         </div>
@@ -225,19 +223,19 @@
                                 <li>
                                     <a asp-controller="Users" asp-action="Index" asp-route-id="Admin" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
                                         <span><img src="~/images/icon-3.png" alt="" /></span>
-                                        <strong>Manage Company Admins</strong>
+                                        <strong>@Localizer["Manage Company Admins"]</strong>
                                     </a>
                                 </li>
                                 <li>
                                     <a asp-area="" asp-controller="Company" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
                                         <span><img src="~/images/icon-5.png" alt="Manage Companies" /></span>
-                                        <strong>Manage Companies</strong>
+                                        <strong>@Localizer["Manage Companies"]</strong>
                                     </a>
                                 </li>
                                 <li>
                                     <a asp-area="" asp-controller="CompanyDepartments" asp-action="Index" asp-route-id="@Model.ID" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
                                         <span><img src="~/images/icon-1.png" alt="Department Filters" /></span>
-                                        <strong>Department Filters</strong>
+                                        <strong>@Localizer["Department Filters"]</strong>
                                     </a>
                                 </li>
                             </ul>
@@ -250,17 +248,17 @@
             @if (!User.HasClaim(ClaimTypes.Role, "CompanyAdmin") && !User.HasClaim(ClaimTypes.Role, "Admin"))
             {
 
-               
+
                 <table class="table searchHeadTable">
                     <thead>
                         <tr>
                             <th class="magazine-header-text">
-                                <h2>Magazines</h2>
+                                <h2>@Localizer["Magazines"]</h2>
                                 <div class="search">
                                     <form asp-controller="CompanySegments" asp-action="UserSegmentSearch">
                                         <p>
                                             <input class="search-string" type="text" name="SearchString" title="Search String">
-                                            <input class="search-submit" type="submit" value="Search" />
+                                            <input class="search-submit" type="submit" value="@Localizer["Search"]" />
                                         </p>
                                     </form>
                                 </div>

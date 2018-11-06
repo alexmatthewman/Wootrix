@@ -3,21 +3,28 @@
 @using System.Security.Claims
 @using WootrixV2.Data;
 
-@{
-    var companyName = @Context.Session.GetString("CompanyName") ?? "Wootrix";
-    var companyID = @Context.Session.GetInt32("CompanyID") ?? 0;
-}
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
 
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
+@{
+    var companyName = @Context.Session.GetString("CompanyName") ?? "Wootrix";
+    var companyID = @Context.Session.GetInt32("CompanyID") ?? 0;
+
+    var bImage = companyName + "_" + Context.Session.GetString("CompanyBackgroundImage");
+    var fImage = companyName + "_" + Context.Session.GetString("CompanyFocusImage");
+
+}
 <!DOCTYPE html>
 <html>
 
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Wootrix</title>
+    <title>@Localizer["Home"] - Wootrix</title>
     <meta name="apple-itunes-app" content="app-id=1034925784" />
 
     <link rel="icon" href="~/favicon.png" type="image/png">
@@ -29,13 +36,14 @@
     <!-- jQUERY -->
 
 
-    <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 
-    @*<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js" type="text/javascript"></script>*@
+
     <script src="~/js/jquery-sessionTimeout/jquery.sessionTimeout.js" type="text/javascript"></script>
+
+
+    <script src="~/js/site.js" asp-append-version="true"></script>
 
     <script type="text/javascript">
         $(document).ready(function () {
@@ -43,10 +51,10 @@
                 warnAfter: 900000, /*15mins*/
                 redirAfter: 1200000, /*20 minutes*/
                 logoutUrl: '/Identity/Account/Logout?returnUrl=/Company/Home/@companyName',
-                redirUrl: '/Identity/Account/Logout?returnUrl=/Company/Home/@companyName',
+                redirUrl: '/Identity/Account/Login?returnUrl=/Company/Home/@companyName',
                 logoutUrl: '/Identity/Account/Logout?returnUrl=/Company/Home/@companyName',
             });
-        });        
+        });
     </script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
 </head>
@@ -80,16 +88,16 @@
                     @if (SignInManager.IsSignedIn(User))
                     {
 
-                    
+
                         @if (User.HasClaim(ClaimTypes.Role, "Admin"))
                         {
-                          
+
 
                             <li class="dropdown">
-                                <a asp-area="" asp-controller="Company" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">Manage Companies</a>
+                                <a asp-area="" asp-controller="Company" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">@Localizer["Manage Companies"]</a>
                                 <ul class="dropdown-content">
-                                    <li><a asp-controller="CompanyDepartments" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">Company Departments</a></li>
-                                    <li><a asp-controller="Users" asp-action="Index" asp-route-id="CompanyAdmin"  style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">Company Admins</a></li>
+                                    <li><a asp-controller="CompanyDepartments" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">@Localizer["Company Departments"]</a></li>
+                                    <li><a asp-controller="Users" asp-action="Index" asp-route-id="CompanyAdmin" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">@Localizer["Company Admins"]</a></li>
                                 </ul>
                             </li>
 
@@ -97,19 +105,18 @@
                         @if (User.HasClaim(ClaimTypes.Role, "CompanyAdmin"))
                         {
                             <li class="dropdown">
-                                <a asp-area="" asp-controller="" asp-action="" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">Company Details</a>
+                                <a asp-area="" asp-controller="" asp-action="" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">@Localizer["Company Details"]</a>
                                 <ul class="dropdown-content">
-                                    <li><a asp-controller="CompanyGroups" asp-action="Index" asp-route-id="@Context.Session.GetString("CompanyName")" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Groups</a></li>
-                                    <li><a asp-controller="CompanyTopics" asp-action="Index" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Topics</a></li>
-                                    <li><a asp-controller="CompanyTypeOfUsers" asp-action="Index" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Type of Users</a></li>
-                                    <li><a asp-controller="CompanyLanguages" asp-action="Index" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Languages</a></li>
-                                    <li><a asp-controller="CompanySegments" asp-action="Index" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Magazines</a></li>
-                                    <li><a asp-controller="SegmentArticles" asp-action="Index" asp-route-id="@companyName" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Articles</a></li>
-                                    <li><a asp-controller="SegmentArticleComments" asp-action="Admin" asp-route-id="@companyID" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Article Comments</a></li>
-                                    <li><a asp-controller="CompanyPushNotifications" asp-action="Index" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Push Notifications</a></li>
-                                    <li><a asp-controller="Reports" asp-action="Index" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Reports</a></li>
-                                    <li><a asp-controller="Users" asp-action="Index" asp-route-id="User" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">User Management</a></li>
-                                    <li><a asp-controller="Users" asp-action="Index" asp-route-id="CompanyAdmin" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">Company Admin Management</a></li>
+                                    <li><a asp-controller="CompanyGroups" asp-action="Index" asp-route-id="@Context.Session.GetString("CompanyName")" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">@Localizer["Groups"]</a></li>
+                                    <li><a asp-controller="CompanyTopics" asp-action="Index" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">@Localizer["Topics"]</a></li>
+                                    <li><a asp-controller="CompanyTypeOfUsers" asp-action="Index" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">@Localizer["Type of Users"]</a></li>
+                                    <li><a asp-controller="CompanyLanguages" asp-action="Index" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">@Localizer["Languages"]</a></li>
+                                    <li><a asp-controller="CompanySegments" asp-action="Index" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">@Localizer["Magazines"]</a></li>
+                                    <li><a asp-controller="SegmentArticles" asp-action="Index" asp-route-id="@companyName" style="color:@Context.Session.GetString("CompanyHeaderFontColor")"> @Localizer["Articles"]</a></li>
+                                    <li><a asp-controller="SegmentArticleComments" asp-action="Admin" asp-route-id="@companyID" style="color:@Context.Session.GetString("CompanyHeaderFontColor")"> @Localizer["Article Comments"]</a></li>
+                                    <li><a asp-controller="CompanyPushNotifications" asp-action="Index" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">@Localizer["Push Notifications"]</a></li>
+                                    <li><a asp-controller="Reports" asp-action="Index" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">@Localizer["Reports"]</a></li>
+                                    <li><a asp-controller="Users" asp-action="Index" asp-route-id="User" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">@Localizer["User Management"]</a></li>
                                 </ul>
                             </li>
                         }
@@ -131,7 +138,7 @@
                 {
                     <ul class="nav navbar-nav navbar-right">
                         @*<li><a asp-area="Identity" asp-page="/Account/Register" asp-route-id="@Context.Session.GetString("CompanyName")" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">Register</a></li>*@
-                        <li><a asp-area="Identity" class="sign-in" asp-page="/Account/Login" asp-route-id="@Context.Session.GetString("CompanyName")" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">Login</a></li>
+                        <li><a asp-area="Identity" class="sign-in" asp-page="/Account/Login" asp-route-id="@Context.Session.GetString("CompanyName")" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">@Localizer["Login"]</a></li>
                     </ul>
                 }
         </div>
@@ -140,7 +147,7 @@
 
     <partial name="_CookieConsentPartial" />
 
-    <div class="body-content" style="background-color:@Context.Session.GetString("CompanyBackgroundColor"); color:@Context.Session.GetString("CompanyMainFontColor")">
+    <div class="body-content center" style="background-color:@Context.Session.GetString("CompanyBackgroundColor"); color:@Context.Session.GetString("CompanyMainFontColor"); ">
 
         <div class="body-stuff">
             @RenderBody()
@@ -149,11 +156,14 @@
         <footer id="footer" style="background-color:@Context.Session.GetString("CompanyHeaderBackgroundColor") !important; border-bottom: 0.5em solid @Context.Session.GetString("CompanyHighlightColor"); ">
             <div id="companyHighlight2">
                 <div class="right"></div>
-                Powered by Wootrix @@ @DateTime.Now.Year
+                @Localizer["Powered by Wootrix"] @@ @DateTime.Now.Year
+            </div>
+            <div class="col-sm-6 text-left">
+                @await Html.PartialAsync("_SelectLanguagePartial")
             </div>
         </footer>
     </div>
-    
+
 
 
     @RenderSection("Scripts", required: false)

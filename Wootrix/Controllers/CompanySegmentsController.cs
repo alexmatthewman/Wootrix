@@ -35,16 +35,65 @@ namespace WootrixV2.Controllers
 
         }
 
+        // GET: CompanySegments
 
+        public async Task<IActionResult> ChangeOrder(string id)
+        {
+            var orderArray = id.Split("|");
+            var order = orderArray[0].ToString();
+            int segmentID;
+            bool success = Int32.TryParse(orderArray[1].ToString(), out segmentID);
+
+            _companyID = HttpContext.Session.GetInt32("CompanyID") ?? 0;
+            // Each segment with an order higher can stay unchanged.
+
+
+            var segment = await _context.CompanySegment.FindAsync(segmentID);
+            int whereItCurrentlyIs = segment.Order ?? 0;
+            int whereItIsMovingTo;
+            success = Int32.TryParse(order, out whereItIsMovingTo);
+
+
+            // So for each segment with an order greater than the order we need to increment the order number
+            if (whereItCurrentlyIs < whereItIsMovingTo)
+            {
+                foreach (var seg in _context.CompanySegment.Where(m => m.CompanyID == _companyID && ((m.Order ?? 0) <= whereItIsMovingTo) && (m.Order ?? 0) > whereItCurrentlyIs))
+                {
+                    seg.Order--;
+                    _context.Update(seg);
+                }
+            }
+            else
+            {
+                foreach (var seg in _context.CompanySegment.Where(m => m.CompanyID == _companyID && ((m.Order ?? 0) >= whereItIsMovingTo) && (m.Order ?? 0) < whereItCurrentlyIs))
+                {
+                    seg.Order++;
+                    _context.Update(seg);
+                }
+            }
+
+            // Update the order of the segmentID to be as passed
+            segment.Order = whereItIsMovingTo;
+            _context.Update(segment);
+
+            _context.SaveChanges();
+
+            return RedirectToAction(nameof(Index));
+        }
 
         // GET: CompanySegments
         public async Task<IActionResult> UserSegmentSearch(string SearchString)
         {
             _companyID = HttpContext.Session.GetInt32("CompanyID") ?? 0;
 
-            var ctx = _context.CompanySegment
-                 .Where(m => m.CompanyID == _companyID && (m.Title.Contains(SearchString) || m.Tags.Contains(SearchString)));
-            return View(await ctx.ToListAsync());
+            DatabaseAccessLayer dla = new DatabaseAccessLayer(_context);
+
+            _user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();
+            WootrixV2.Models.User un = _context.User.Where(x => x.EmailAddress == _user.Email).FirstOrDefaultAsync().GetAwaiter().GetResult();
+            var segments = dla.GetSegmentsList(_companyID, un, SearchString, "");
+
+
+            return View(segments);
         }
 
 
@@ -66,23 +115,26 @@ namespace WootrixV2.Controllers
             WootrixV2.Models.User un = _context.User.Where(x => x.EmailAddress == _user.Email).FirstOrDefaultAsync().GetAwaiter().GetResult();
 
             var department = un.Categories; //bad naming for the old DB i know
-            IQueryable<CompanySegment> ctx;
-
+            List<CompanySegment> ctx;
 
             // If the user doesn't have a department don't filter on it
             if (!string.IsNullOrWhiteSpace(department))
             {
-                ctx = _context.CompanySegment
+                ctx = await _context.CompanySegment
                   .Where(m => m.CompanyID == _companyID)
-                  .Where(m => m.Department == department);
+                  .Where(m => m.Department == department)
+                  .OrderBy(m => m.Order)
+                  .ToListAsync();
             }
             else
             {
-                ctx = _context.CompanySegment
-                .Where(m => m.CompanyID == _companyID);
+                ctx = await _context.CompanySegment
+                .Where(m => m.CompanyID == _companyID)
+                .OrderBy(m => m.Order)
+                .ToListAsync();
             }
 
-            return View(await ctx.ToListAsync());
+            return View(ctx);
         }
 
         // GET: SegmentArticles/Articlelist/id of segment
@@ -101,7 +153,7 @@ namespace WootrixV2.Controllers
 
             //Also add the Segment to the Viewbag so we can get the Image
             CompanySegment cs = await _context.CompanySegment.FirstOrDefaultAsync(m => m.Title == id && m.CompanyID == _companyID);
-            ViewBag.Segment = cs;      
+            ViewBag.Segment = cs;
             if (segmentArticle == null)
             {
                 return NotFound();

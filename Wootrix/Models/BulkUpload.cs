@@ -26,8 +26,10 @@ namespace WootrixV2.Models
         public string PhoneNumber { get; set; }
 
         public string Gender { get; set; }
+        
+        public string InterfaceLanguage { get; set; }
 
-        public string WebsiteLanguage { get; set; }
+        public string ArticleLanguages { get; set; }
                
         public string Topics { get; set; }
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -9,9 +10,13 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
+using Wootrix.Controllers;
 using Wootrix.Data;
 using WootrixV2.Data;
 using WootrixV2.Models;
+
+
 
 namespace WootrixV2.Controllers
 {
@@ -24,20 +29,29 @@ namespace WootrixV2.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private DatabaseAccessLayer _dla;
         private SignInManager<ApplicationUser> _signInManager;
+        private readonly IStringLocalizer<CompanyController> _companyLocalizer;
 
-        public CompanyController(UserManager<ApplicationUser> userManager, IHostingEnvironment env, ApplicationDbContext context, SignInManager<ApplicationUser> signInManager)
+
+
+
+        public CompanyController(IStringLocalizer<CompanyController> companyLocalizer, UserManager<ApplicationUser> userManager, IHostingEnvironment env, ApplicationDbContext context, SignInManager<ApplicationUser> signInManager)
         {
+          
             _context = context;
             _env = env;
             _rootpath = _env.WebRootPath;
             _userManager = userManager;
             _signInManager = signInManager;
             _dla = new DatabaseAccessLayer(_context);
+            _companyLocalizer = companyLocalizer;
+
+
         }
 
         // GET: Company
         public async Task<IActionResult> Index()
         {
+            
             return View(await _context.Company.ToListAsync());
         }
 
@@ -45,6 +59,8 @@ namespace WootrixV2.Controllers
         // GET: Comany Home
         public async Task<IActionResult> Home(string id)
         {
+
+            
             if (id == null)
             {
                 return NotFound();
@@ -81,11 +97,12 @@ namespace WootrixV2.Controllers
             if (_signInManager.IsSignedIn(User))
             {
                 User usr = _context.User.FirstOrDefault(p => p.EmailAddress == _user.Email);
+                ViewBag.CommentUnderReviewCount = _dla.GetArticleReviewCommentCount(_user.companyID);
                 if (usr.Role == Roles.User)
                 {
-                    ViewBag.Segments = _dla.GetSegmentsList(_user.companyID, usr);
+                    ViewBag.Segments = _dla.GetSegmentsList(_user.companyID, usr, "", "");
                     ViewBag.Articles = _dla.GetArticlesList(_user.companyID);
-                    ViewBag.CommentUnderReviewCount = _dla.GetArticleReviewCommentCount(_user.companyID);
+                    
                 }
             }
             return View(company);

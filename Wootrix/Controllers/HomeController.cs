@@ -6,11 +6,14 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using Wootrix.Data;
 using Wootrix.Models;
 using WootrixV2.Data;
+
 
 namespace Wootrix.Controllers
 {
@@ -20,14 +23,30 @@ namespace Wootrix.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _context;
 
+
         public HomeController(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
         {
             _context = context;
             _userManager = userManager;
+
+        }
+
+        // Multi-language cookie update script
+        [HttpPost]
+        public IActionResult SetLanguage(string culture, string returnUrl)
+        {
+            Response.Cookies.Append(
+                CookieRequestCultureProvider.DefaultCookieName,
+                CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
+                new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) }
+            );
+
+            return LocalRedirect(returnUrl);
         }
 
         public IActionResult Index()
         {
+
             if (User.Identity.IsAuthenticated)
             {
                 var claim = "";
@@ -37,13 +56,18 @@ namespace Wootrix.Controllers
                     if (cl != null) { claim = cl.Value; } else
                     {
                         //This is a user
+                        var user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();
 
+                        return RedirectToAction("Home", "Company", new { id = user.companyName });
                     }                   
                 }
 
                 if (claim == "Admin")
                 {
                     //We have a super user
+
+                    var user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();
+                    return RedirectToAction("Home", "Company", new { id = user.companyName });
                 }
                 if (claim == "CompanyAdmin")
                 {
@@ -63,9 +87,10 @@ namespace Wootrix.Controllers
                     return RedirectToAction("Home", "Company", new { id = user.companyName });
                 }
             }
-
+          
             //If not logged in at all set the session to show the wootrix company so the login pages aren't messed up
-
+         
+            
             var company = _context.Company
                 .FirstOrDefaultAsync(m => m.CompanyName == "Wootrix").GetAwaiter().GetResult();
 

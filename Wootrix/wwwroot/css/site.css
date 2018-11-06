@@ -2,8 +2,45 @@
 @import url(font-awesome.min.css);
 
 
-/* SEARCH BOX STYLING START */
+.background {
+    background-repeat: no-repeat;
+    background-size: cover;
+}
 
+.center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* LANGUAGE SELECTOR START */
+
+#selectLanguage {
+    font-size: small;
+    margin: unset;
+    padding: unset;
+    float: left;
+    width: 50%;
+    padding: 0.3em;
+}
+
+    #selectLanguage #requestCulture_RequestCulture_UICulture_Name {
+        height: 1.5em;
+        font-size: small;
+        width: 30%;
+        display: inline-block;
+        background: rgba(255,255,255,0.5);
+    }
+
+    #selectLanguage button {
+        height: 2em;
+    }
+
+
+/* LANGUAGE SELECTOR END */
+
+
+/* SEARCH BOX STYLING START */
 .body-content .search {
     display: inline-flex;
     width: 30em;
@@ -36,6 +73,7 @@
     margin: unset;
     border-width: unset;
 }
+
     .body-content .searchHeadTable thead {
         display: flex;
         border-bottom: none;
@@ -45,6 +83,7 @@
             border: none;
             display: flex;
         }
+
         .body-content .searchHeadTable thead tr {
             width: 100%;
         }
@@ -74,66 +113,66 @@
 }
 
 
-#UserView .articleContainer {
-    display: flex;
-    flex-direction: column;
-    min-height: calc(100vh - 48px);
-    background: #DAE0E6;
-    padding: 1em;
-    text-align: center;
-    box-sizing: border-box;
-}
-
-#UserView .articleContainerCentred {
-    -webkit-box-pack: center;
-    justify-content: center;
-    max-width: 1248px;
-    position: relative;
-    margin: 0px auto;
-}
-
-#UserView .articleContainerSub {
-    min-width: 0px;
-    width: 100%;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: row;
-    -webkit-box-pack: center;
-    justify-content: center;
-    position: relative;
-    margin: 0px auto;
-}
-
-
-
-#UserView .articleBox {
-    position: relative;
-    background-color: rgba(255, 255, 255, 0.8);
-    margin-bottom: 10px;
-    color: rgb(135, 138, 140);
-    fill: rgb(135, 138, 140);
-    cursor: pointer;
-    overflow: hidden;
-    transition: color 0.5s ease 0s, fill 0.5s ease 0s, box-shadow 0.5s ease 0s;
-    border-radius: 4px;
-}
-
-    #UserView .articleBox .segmentHeader {
-        border-bottom: 2em solid #DAE0E6;
+    #UserView .articleContainer {
+        display: flex;
+        flex-direction: column;
+        min-height: calc(100vh - 48px);
+        background: #DAE0E6;
+        padding: 1em;
+        text-align: center;
+        box-sizing: border-box;
     }
 
-        #UserView .articleBox .segmentHeader h1 {
-            position: relative;
-            background: #EEE;
-            display: flex;
-            padding: 1em;
-            color: #000;
-            margin-bottom: 0em !important;
+    #UserView .articleContainerCentred {
+        -webkit-box-pack: center;
+        justify-content: center;
+        max-width: 1248px;
+        position: relative;
+        margin: 0px auto;
+    }
+
+    #UserView .articleContainerSub {
+        min-width: 0px;
+        width: 100%;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: row;
+        -webkit-box-pack: center;
+        justify-content: center;
+        position: relative;
+        margin: 0px auto;
+    }
+
+
+
+    #UserView .articleBox {
+        position: relative;
+        background-color: rgba(255, 255, 255, 0.8);
+        margin-bottom: 10px;
+        color: rgb(135, 138, 140);
+        fill: rgb(135, 138, 140);
+        cursor: pointer;
+        overflow: hidden;
+        transition: color 0.5s ease 0s, fill 0.5s ease 0s, box-shadow 0.5s ease 0s;
+        border-radius: 4px;
+    }
+
+        #UserView .articleBox .segmentHeader {
+            border-bottom: 2em solid #DAE0E6;
         }
 
-        #UserView .articleBox .segmentHeader img {
-            min-width: 100%;
-        }
+            #UserView .articleBox .segmentHeader h1 {
+                position: relative;
+                background: #EEE;
+                display: flex;
+                padding: 1em;
+                color: #000;
+                margin-bottom: 0em !important;
+            }
+
+            #UserView .articleBox .segmentHeader img {
+                min-width: 100%;
+            }
 
 
 
@@ -641,7 +680,7 @@
 
 .magazine {
     max-width: 5em;
-    height: 28em;
+    height: 30em;
     padding: 1em;
     margin: 1em;
     display: inline-block;
@@ -649,6 +688,23 @@
     box-shadow: 1.1em 1.1em 1.1em #ccc;
     border-radius: .5em;
 }
+
+    .magazine .magazine-order {
+        text-align: left;
+    }
+
+        .magazine .magazine-order label {
+            display: inline-flex;
+            width: 20%;
+            margin:unset;
+        }
+
+        .magazine .magazine-order select {
+            display: inline-flex;
+            width: 30%;
+            height: 2em;
+            margin-bottom: .3em;
+        }
 
     .magazine .magazine-text {
         display: unset;
@@ -752,7 +808,7 @@
 }
 
 .upload-example-file {
-    float:right;
+    float: right;
 }
 
 .tableimg {
@@ -834,7 +890,19 @@ input[type="file"] {
 }
 
 .sign-in {
-    background: url(../images/website_images/sprite-image.png) no-repeat 49px -238px !important;
+    /*background: url(../images/website_images/sprite-image.png) no-repeat 49px -238px !important;*/
+    background: none !important;
+}
+
+.radio input[type="radio"], .radio-inline input[type="radio"], .checkbox input[type="checkbox"], .checkbox-inline input[type="checkbox"] {
+    position: unset;
+    -moz-appearance: checkbox;
+    -webkit-appearance: checkbox;
+    -ms-appearance: checkbox;
+    appearance: checkbox;
+    display: block;
+    opacity: unset;
+    z-index: unset;
 }
 
 .login-divider span {
@@ -864,6 +932,9 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 2em;
     line-height: 1.75em;
     font-weight: 900;
+    padding-left: 0;
+    display: flex;
+    padding-top: 0;
 }
 
 #CompanyTextSecondary {
@@ -908,6 +979,7 @@ header.major h2, header.major h3, header.major h4, header.major h5, header.major
         text-align: right;
         font-size: smaller;
         font-weight: bold;
+        float: right;
     }
 
 

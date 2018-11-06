@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Internal;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -8,7 +9,11 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Wootrix.Data;
+using Microsoft.AspNetCore.Http.Features;
 using WootrixV2.Models;
+using System.Threading;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Options;
 
 namespace WootrixV2.Data
 {
@@ -16,7 +21,6 @@ namespace WootrixV2.Data
     {
 
         private readonly ApplicationDbContext _context;
-        private int _companyID;
 
         public DatabaseAccessLayer(ApplicationDbContext context)
         {
@@ -118,6 +122,16 @@ namespace WootrixV2.Data
             return new SelectList(deps, "Value", "Text");
             //}
         }
+
+        public IEnumerable<SelectListItem> GetInterfaceLanguages(int companyID, IOptions<RequestLocalizationOptions> rlo)
+        {           
+            var cultureItems = rlo.Value.SupportedUICultures
+                .Select(c => new SelectListItem { Value = c.DisplayName, Text = c.DisplayName })
+                .ToList();
+
+            return cultureItems;
+        }
+        
 
         public IEnumerable<SelectListItem> GetGenders()
         {
@@ -244,18 +258,15 @@ namespace WootrixV2.Data
             return list;
         }
 
-        public List<SelectListItem> GetListLanguages(int companyID)
-        {
-            List<SelectListItem> list = _context.CompanyLanguages.AsNoTracking()
-            .Where(n => n.CompanyID == companyID)
-                .OrderBy(n => n.LanguageName)
-                    .Select(n =>
-                    new SelectListItem
-                    {
-                        Value = n.LanguageName,
-                        Text = n.LanguageName
-                    }).ToList();
+       
 
+        public List<SelectListItem> GetListLanguages(int companyID, IOptions<RequestLocalizationOptions> rlo)
+        {
+
+            List<SelectListItem> list = rlo.Value.SupportedUICultures
+                .Select(c => new SelectListItem { Value = c.DisplayName, Text = c.DisplayName })
+                .ToList();
+            
             return list;
         }
 
@@ -290,7 +301,7 @@ namespace WootrixV2.Data
 
         }
 
-        public List<WootrixV2.Models.CompanySegment> GetSegmentsList(int companyID, User usr)
+        public List<WootrixV2.Models.CompanySegment> GetSegmentsList(int companyID, User usr, string segmentSearchString, string articleSearchString)
         {
             // Have to do this backwards - get all the articles the user can see, then get a list of all segments which have articles
             List<CompanySegment> segments = new List<CompanySegment>();
@@ -299,6 +310,15 @@ namespace WootrixV2.Data
             // Our filters are Country, State, City, Language, Topics, Groups, TypeOfUser....also publish date
             // IF an article has a country set, only show it if the user also has it set
             // OR IF neither article or user have it set, show it 
+
+            //Allow for searches too
+            var setOfArticles = _context.SegmentArticle.ToList();
+            if (!string.IsNullOrEmpty(articleSearchString)) {        
+
+                setOfArticles = _context.SegmentArticle
+                    .Where(n => n.CompanyID == companyID)
+                    .Where(m => (m.Title.Contains(articleSearchString) || m.Tags.Contains(articleSearchString))).ToList();
+            }
 
             foreach (SegmentArticle art in _context.SegmentArticle)
             {
@@ -332,11 +352,22 @@ namespace WootrixV2.Data
                 var articleSegments = item.Segments.Split(',').ToList();
                 foreach (var segmentTitle in articleSegments)
                 {
-                    // Check if the segment itle is in the existing segment list
+                    // Check if the segment title is in the existing segment list
                     if (segments.FirstOrDefault(p => p.Title == segmentTitle) == null)
                     {
                         // Not in list so add it
-                        segments.Add(_context.CompanySegment.FirstOrDefault(p => p.Title == segmentTitle));
+                        if (string.IsNullOrEmpty(segmentSearchString))
+                        {
+                            // No search filter
+                            segments.Add(_context.CompanySegment.FirstOrDefault(p => p.Title == segmentTitle));
+                            
+                        }
+                        else
+                        {
+                            //Have to filter on search string too
+                            var seg = _context.CompanySegment.FirstOrDefault(p => p.Title == segmentTitle && (p.Title.Contains(segmentSearchString) || p.Tags.Contains(segmentSearchString)));
+                            if (seg != null) segments.Add(seg);
+                        }
                     }
                 }
             }
@@ -354,10 +385,13 @@ namespace WootrixV2.Data
             var filterList = userCSVFilter.Split(',').ToList();
             foreach (var filter in filterList)
             {
-                if (articleCSVFilter.Contains(filter))
+                if (articleCSVFilter != null)
                 {
-                    // Crap have to do this stupid loop for each type of filter - at least it should be fast
-                    return true;
+                    if (articleCSVFilter.Contains(filter))
+                    {
+                        // Crap have to do this stupid loop for each type of filter - at least it should be fast
+                        return true;
+                    }
                 }
             }
 

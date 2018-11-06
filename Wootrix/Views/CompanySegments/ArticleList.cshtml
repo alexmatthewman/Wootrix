@@ -53,14 +53,16 @@
                             <div class="article articleDetails">
                                 <div>
                                     <a asp-controller="SegmentArticles" asp-action="Article" asp-route-id="@item.ID">
-                                        @{
+                                        <h1>@item.Title</h1>
+
+                                        @if (!string.IsNullOrEmpty(item.Image))
+                                        {
                                             var fn = _companyName + "_" + WebUtility.HtmlEncode(item.Title) + "_" + item.Image;
+                                            <div class="imageStuff">
+                                                <img src="~/images/Uploads/Articles/@fn" class="UserArticleImage" />
+                                            </div>
                                         }
 
-                                        <h1>@item.Title</h1>
-                                        <div class="imageStuff">
-                                            <img src="~/images/Uploads/Articles/@fn" class="UserArticleImage" />
-                                        </div>
                                         @*@Html.Raw(Model.ArticleContent)*@
                                         <div class="publishStuff">
                                             <span class="glyphicon glyphicon-user"></span>

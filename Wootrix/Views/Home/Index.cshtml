@@ -2,69 +2,69 @@
     ViewData["Title"] = "Wootrix 2.0 Home Page";
 
     var companyID = -1;
-
+    Layout = "~/Views/Shared/_LayoutCompany.cshtml";
 
 }
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.Http;
 @using System.Security.Claims
 @using WootrixV2.Data;
-@using System.Net
+
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
-
-
 <!-- Banner -->
-<section id="bannerWootrix">
 
-    @if (SignInManager.IsSignedIn(User))
+@if (SignInManager.IsSignedIn(User))
+{
+    @if (User.HasClaim(ClaimTypes.Role, "Admin"))
     {
-        @if (User.HasClaim(ClaimTypes.Role, "Admin"))
-        {
-            <!--Should build in the old style interface for consistency-->
-            <div class="fix-container clearfix">
-                <div class="super-admin-cont">
-                    <div class="admin-profile clearfix">
-                        <h4>Super Admin</h4>
-                        <h5>@UserManager.GetUserName(User)</h5>
+        <!--Should build in the old style interface for consistency-->
+        <div class="fix-container clearfix">
+            <div class="super-admin-cont">
+                <div class="admin-profile clearfix">
+                    <h4>Super Admin</h4>
+                    <h5>@UserManager.GetUserName(User)</h5>
 
-                    </div>
-                    <div class="categories">
-                        <ul>
-                            <li>
-                                <a asp-controller="Users" asp-action="Index" asp-route-id="Admin" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
-                                    <span><img src="~/images/icon-3.png" alt="" /></span>
-                                    <strong>Manage Company Admins</strong>
-                                </a>
-                            </li>
-                            <li>
-                                <a asp-area="" asp-controller="Company" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
-                                    <span><img src="~/images/icon-5.png" alt="Manage Companies" /></span>
-                                    <strong>Manage Companies</strong>
-                                </a>
-                            </li>
-                            @if (!SignInManager.IsSignedIn(User))
-                            {
-                                var _user = UserManager.GetUserAsync(User).GetAwaiter().GetResult();
-                                companyID = _user.companyID;
-                            }
-                            <li>
-                                <a asp-area="" asp-controller="CompanyDepartments" asp-action="Index"  style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
-                                    <span><img src="~/images/icon-1.png" alt="Department Filters" /></span>
-                                    <strong>Department Filters</strong>
-                                </a>
-                            </li>
-                        </ul>
+                </div>
+                <div class="categories">
+                    <ul>
+                        <li>
+                            <a asp-controller="Users" asp-action="Index" asp-route-id="Admin" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
+                                <span><img src="~/images/icon-3.png" alt="" /></span>
+                                <strong>@Localizer["Manage Company Admins"]</strong>
+                            </a>
+                        </li>
+                        <li>
+                            <a asp-area="" asp-controller="Company" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
+                                <span><img src="~/images/icon-5.png" alt="Manage Companies" /></span>
+                                <strong>@Localizer["Manage Companies"]</strong>
+                            </a>
+                        </li>
+                        @if (!SignInManager.IsSignedIn(User))
+                        {
+                            var _user = UserManager.GetUserAsync(User).GetAwaiter().GetResult();
+                            companyID = _user.companyID;
+                        }
+                        <li>
+                            <a asp-area="" asp-controller="CompanyDepartments" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
+                                <span><img src="~/images/icon-1.png" alt="Department Filters" /></span>
+                                <strong>@Localizer["Department Filters"]</strong>
+                            </a>
+                        </li>
+                    </ul>
 
 
-                    </div>
                 </div>
             </div>
-        }
+        </div>
     }
-    else
-    {
+}
+else
+{
+    <section id="bannerWootrix">
         <div class="container clearfix">
             <div class="span7 left">
                 <figure class="main-home-image">
@@ -98,95 +98,96 @@
                 </div>
             </div>
         </div>
-    }
-</section>
-
-<!-- One -->
-<section id="one" class="wrapper style1 special">
-    <div class="inner">
-        <header class="major">
-            <h2>A maneira inteligente de se encontrar e distribuir conhecimento.</h2>
-        </header>
-    </div>
-</section>
-
-<!-- Two -->
-<section id="two" class="wrapper alt style2">
-    <section class="spotlight">
-        <div class="image"><img src="~/images/pic01.jpg" alt="Example Picture of Application 1" /></div><div class="content">
-            <h2>
-                Customize<br />
-                sua publicação
-            </h2>
-            <p>Determine os tópicos e os idiomas de seu interesse e nossos algoritmos montam uma revista digital gratuita sob medida para você.</p>
+    </section>
+    <!-- One -->
+    <section id="one" class="wrapper style1 special">
+        <div class="inner">
+            <header class="major">
+                <h2>A maneira inteligente de se encontrar e distribuir conhecimento.</h2>
+            </header>
         </div>
     </section>
-    <section class="spotlight">
-        <div class="image"><img src="~/images/pic02.jpg" alt="Example Picture of Application 2" /></div><div class="content">
-            <h2>
-                Plataforma de curadoria,<br />
-                com aparência amigável ao usuário.
-            </h2>
-            <p>Através de um layout moderno, bonito e de fácil leitura, a plataforma direciona você a conteúdos relevantes minuciosamente selecionados.</p>
+
+    <!-- Two -->
+    <section id="two" class="wrapper alt style2">
+        <section class="spotlight">
+            <div class="image"><img src="~/images/pic01.jpg" alt="Example Picture of Application 1" /></div><div class="content">
+                <h2>
+                    Customize<br />
+                    sua publicação
+                </h2>
+                <p>Determine os tópicos e os idiomas de seu interesse e nossos algoritmos montam uma revista digital gratuita sob medida para você.</p>
+            </div>
+        </section>
+        <section class="spotlight">
+            <div class="image"><img src="~/images/pic02.jpg" alt="Example Picture of Application 2" /></div><div class="content">
+                <h2>
+                    Plataforma de curadoria,<br />
+                    com aparência amigável ao usuário.
+                </h2>
+                <p>Através de um layout moderno, bonito e de fácil leitura, a plataforma direciona você a conteúdos relevantes minuciosamente selecionados.</p>
+            </div>
+        </section>
+        <section class="spotlight">
+            <div class="image"><img src="~/images/pic03.jpg" alt="Example Picture of Application 3" /></div><div class="content">
+                <h2>
+                    Revistas Customizadas<br />
+                </h2>
+                <p>
+                    Você poderá ser convidado a ler revistas de empresas, universidades,entidades e etc, ter acesso a um canal 24x7 contendo notícias, cases de sucesso, catálogos de produtos, lançamentos e muito mais. Sempre grátis para o leitor.
+                </p>
+            </div>
+        </section>
+    </section>
+
+    <!-- Three -->
+    <section id="three" class="wrapper style3 special">
+        <div class="inner">
+            <header class="major">
+                <h2>Preços e Planos</h2>
+                <p><h1>Revistas Customizadas</h1></p>
+            </header>
+            <ul class="features">
+                <li class="icon icon-money">
+                    <h3>Pacote Bronze</h3>
+                    <p> até 100 usuários - <strong>R$399,00</strong> por mês. Fale conosco no chat ao lado ou Através do email <a href="mailto:wootrix@wootrix.com"><strong>wootrix@wootrix.com</strong></a></p>
+                </li>
+                <li class="icon icon-money">
+                    <h3>Pacote Prata</h3>
+                    <p> até 200 usuários - <strong>R$778,00</strong> por mês. Fale conosco no chat ao lado ou Através do email <a href="mailto:wootrix@wootrix.com"><strong>wootrix@wootrix.com</strong></a></p>
+                </li>
+                <li class="icon icon-money">
+                    <h3>Pacote Ouro</h3>
+                    <p> até 300 usuários - <strong>R$1137,00</strong> por mês. Fale conosco no chat ao lado ou Através do email <a href="mailto:wootrix@wootrix.com"><strong>wootrix@wootrix.com</strong></a></p>
+                </li>
+                <li class="icon icon-money">
+                    <h3>Precisa de mais usuários</h3>
+                    <p>Fale conosco no chat ao lado ou Através do email <a href="mailto:wootrix@wootrix.com"><strong>wootrix@wootrix.com</strong></a></p>
+                </li>
+            </ul>
         </div>
     </section>
-    <section class="spotlight">
-        <div class="image"><img src="~/images/pic03.jpg" alt="Example Picture of Application 3" /></div><div class="content">
-            <h2>
-                Revistas Customizadas<br />
-            </h2>
-            <p>
-                Você poderá ser convidado a ler revistas de empresas, universidades,entidades e etc, ter acesso a um canal 24x7 contendo notícias, cases de sucesso, catálogos de produtos, lançamentos e muito mais. Sempre grátis para o leitor.
-            </p>
+
+    <!-- CTA -->
+    <section id="cta" class="wrapper style4">
+        <div class="inner">
+            <header>
+                <a href="https://itunes.apple.com/lc/app/wootrix/id1034925784?mt=8">
+                    <img class="img" src="~/images/App_Store_Badge_PTBR.png" alt="App Store" />
+                </a>
+            </header>
+            <header>
+                <a href="https://play.google.com/store/apps/details?id=com.ta.wootrix">
+                    <img class="img" src="~/images/google-play-badge-PTBR.png" alt="Google Play" />
+                </a>
+            </header>
+            <header>
+                <a href="#">
+                    <img class="img" src="~/images/Web_Badge_PTBR.png" alt="Internet" />
+                </a>
+            </header>
         </div>
     </section>
-</section>
+}
 
-<!-- Three -->
-<section id="three" class="wrapper style3 special">
-    <div class="inner">
-        <header class="major">
-            <h2>Preços e Planos</h2>
-            <p><h1>Revistas Customizadas</h1></p>
-        </header>
-        <ul class="features">
-            <li class="icon icon-money">
-                <h3>Pacote Bronze</h3>
-                <p> até 100 usuários - <strong>R$399,00</strong> por mês. Fale conosco no chat ao lado ou Através do email <a href="mailto:wootrix@wootrix.com"><strong>wootrix@wootrix.com</strong></a></p>
-            </li>
-            <li class="icon icon-money">
-                <h3>Pacote Prata</h3>
-                <p> até 200 usuários - <strong>R$778,00</strong> por mês. Fale conosco no chat ao lado ou Através do email <a href="mailto:wootrix@wootrix.com"><strong>wootrix@wootrix.com</strong></a></p>
-            </li>
-            <li class="icon icon-money">
-                <h3>Pacote Ouro</h3>
-                <p> até 300 usuários - <strong>R$1137,00</strong> por mês. Fale conosco no chat ao lado ou Através do email <a href="mailto:wootrix@wootrix.com"><strong>wootrix@wootrix.com</strong></a></p>
-            </li>
-            <li class="icon icon-money">
-                <h3>Precisa de mais usuários</h3>
-                <p>Fale conosco no chat ao lado ou Através do email <a href="mailto:wootrix@wootrix.com"><strong>wootrix@wootrix.com</strong></a></p>
-            </li>
-        </ul>
-    </div>
-</section>
 
-<!-- CTA -->
-<section id="cta" class="wrapper style4">
-    <div class="inner">
-        <header>
-            <a href="https://itunes.apple.com/lc/app/wootrix/id1034925784?mt=8">
-                <img class="img" src="~/images/App_Store_Badge_PTBR.png" alt="App Store" />
-            </a>
-        </header>
-        <header>
-            <a href="https://play.google.com/store/apps/details?id=com.ta.wootrix">
-                <img class="img" src="~/images/google-play-badge-PTBR.png" alt="Google Play" />
-            </a>
-        </header>
-        <header>
-            <a href="#">
-                <img class="img" src="~/images/Web_Badge_PTBR.png" alt="Internet" />
-            </a>
-        </header>
-    </div>
-</section>

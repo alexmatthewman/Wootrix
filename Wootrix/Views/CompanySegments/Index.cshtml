@@ -44,8 +44,31 @@
 
                 @foreach (var item in Model)
                 {
-
+                    
+                    var count = 1;
                     <td class="magazine" @*style="border:4px solid @item.ThemeColor;  background:@item.StandardColor;" *@>
+
+                        <div class="magazine-order">
+                            <label class="control-label">Order</label>
+                            <select class="OrderSelector">
+
+                                @foreach (var it in Model)
+                                {
+
+                                    if (item.Order == it.Order)
+                                    {
+                                        <option value="@it.Order.Value" selected="selected">@it.Order.Value</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@item.ID">@it.Order.Value</option>
+                                    }
+
+                                }
+
+                            </select>
+
+                        </div>
                         <a asp-action="Details" asp-route-id="@item.ID">
                             <div class="magazine-pic">
                                 @{
@@ -53,54 +76,56 @@
                                 }
                                 <img src="~/images/Uploads/@fn" />
                             </div>
-                            <div class="magazine-text">
-                                <div class="magazine-text-title">
-                                    @Html.DisplayFor(modelItem => item.Title)
-                                </div>
-                                <div class="magazine-text-dates">
-                                    @Html.DisplayFor(modelItem => item.PublishDate) -
-                                    @Html.DisplayFor(modelItem => item.FinishDate) - (@Html.DisplayFor(modelItem => item.Order))
-                                </div>
-
-
-                                @{
-                                    var draftOrNot = "Publish";
-                                    var color = item.ThemeColor;
-                                    if (item.Draft == false)
-                                    {
-
-                                        draftOrNot = "Published";
-
-
-                                    }
-                                    else
-                                    {
-                                        draftOrNot = "Draft";
-                                        color = item.StandardColor;
-
-
-                                    }
-                                }
-                                <div class="magazine-text-draft btn btn-default" style="background:@color">
-                                    @draftOrNot
-                                </div>
-                                <a asp-action="Edit" class="btn btn-default" asp-route-id="@item.ID">
-                                    <div class="magazine-text-edit" style="background:@Html.DisplayFor(modelItem => item.StandardColor)">
-                                        Edit
-
-                                    </div>
-                                </a>
-                                <a asp-action="Delete" class="btn btn-default" asp-route-id="@item.ID">
-                                    <div class="magazine-text-delete" style="background:@Html.DisplayFor(modelItem => item.StandardColor)">
-                                        Delete
-
-                                    </div>
-                                </a>
-                            </div>
                         </a>
+                        <div class="magazine-text">
+                            <div class="magazine-text-title">
+                                @Html.DisplayFor(modelItem => item.Title)
+                            </div>
+                            <div class="magazine-text-dates">
+                                @Html.DisplayFor(modelItem => item.PublishDate) -
+                                @Html.DisplayFor(modelItem => item.FinishDate)
+                            </div>
+
+
+                            @{
+                                var draftOrNot = "Publish";
+                                var color = item.ThemeColor;
+                                if (item.Draft == false)
+                                {
+
+                                    draftOrNot = "Published";
+
+
+                                }
+                                else
+                                {
+                                    draftOrNot = "Draft";
+                                    color = item.StandardColor;
+
+
+                                }
+                            }
+                            <div class="magazine-text-draft btn btn-default" style="background:@color">
+                                @draftOrNot
+                            </div>
+                            <a asp-action="Edit" class="btn btn-default" asp-route-id="@item.ID">
+                                <div class="magazine-text-edit" style="background:@Html.DisplayFor(modelItem => item.StandardColor)">
+                                    Edit
+
+                                </div>
+                            </a>
+                            <a asp-action="Delete" class="btn btn-default" asp-route-id="@item.ID">
+                                <div class="magazine-text-delete" style="background:@Html.DisplayFor(modelItem => item.StandardColor)">
+                                    Delete
+
+                                </div>
+                            </a>
+                        </div>
+
                     </td>
                 }
             </tr>
         </tbody>
     </table>
 </div>
+

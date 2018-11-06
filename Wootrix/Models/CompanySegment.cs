@@ -24,7 +24,6 @@ namespace WootrixV2.Models
         public int? Order { get; set; }
 
         [Required]
-        [RegularExpression(@"^[A-Z]+[a-zA-Z""'\s-]*$", ErrorMessage = "Please only enter a string")]
         [StringLength(1000)]
         [Display(Name = "Title", Prompt = "Please enter the title", Description = "Title")]
         public string Title { get; set; }
@@ -85,7 +84,6 @@ namespace WootrixV2.Models
         public int? Order { get; set; }
 
         [Required]
-        [RegularExpression(@"^[A-Z]+[a-zA-Z""'\s-]*$", ErrorMessage = "Please only enter a string")]
         [StringLength(1000)]
         [Display(Name = "Title", Prompt = "Please enter the title", Description = "Title")]
         public string Title { get; set; }

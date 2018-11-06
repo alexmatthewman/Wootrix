@@ -21,8 +21,6 @@ namespace WootrixV2.Areas.Identity.Pages.Account
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
 
-        private readonly Wootrix.Data.ApplicationDbContext _context;
-
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,

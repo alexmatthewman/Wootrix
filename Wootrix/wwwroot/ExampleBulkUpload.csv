@@ -1,4 +1,4 @@
-EmailAddress,Name,PhoneNumber,Gender,WebsiteLanguage,Topics,Groups,TypeOfUser,Country,State,City
-john.smith@example.com,John Smith,(11) 99134133,Not Identified,English,"Engineering,Safety,Security",Software Engineers,Engineers,Brasil,Sao Paulo,Sao Paulo
-betty_example@gmail.com,Betty Good Example,,,,,,,,,
-Christian_b@yahoo.com,Christian Banaski,1192837345,Male,"English,Español,Português ",Engineering,Civil Engineers,Marketing,Australia,,
+EmailAddress,Name,PhoneNumber,Gender,InterfaceLanguage,ArticleLanguages,Topics,Groups,TypeOfUser,Country,State,City
+john.smith@example.com,John Smith,(11) 99134133,Not Identified,English,English,"Engineering,Safety,Security",Software Engineers,Engineers,Brasil,Sao Paulo,Sao Paulo
+betty_example@gmail.com,Betty Good Example,,,English,,,,,,,
+Christian_b@yahoo.com,Christian Banaski,1192837345,Male,Spanish,"English,Spanish,Portuguese",Engineering,Civil Engineers,Marketing,Australia,,

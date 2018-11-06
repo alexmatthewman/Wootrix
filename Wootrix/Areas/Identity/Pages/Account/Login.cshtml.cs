@@ -10,19 +10,30 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using WootrixV2.Data;
+using Wootrix.Data;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Builder;
 
 namespace WootrixV2.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
     public class LoginModel : PageModel
     {
+
+        private readonly ApplicationDbContext _context;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
+        private readonly IOptions<RequestLocalizationOptions> _rlo;
 
-        public LoginModel(SignInManager<ApplicationUser> signInManager, ILogger<LoginModel> logger)
+        public LoginModel(IOptions<RequestLocalizationOptions> rlo, SignInManager<ApplicationUser> signInManager, ILogger<LoginModel> logger, ApplicationDbContext context)
         {
             _signInManager = signInManager;
             _logger = logger;
+            _context = context;
+            _rlo = rlo;
         }
 
         [BindProperty]
@@ -77,6 +88,20 @@ namespace WootrixV2.Areas.Identity.Pages.Account
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: true);
                 if (result.Succeeded)
                 {
+
+                    // Set the interface to their language
+                    var myLanguage = _context.User.AsNoTracking().Where(n => n.EmailAddress == Input.Email).SingleAsync().GetAwaiter().GetResult().InterfaceLanguage;
+
+                    // Get the translated version
+                    var lang = _rlo.Value.SupportedUICultures.Where(c => c.DisplayName == myLanguage).FirstOrDefault().Name;
+
+
+                    // OK now change it
+                    Response.Cookies.Append(
+                        CookieRequestCultureProvider.DefaultCookieName,
+                        CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(lang))
+                                        , new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) });
+
                     _logger.LogInformation("User logged in.");
                     return LocalRedirect(returnUrl);
                 }

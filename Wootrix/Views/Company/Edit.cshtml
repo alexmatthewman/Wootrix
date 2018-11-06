@@ -1,11 +1,17 @@
 ﻿@model WootrixV2.Models.Company
 
+@using Microsoft.AspNetCore.Http;
 @{
     ViewData["Title"] = "Edit";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_LayoutCompany.cshtml";
+
+    var _companyName = Context.Session.GetString("CompanyName");
 
 }
 
+<div class="articleBackButtonContainer">
+    <a asp-controller="Company" asp-action="Home" asp-route-id="@_companyName"><button class="articleBackButton button"><span class="glyphicon glyphicon-menu-left"></span>&nbsp;Back to Admin Menu</button></a>
+</div>
 <div class="bodyBox">
     <h2>Edit</h2>
 

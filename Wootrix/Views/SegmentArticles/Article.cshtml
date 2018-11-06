@@ -1,12 +1,10 @@
 ﻿@model WootrixV2.Models.SegmentArticle
 
-@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Identity;
 @using Microsoft.AspNetCore.Http;
-@using System.Security.Claims
 @using WootrixV2.Data;
-@using System.Net
-@using System.Web;
-@using System.IO;
+@using System.Net;
+
 
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
@@ -37,9 +35,21 @@
                                 }
 
                                 <h1>@Model.Title</h1>
-                                <div class="imageStuff">
-                                    <img src="~/images/Uploads/Articles/@fn" class="UserArticleImage" />
-                                </div>
+
+                                @if (!string.IsNullOrEmpty(Model.EmbeddedVideo))
+                                {
+                                    var moviePath = "~/images/Uploads/Articles/" + _companyName + "_" + WebUtility.HtmlEncode(Model.Title) + "_" + Model.EmbeddedVideo;
+
+                                    <div class="embedded-movie">
+                                        <video id="articleMovie" src="@Url.Content(moviePath)" controls="true" max-height="600" -max-width="1024px" autoplay="true"></video>
+                                    </div>
+                                }
+                                @if (!string.IsNullOrEmpty(Model.Image))
+                                {
+                                    <div class="imageStuff">
+                                        <img src="~/images/Uploads/Articles/@fn" class="UserArticleImage" />
+                                    </div>
+                                }
                                 @Html.Raw(Model.ArticleContent)
                                 <div class="publishStuff">
                                     <span class="glyphicon glyphicon-user"></span>
@@ -63,7 +73,7 @@
                                             {
                                                 <div class="comment-box">
 
-                                                   
+
                                                     <div class="comment-date">@com.CreatedDate</div>
                                                     <div class="comment-person">@com.UserName</div>
                                                     <div class="comment-text">@com.Comment</div>

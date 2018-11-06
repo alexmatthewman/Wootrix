@@ -3,6 +3,9 @@
 @using System.Security.Claims
 @using WootrixV2.Data;
 
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
@@ -29,7 +32,7 @@
 
     </environment>
     <environment exclude="Development">
-       
+
     </environment>
 </head>
 <body>
@@ -69,10 +72,10 @@
 
 
                             <li class="dropdown">
-                                <a asp-area="" asp-controller="Company" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">Manage Companies</a>
+                                <a asp-area="" asp-controller="Company" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">@Localizer["Manage Companies"]</a>
                                 <ul class="dropdown-content">
-                                    <li><a asp-controller="CompanyDepartments" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">Company Departments</a></li>
-                                    <li><a asp-controller="Users" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">Company Admins</a></li>
+                                    <li><a asp-controller="CompanyDepartments" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">@Localizer["Company Departments"]</a></li>
+                                    <li><a asp-controller="Users" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">@Localizer["Company Admins"]</a></li>
                                 </ul>
                             </li>
 
@@ -89,47 +92,42 @@
     <partial name="_CookieConsentPartial" />
 
     <div class="body-content">
+        <div style="background:url(~/images/Uploads/Bosch_background.jpg)">
 
-        @RenderBody()
-        <!-- Footer -->
-        <footer id="footer">
-            <div id="companyHighlight2">
-                <ul class="icons">
-                    <li><a href="https://twitter.com/wootrixoficial" class="icon f-twitter"><img src="~/images/footicon-twitter.png" alt="Twitter" /></a></li>
-                    <li><a href="https://www.facebook.com/wootrix/" class="icon f-facebook"><img src="~/images/footicon-facebook.png" alt="Faceboook" /></a></li>
-                    <li><a href="https://plus.google.com/109310151849035195482" class="icon f-google"><img src="~/images/footicon-google.png" alt="Google+" /></a></li>
-                    <li><a href="https://www.linkedin.com/company/wootrix/" class="icon f-linkedin"><img src="~/images/footicon-linkedin.png" alt="LinkedIn" /></a></li>
-                    <li><a href="mailto:wootrix@wootrix.com" class="icon f-envelope-o"><img src="~/images/footicon-email.png" alt="Email" /></a></li>
-                </ul>
-                <ul class="copyright">
-                    <li>&copy;<a href="#">WOOTRIX</a></li>
-                </ul>
+            @RenderBody()
             </div>
-        </footer>
-    </div>
+            <!-- Footer -->
+            <footer id="footer" style="background-color:@Context.Session.GetString("CompanyHeaderBackgroundColor") !important; border-bottom: 0.5em solid @Context.Session.GetString("CompanyHighlightColor"); ">
+                <div id="companyHighlight2">
+                    <div class="right"></div>
+                    @Localizer["Powered by Wootrix"] @@ @DateTime.Now.Year
+                </div>
 
-    <script src="~/lib/jquery/dist/jquery.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    <environment include="Development">
+            </footer>
+        </div>
 
-    </environment>
-    <environment exclude="Development">
-        @*<script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js"
-                    asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
-                    asp-fallback-test="window.jQuery"
-                    crossorigin="anonymous"
-                    integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT">
-            </script>
-            <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"
-                    asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
-                    asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
-                    crossorigin="anonymous"
-                    integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
-            </script>
-            <script src="~/js/site.min.js" asp-append-version="true"></script>*@
-    </environment>
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+        <environment include="Development">
 
-    @RenderSection("Scripts", required: false)
+        </environment>
+        <environment exclude="Development">
+            @*<script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js"
+                        asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+                        asp-fallback-test="window.jQuery"
+                        crossorigin="anonymous"
+                        integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT">
+                </script>
+                <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"
+                        asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
+                        asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
+                        crossorigin="anonymous"
+                        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
+                </script>
+                <script src="~/js/site.min.js" asp-append-version="true"></script>*@
+        </environment>
+
+        @RenderSection("Scripts", required: false)
 </body>
 </html>

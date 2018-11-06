@@ -18,6 +18,12 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.FileProviders;
 using System.IO;
 
+using Amazon.S3;
+using Microsoft.AspNetCore.Mvc.Razor;
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.Extensions.Options;
+
 namespace Wootrix
 {
     public class Startup
@@ -28,7 +34,7 @@ namespace Wootrix
         }
 
 
-        
+
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -45,14 +51,14 @@ namespace Wootrix
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseMySql(
                     Configuration.GetConnectionString("IdentityConnection")));
-            
+
             //This allows for custom Identity attributes
             //services.AddDefaultIdentity<ApplicationUser>().AddDefaultUI().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
             //services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
             //services.AddDefaultIdentity<ApplicationUser>().AddDefaultUI().AddRoles<IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
             services.AddDefaultIdentity<ApplicationUser>().AddRoles<IdentityRole>().AddDefaultUI().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
             services.AddScoped<SignInManager<ApplicationUser>, SignInManager<ApplicationUser>>();
-            
+
             services.Configure<IdentityOptions>(options =>
             {
                 // Password settings.
@@ -91,11 +97,38 @@ namespace Wootrix
             services.AddSession(options =>
             {
                 //// Set a short timeout for easy testing.
-                options.IdleTimeout = TimeSpan.FromMinutes(21);
+                options.IdleTimeout = TimeSpan.FromMinutes(26);
                 options.Cookie.HttpOnly = true;
             });
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+
+            //Multi-lingual support
+            services.AddLocalization(opts => { opts.ResourcesPath = "Resources"; });
+            services.AddMvc()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+                .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix, opts => { opts.ResourcesPath = "Resources"; })
+                .AddDataAnnotationsLocalization();
+
+            services.Configure<RequestLocalizationOptions>(opts =>
+            {
+                var supportedCultures = new List<CultureInfo>
+                {
+                    new CultureInfo("pt"),
+                    new CultureInfo("es"),
+                    new CultureInfo("en"),
+                };
+
+                opts.DefaultRequestCulture = new RequestCulture("en");
+                // Formatting numbers, dates, etc.
+                opts.SupportedCultures = supportedCultures;
+                // UI strings that we have localized.
+                opts.SupportedUICultures = supportedCultures;
+            });
+
+
+            //services.AddSingleton<IS3Service, S3Service>();
+           // services.AddAWSService<IAmazonS3>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -122,14 +155,14 @@ namespace Wootrix
 
             //app.UseStaticFiles();
             app.UseDeveloperExceptionPage();
-            
+            var options = app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>();
+            app.UseRequestLocalization(options.Value);
 
-            app.UseHttpsRedirection();            
+            app.UseHttpsRedirection();
             app.UseCookiePolicy();
             app.UseSession();
-            app.UseAuthentication();
-            
-            
+            app.UseAuthentication();            
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
@@ -138,7 +171,7 @@ namespace Wootrix
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
-                
+
             });
 
             CreateUserRoles(services).Wait();
@@ -162,7 +195,7 @@ namespace Wootrix
 
             //Adding Super Admin Role  
             roleCheck = await RoleManager.RoleExistsAsync("Admin");
-            
+
             if (!roleCheck)
             {
 
@@ -176,10 +209,10 @@ namespace Wootrix
                     if (!claimCheck.Contains(clm))
                     {
                         await RoleManager.AddClaimAsync(adminRole, new Claim("Role", "Admin"));
-                    }                    
-                }                
+                    }
+                }
             }
-            
+
 
             //Adding Company Admin Role  
             roleCheck = await RoleManager.RoleExistsAsync("CompanyAdmin");
@@ -198,16 +231,16 @@ namespace Wootrix
             //Assign Super Admin role to the main User for Admin management  
             try
             {
-                
+
                 ApplicationUser user = await UserManager.FindByEmailAsync("amazon@wootrix.com");
                 var ac = await UserManager.GetClaimsAsync(user);
 
-                
+
                 //// Main user has all roles
                 //await UserManager.AddToRoleAsync(await UserManager.FindByEmailAsync("amazon@wootrix.com"), "Admin");
                 //await UserManager.AddToRoleAsync(await UserManager.FindByEmailAsync("wootrixCompanyAdmin@wootrix.com"), "CompanyAdmin");
 
-                
+
 
                 // If the Admin claim is in the DB for the user above don't bother to re-add it
                 if (ac.Where(s => s.Value == "Admin").FirstOrDefault().Value != "Admin")
@@ -218,7 +251,7 @@ namespace Wootrix
 
                 user = await UserManager.FindByEmailAsync("wootrixCompanyAdmin@wootrix.com");
                 ac = await UserManager.GetClaimsAsync(user);
-                
+
                 if (ac.Count() <= 0)
                 {
                     await UserManager.AddToRoleAsync(user, "CompanyAdmin");

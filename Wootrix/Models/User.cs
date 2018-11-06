@@ -55,9 +55,11 @@ namespace WootrixV2.Models
         [Display(Name = "Avatar Photo", Prompt = "Avatar Photo", Description = "Avatar Photo")]
         public string Photo { get; set; }
 
-        [RegularExpression(@"^[A-Z]+[a-zA-Z""'\s-]*$", ErrorMessage = "Please only enter a string")]
+        [Display(Name = "Interface Language")]
+        public string InterfaceLanguage { get; set; }
+
         [StringLength(100)]
-        [Display(Name = "Website Language", Prompt = "Website Language", Description = "Website Language")]
+        [Display(Name = "Article Languages", Prompt = "Article Languages", Description = "Article Languages")]
         public string WebsiteLanguage { get; set; }
 
         [ScaffoldColumn(false)]
@@ -178,9 +180,11 @@ namespace WootrixV2.Models
         [Display(Name = "Avatar Photo", Prompt = "Avatar Photo", Description = "Avatar Photo")]
         public IFormFile Photo { get; set; }
 
-        
-        
-        [Display(Name = "Languages")]
+        [Display(Name = "Interface Language")]
+        public string InterfaceLanguage { get; set; }
+        public IEnumerable<SelectListItem> InterfaceLanguages { get; set; }
+
+        [Display(Name = "Article Languages")]
         public string WebsiteLanguage { get; set; }
         public IList<string> SelectedLanguages { get; set; }
         public IList<SelectListItem> AvailableLanguages { get; set; }

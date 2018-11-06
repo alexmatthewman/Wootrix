@@ -17,7 +17,6 @@ namespace WootrixV2.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
-        private ApplicationUser _user;
         private DatabaseAccessLayer _dla;
 
         public CompanyDepartmentsController(UserManager<ApplicationUser> userManager, ApplicationDbContext context)

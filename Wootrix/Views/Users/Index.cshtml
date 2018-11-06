@@ -76,7 +76,9 @@
                         @Html.DisplayNameFor(model => model.Categories)
                     </th>
                 }
-
+                <th>
+                    @Html.DisplayNameFor(model => model.InterfaceLanguage)
+                </th>
                 <th>
                     @Html.DisplayNameFor(model => model.PhoneNumber)
                 </th>
@@ -104,6 +106,7 @@
                     <th>
                         @Html.DisplayNameFor(model => model.TypeOfUser)
                     </th>
+
                     <th>
                         @Html.DisplayNameFor(model => model.WebsiteLanguage)
                     </th>
@@ -124,74 +127,78 @@
         <tbody>
             @foreach (var item in Model)
             {
-                <tr>
-                    @if (t == "Admin")
-                    {
-                        <td>
-                            @Html.DisplayFor(modelItem => item.CompanyName)
-                        </td>
-                    }
+            <tr>
+                @if (t == "Admin")
+                {
                     <td>
-                        @Html.DisplayFor(modelItem => item.EmailAddress)
+                        @Html.DisplayFor(modelItem => item.CompanyName)
                     </td>
+                }
+                <td>
+                    @Html.DisplayFor(modelItem => item.EmailAddress)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                @if (t == "CompanyAdmin")
+                {
                     <td>
-                        @Html.DisplayFor(modelItem => item.Name)
+                        @Html.DisplayFor(modelItem => item.Categories)
                     </td>
-                    @if (t == "CompanyAdmin")
-                    {
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Categories)
-                        </td>
-                    }
-                    <td>
-                        @Html.DisplayFor(modelItem => item.PhoneNumber)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Gender)
-                    </td>
-                    <td>
+                }
+                <td>
+                    @Html.DisplayFor(modelItem => item.InterfaceLanguage)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PhoneNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Gender)
+                </td>
+                <td>
 
-                        @{
-                            var fn = item.CompanyName + "_" + item.Photo;
-                        }
-                        <img src="~/images/Uploads/Users/@fn" class="tableimg" />
+                    @{
+                        var fn = item.CompanyName + "_" + item.Photo;
+                    }
+                    <img src="~/images/Uploads/Users/@fn" class="tableimg" />
+                </td>
+
+                @if (_type == "CompanyAdmin")
+                {
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Categories)
+                    </td>
+                }
+                @if (_type == "User")
+                {
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Groups)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Topics)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TypeOfUser)
                     </td>
 
-                    @if (_type == "CompanyAdmin")
-                    {
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Categories)
-                        </td>
-                    }
-                    @if (_type == "User")
-                    {
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Groups)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Topics)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.TypeOfUser)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.WebsiteLanguage)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Country)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.State)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.City)
-                        </td>
-                    }
                     <td>
-                        <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                        <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                        @Html.DisplayFor(modelItem => item.WebsiteLanguage)
                     </td>
-                </tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Country)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.State)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.City)
+                    </td>
+                }
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                    <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                </td>
+            </tr>
             }
         </tbody>
     </table>
