@@ -7,25 +7,37 @@ $(document).ready(function () {
         var seg = $('option:selected', $(this)).val();
         var combined = newOrder + "|" + seg;
         window.location.href = '/CompanySegments/ChangeOrder/' + combined;
-        $.post("@Url.Action('ChangeOrder')", { id: combined }, function (data) {});
+        //$.post("@Url.Action('ChangeOrder')", { id: combined }, function (data) {});
     });
 });
 
-//$("#OrderSelector").change(function () {
-//    alert("Start");
-//    var selectedCountry = $("#Countries").val();
-//    var newOrder = $('option:selected', $(this)).text();
-//    var id = $('option:selected', $(this)).val();
-//    alert("New Order is: " + newOrder + " and segmentID: " + id);
-//    $.post('@Url.Action("ChangeOrder", "CompanySegments")', { order: newOrder, segmentID: id }, function (data) {
-//    });
-//});
+//This function is for re-ordering the Magazines it only needs to be on the Company Admin's Magazine list page (CompanySegments/Index)
+$(document).ready(function () {
+    $('.ArtOrderSelector').change(function () {
+        var newOrder = $('option:selected', $(this)).text();
+        var art = $('option:selected', $(this)).val();
+        var combined = newOrder + "|" + art;
+        window.location.href = '/CompanySegments/ChangeArticleOrder/' + combined;
+        //$.post("@Url.Action('ChangeOrder')", { id: combined }, function (data) { });
+    });
+});
 
 
-//$("#CompanySelector").change(function () {
-//    var companyID = $('option:selected', $(this)).val();
-//    window.location.href = '/CompanyDepartments/Index/' + companyID;
-//});
+$("#OrderSelector").change(function () {
+    alert("Start");
+    var selectedCountry = $("#Countries").val();
+    var newOrder = $('option:selected', $(this)).text();
+    var id = $('option:selected', $(this)).val();
+    alert("New Order is: " + newOrder + " and segmentID: " + id);
+    $.post('@Url.Action("ChangeOrder", "CompanySegments")', { order: newOrder, segmentID: id }, function (data) {
+    });
+});
+
+
+$("#CompanySelector").change(function () {
+    var companyID = $('option:selected', $(this)).val();
+    window.location.href = '/CompanyDepartments/Index/' + companyID;
+});
 
 
 //$("#CompanyChoose").change(function () {

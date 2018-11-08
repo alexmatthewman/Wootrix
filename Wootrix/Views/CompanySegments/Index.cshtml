@@ -43,9 +43,7 @@
             <tr>
 
                 @foreach (var item in Model)
-                {
-                    
-                    var count = 1;
+                {                   
                     <td class="magazine" @*style="border:4px solid @item.ThemeColor;  background:@item.StandardColor;" *@>
 
                         <div class="magazine-order">
@@ -63,7 +61,6 @@
                                     {
                                         <option value="@item.ID">@it.Order.Value</option>
                                     }
-
                                 }
 
                             </select>

@@ -74,7 +74,25 @@
             {
                 <tr>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Order)
+                        <div class="article-order">
+                            <label class="control-label">Order</label>
+                            <select class="ArtOrderSelector">
+
+                                @foreach (var it in Model)
+                                {
+
+                                    if (item.Order == it.Order)
+                                    {
+                                        <option value="@it.Order.Value" selected="selected">@it.Order.Value</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@item.ID">@it.Order.Value</option>
+                                    }
+                                }
+
+                            </select>
+                        </div>
                     </td>
 
                     <td>
@@ -114,7 +132,7 @@
 
                     <td>
                         <a asp-controller="SegmentArticles" asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                        <a asp-controller="SegmentArticles" asp-action="Details" asp-route-id="@item.ID">Details</a> |
+                        <a asp-controller="SegmentArticles" asp-action="RemoveFromMagazine" asp-route-id="@item.ID">Remove From Magazine</a> |
                         <a asp-controller="SegmentArticles" asp-action="Delete" asp-route-id="@item.ID">Delete</a>
                     </td>
                 </tr>

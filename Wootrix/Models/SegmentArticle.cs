@@ -34,7 +34,6 @@ namespace WootrixV2.Models
         [Display(Name = "Embedded Video File", Prompt = "Please enter a video to embed in the article if applicable", Description = "Embedded Video File")]
         public string EmbeddedVideo { get; set; }
 
-        [Required]
         [StringLength(10000)]
         [Display(Name = "Article Content", Prompt = "Please enter the article content", Description = "Article Content")]
         public string ArticleContent { get; set; }
@@ -113,7 +112,6 @@ namespace WootrixV2.Models
         [Display(Name = "Embedded Video Url", Prompt = "Please enter the video url if applicable", Description = "Embedded Video Url")]
         public IFormFile EmbeddedVideo { get; set; }
 
-        [Required]
         [StringLength(10000)]
         [Display(Name = "Article Content", Prompt = "Please enter the article content", Description = "Article Content")]
         public string ArticleContent { get; set; }

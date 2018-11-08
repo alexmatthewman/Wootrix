@@ -759,7 +759,9 @@
 }
 
 
-
+.article-order {
+    min-width: 4em;
+}
 
 .body-content form {
     margin-left: 2em;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -35,6 +36,59 @@ namespace WootrixV2.Controllers
             _userManager = userManager;
             _rlo = rlo;
         }
+
+
+        public async Task<IActionResult> ChangeOrder(string id)
+        {
+            var orderArray = id.Split("|");
+            var order = orderArray[0].ToString();
+            int articleID;
+            bool success = Int32.TryParse(orderArray[1].ToString(), out articleID);
+
+            var _companyID = HttpContext.Session.GetInt32("CompanyID") ?? 0;
+            var article = await _context.SegmentArticle.FindAsync(articleID);
+            int whereItCurrentlyIs = article.Order ?? 0;
+            int whereItIsMovingTo;
+            success = Int32.TryParse(order, out whereItIsMovingTo);
+
+            // So for each segment with an order greater than the order we need to increment the order number
+            if (whereItCurrentlyIs < whereItIsMovingTo)
+            {
+                foreach (var art in _context.SegmentArticle.Where(m => m.CompanyID == _companyID && ((m.Order ?? 0) <= whereItIsMovingTo) && (m.Order ?? 0) > whereItCurrentlyIs))
+                {
+                    art.Order--;
+                    _context.Update(art);
+                }
+            }
+            else
+            {
+                foreach (var art in _context.SegmentArticle.Where(m => m.CompanyID == _companyID && ((m.Order ?? 0) >= whereItIsMovingTo) && (m.Order ?? 0) < whereItCurrentlyIs))
+                {
+                    art.Order++;
+                    _context.Update(art);
+                }
+            }
+
+            // Update the order of the segmentID to be as passed
+            article.Order = whereItIsMovingTo;
+            _context.Update(article);
+            _context.SaveChanges();
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        // Decrement everything else
+        public void InsertAtOrder1()
+        {
+            var _companyID = HttpContext.Session.GetInt32("CompanyID") ?? 0;
+            foreach (var art in _context.SegmentArticle.Where(m => m.CompanyID == _companyID))
+            {
+                art.Order--;
+                _context.Update(art);
+            }
+            _context.SaveChanges();
+        }
+
 
         // GET: SegmentArticles
         public async Task<IActionResult> Index()
@@ -107,12 +161,13 @@ namespace WootrixV2.Controllers
             s.CompanyID = _user.companyID;
             s.Author = _user.name;
             s.AllowComments = true;
-            
+
             DatabaseAccessLayer dla = new DatabaseAccessLayer(_context);
-          
+
             var listOfAllSegements = dla.GetArticleSegments(_user.companyID);
             foreach (var seg in listOfAllSegements)
             {
+
                 s.AvailableSegments.Add(new SelectListItem { Text = seg.Value, Value = seg.Value });
             }
 
@@ -152,7 +207,114 @@ namespace WootrixV2.Controllers
         }
 
 
+        public string CreateSegmentsStringWithOrder1(IList<string> segments)
+        {
+            var segString = "";
+            var last = segments.Last();
+            foreach (string segTitle in segments)
+            {
+                if (segTitle == last)
+                {
+                    // We don't put the separator on the end of the last item
+                    segString += segTitle + "/1";
+                }
+                else
+                {
+                    segString += segTitle + "/1|";
+                }
+                UpdateSegmentsAsThereWasAnInsertAt1(segTitle);
+            }
+            return segString;
+        }
 
+        public string CreateSegmentsStringWithOrder1ButWithCheckToMakeSureNotAt1Already(IList<string> newSegments, IList<string> oldSegments)
+        {
+            var segString = "";
+            var last = newSegments.Last();
+            bool isNewSegement = true;
+            foreach (string segTitle in newSegments)
+            {
+                isNewSegement = true;
+                if (segTitle == last)
+                {
+                    // We don't put the separator on the end of the last item
+                    segString += segTitle + "/1";
+                }
+                else
+                {
+                    segString += segTitle + "/1|";
+                }
+
+                foreach (string segOldTitle in oldSegments)
+                {
+                    if (segOldTitle.Contains(segTitle))
+                    {
+                        isNewSegement = false;
+                        var titleAndOrder = segOldTitle.Split("/");
+                        //If the new segment is at order 1 don't update anything
+                        if (titleAndOrder[1] != "1")
+                        {
+                            UpdateSegmentsAsThereWasAnInsertAt1(segTitle);
+                        }
+                    }
+                }
+                if (isNewSegement)
+                {
+                    // If this is a totally new segment we are adding the article to then all the others need to be decremented as it's going in at 1
+                    UpdateSegmentsAsThereWasAnInsertAt1(segTitle);
+                }
+            }
+            return segString;
+        }
+
+
+
+        public void UpdateSegmentsAsThereWasAnInsertAt1(string segmentTitleWhereInsertHappened)
+        {
+            //Get all the company segments
+
+            var id = HttpContext.Session.GetInt32("CompanyID");
+            var ctx = _context.SegmentArticle
+                .Where(m => m.CompanyID == id && m.Segments.Contains(segmentTitleWhereInsertHappened))
+                .ToList();
+
+            foreach (SegmentArticle item in ctx)
+            {
+                var updatedSegmentsAndOrders = "";
+                //Split the segments into a list, grab their order and increment it then save the change
+                var segments = item.Segments;
+                var segmentsList = item.Segments.Split("|");
+                foreach (string segmentTitleAndOrder in segmentsList)
+                {
+                    var ender = "";
+                    // If this isn't the last title, add a delimited
+                    if (segmentsList.Last() != segmentTitleAndOrder) ender = "|";
+
+                    if (segmentTitleAndOrder.Contains(segmentTitleWhereInsertHappened))
+                    {
+                        //Get the order and increment
+                        
+                        var titleAndOrder = segmentTitleAndOrder.Split("/");
+                        int ord;
+                        bool success = int.TryParse(titleAndOrder[1], out ord);
+                        ord++;
+                        updatedSegmentsAndOrders += titleAndOrder[0] + "/" + ord + ender;
+
+
+                    }
+                    else
+                    {
+                        // just add it unchanged 
+                        updatedSegmentsAndOrders += segmentTitleAndOrder + ender;
+                    }
+
+                }
+                item.Segments = updatedSegmentsAndOrders;
+                _context.Update(item);
+            }
+
+            _context.SaveChanges();
+        }
 
 
         // POST: SegmentArticles/Create
@@ -169,7 +331,7 @@ namespace WootrixV2.Controllers
             {
                 //ID,Order,Title,CoverImage,CoverImageMobileFriendly,PublishDate,FinishDate,ClientName,ClientLogoImage,ThemeColor,StandardColor,Draft,Department,Tags
                 myArticle.CompanyID = _user.companyID;
-                myArticle.Order = sa.Order ?? 1;
+
                 myArticle.Title = sa.Title;
                 myArticle.PublishFrom = sa.PublishFrom;
                 myArticle.PublishTill = sa.PublishTill;
@@ -177,10 +339,14 @@ namespace WootrixV2.Controllers
                 myArticle.ArticleContent = sa.ArticleContent;
                 myArticle.Author = (sa.Author == null ? _user.name : sa.Author); //if null set to be user name
                 myArticle.CreatedBy = _user.UserName;
+                myArticle.ArticleUrl = sa.ArticleUrl;
 
                 myArticle.Tags = sa.Tags;
-                myArticle.Segments = string.Join("|", sa.SelectedSegments);
-
+                //As they want order to be associated with segment I'm putting the order in a new field
+                if (sa.SelectedSegments.Count > 0)
+                {
+                    myArticle.Segments = CreateSegmentsStringWithOrder1(sa.SelectedSegments);
+                }
                 myArticle.Languages = string.Join("|", sa.SelectedLanguages);
                 myArticle.Groups = string.Join("|", sa.SelectedGroups);
                 myArticle.Topics = string.Join("|", sa.SelectedTopics);
@@ -304,7 +470,7 @@ namespace WootrixV2.Controllers
 
             if (segmentArticle.Segments != null && segmentArticle.Segments != "")
             {
-                s.AvailableSegments = segmentArticle.Segments.Split(',').Select(x => new SelectListItem { Text = x, Value = x, Selected = true }).ToList();
+                s.AvailableSegments = RemoveDigitsAndSlashes(segmentArticle.Segments).Split('|').Select(x => new SelectListItem { Text = x, Value = x, Selected = true }).ToList();
             }
             //Add any options not already in the segmentlist
 
@@ -322,7 +488,7 @@ namespace WootrixV2.Controllers
 
             if (segmentArticle.Groups != null && segmentArticle.Groups != "")
             {
-                s.AvailableGroups = segmentArticle.Groups.Split(',').Select(x => new SelectListItem { Text = x, Value = x, Selected = true }).ToList();
+                s.AvailableGroups = segmentArticle.Groups.Split('|').Select(x => new SelectListItem { Text = x, Value = x, Selected = true }).ToList();
             }
             //Add any options not already in the segmentlist
             var listOfAllGroups = dla.GetListGroups(_user.companyID);
@@ -338,7 +504,7 @@ namespace WootrixV2.Controllers
 
             if (segmentArticle.Topics != null && segmentArticle.Topics != "")
             {
-                s.AvailableTopics = segmentArticle.Topics.Split(',').Select(x => new SelectListItem { Text = x, Value = x, Selected = true }).ToList();
+                s.AvailableTopics = segmentArticle.Topics.Split('|').Select(x => new SelectListItem { Text = x, Value = x, Selected = true }).ToList();
             }
             //Add any options not already in the segmentlist
             var listOfAllTopics = dla.GetListTopics(_user.companyID);
@@ -353,7 +519,7 @@ namespace WootrixV2.Controllers
 
             if (segmentArticle.TypeOfUser != null && segmentArticle.TypeOfUser != "")
             {
-                s.AvailableTypeOfUser = segmentArticle.TypeOfUser.Split(',').Select(x => new SelectListItem { Text = x, Value = x, Selected = true }).ToList();
+                s.AvailableTypeOfUser = segmentArticle.TypeOfUser.Split('|').Select(x => new SelectListItem { Text = x, Value = x, Selected = true }).ToList();
             }
             //Add any options not already in the segmentlist
             var listOfAllTypeOfUser = dla.GetListTypeOfUser(_user.companyID);
@@ -368,7 +534,7 @@ namespace WootrixV2.Controllers
 
             if (segmentArticle.Languages != null && segmentArticle.Languages != "")
             {
-                s.AvailableLanguages = segmentArticle.Languages.Split(',').Select(x => new SelectListItem { Text = x, Value = x, Selected = true }).ToList();
+                s.AvailableLanguages = segmentArticle.Languages.Split('|').Select(x => new SelectListItem { Text = x, Value = x, Selected = true }).ToList();
             }
             //Add any options not already in the segmentlist
             var listOfAllLanguages = dla.GetListLanguages(_user.companyID, _rlo);
@@ -382,6 +548,12 @@ namespace WootrixV2.Controllers
             }
 
             return View(s);
+        }
+
+        public string RemoveDigitsAndSlashes(string input)
+        {
+            var output = Regex.Replace(input, @"[\d-]", string.Empty).Replace("/", "");
+            return output;
         }
 
         // POST: SegmentArticles/Edit/5
@@ -398,7 +570,7 @@ namespace WootrixV2.Controllers
             }
 
             _user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();
-            var myArticle = new SegmentArticle();
+            var myArticle = _context.SegmentArticle.Find(id);
 
             if (ModelState.IsValid)
             {
@@ -411,17 +583,21 @@ namespace WootrixV2.Controllers
                 myArticle.AllowComments = sa.AllowComments;
                 myArticle.ArticleContent = sa.ArticleContent;
                 myArticle.Author = sa.Author;
-                myArticle.Segments = string.Join("|", sa.SelectedSegments);
+
+                var oldSegments = myArticle.Segments.Split("|");
+                //Even though it is an edit we are resetting the order to 1...its waaay to complicated otherwise.
+                myArticle.Segments = CreateSegmentsStringWithOrder1ButWithCheckToMakeSureNotAt1Already(sa.SelectedSegments, oldSegments);
+
                 myArticle.Tags = sa.Tags;
+                myArticle.ArticleUrl = sa.ArticleUrl;
 
                 myArticle.Languages = string.Join("|", sa.SelectedLanguages);
                 myArticle.Groups = string.Join("|", sa.SelectedGroups);
                 myArticle.Topics = string.Join("|", sa.SelectedTopics);
                 myArticle.TypeOfUser = string.Join("|", sa.SelectedTypeOfUser);
-                  myArticle.City = sa.City;
+                myArticle.City = sa.City;
                 if (sa.Country != null && sa.Country != "") myArticle.Country = _context.LocationCountries.FirstOrDefault(m => m.country_code == sa.Country).country_name;
                 if (sa.State != null && sa.State != "") myArticle.State = _context.LocationStates.FirstOrDefault(n => n.country_code == sa.Country && n.state_code == sa.State).state_name;
-
 
                 IFormFile img = sa.Image;
                 if (img != null)
@@ -498,9 +674,30 @@ namespace WootrixV2.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var segmentArticle = await _context.SegmentArticle.FindAsync(id);
+            DatabaseAccessLayer dla = new DatabaseAccessLayer(_context);
+
+            var segID = HttpContext.Session.GetInt32("SegmentID") ?? 0;
+            CompanySegment cs = await _context.CompanySegment.FindAsync(segID);
+
+            dla.DeleteArticleAndUpdateOthersOrder(segmentArticle, cs.Title);
             _context.SegmentArticle.Remove(segmentArticle);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+
+        // POST: SegmentArticles/Delete/5
+
+        public async Task<IActionResult> RemoveFromMagazine(int id)
+        {
+            var segmentArticle = await _context.SegmentArticle.FindAsync(id);
+            DatabaseAccessLayer dla = new DatabaseAccessLayer(_context);
+
+            var segID = HttpContext.Session.GetInt32("SegmentID") ?? 0;
+            CompanySegment cs = await _context.CompanySegment.FindAsync(segID);
+
+            dla.DeleteArticleAndUpdateOthersOrder(segmentArticle, cs.Title);
+            return RedirectToAction("Details", "CompanySegments", new { id = segID });
         }
 
         private bool SegmentArticleExists(int id)

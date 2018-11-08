@@ -52,42 +52,48 @@
                         {
                             <div class="article articleDetails">
                                 <div>
-                                    <a asp-controller="SegmentArticles" asp-action="Article" asp-route-id="@item.ID">
-                                        <h1>@item.Title</h1>
+                                    @if (!string.IsNullOrEmpty(item.ArticleUrl))
+                                    {
+                                        <a href="@item.ArticleUrl">
+                                            <h1>@item.Title</h1>
 
-                                        @if (!string.IsNullOrEmpty(item.Image))
-                                        {
-                                            var fn = _companyName + "_" + WebUtility.HtmlEncode(item.Title) + "_" + item.Image;
-                                            <div class="imageStuff">
-                                                <img src="~/images/Uploads/Articles/@fn" class="UserArticleImage" />
-                                            </div>
-                                        }
-
-                                        @*@Html.Raw(Model.ArticleContent)*@
-                                        <div class="publishStuff">
-                                            <span class="glyphicon glyphicon-user"></span>
-                                            <div class="author">Posted by @item.Author&nbsp;</div><div class="publishDate">@item.PublishFrom</div>
-                                        </div>
-                                    </a>
-                                    @*@if (item.AllowComments ?? false)
-                                        {
-                                            //This is a special list of articleIDs and their comment counts
-                                            var commentCount = "0";
-                                            foreach (var art in ViewBag.ArticleCountList)
+                                            @if (!string.IsNullOrEmpty(item.Image))
                                             {
-                                                if (art.Value == item.ID) { commentCount = art.Text; }
+                                                var fn = _companyName + "_" + WebUtility.HtmlEncode(item.Title) + "_" + item.Image;
+                                                <div class="imageStuff">
+                                                    <img src="~/images/Uploads/Articles/@fn" class="UserArticleImage" />
+                                                </div>
                                             }
 
-                                            <div class="commentStuff">
-                                                <a asp-controller="SegmentArticleComments" asp-action="Index" asp-route-id="@item.ID">
-                                                    <span class="glyphicon glyphicon-comment"></span>
-                                                    <div class="commentCount">@commentCount&nbsp;</div><div class="commentView">
-                                                        Comments
-                                                    </div>
-                                                </a>
+                                            @*@Html.Raw(Model.ArticleContent)*@
+                                            <div class="publishStuff">
+                                                <span class="glyphicon glyphicon-user"></span>
+                                                <div class="author">Posted by @item.Author&nbsp;</div><div class="publishDate">@item.PublishFrom</div>
                                             </div>
-                                        }*@
+                                        </a>
+                                    }
+                                    else
+                                    {
 
+                                        <a asp-controller="SegmentArticles" asp-action="Article" asp-route-id="@item.ID">
+                                            <h1>@item.Title</h1>
+
+                                            @if (!string.IsNullOrEmpty(item.Image))
+                                            {
+                                                var fn = _companyName + "_" + WebUtility.HtmlEncode(item.Title) + "_" + item.Image;
+                                                <div class="imageStuff">
+                                                    <img src="~/images/Uploads/Articles/@fn" class="UserArticleImage" />
+                                                </div>
+                                            }
+
+                                            @*@Html.Raw(Model.ArticleContent)*@
+                                            <div class="publishStuff">
+                                                <span class="glyphicon glyphicon-user"></span>
+                                                <div class="author">Posted by @item.Author&nbsp;</div><div class="publishDate">@item.PublishFrom</div>
+                                            </div>
+                                        </a>
+
+                                    }
                                 </div>
                             </div>
                         }

@@ -124,14 +124,14 @@ namespace WootrixV2.Data
         }
 
         public IEnumerable<SelectListItem> GetInterfaceLanguages(int companyID, IOptions<RequestLocalizationOptions> rlo)
-        {           
+        {
             var cultureItems = rlo.Value.SupportedUICultures
                 .Select(c => new SelectListItem { Value = c.DisplayName, Text = c.DisplayName })
                 .ToList();
 
             return cultureItems;
         }
-        
+
 
         public IEnumerable<SelectListItem> GetGenders()
         {
@@ -258,7 +258,7 @@ namespace WootrixV2.Data
             return list;
         }
 
-       
+
 
         public List<SelectListItem> GetListLanguages(int companyID, IOptions<RequestLocalizationOptions> rlo)
         {
@@ -266,7 +266,7 @@ namespace WootrixV2.Data
             List<SelectListItem> list = rlo.Value.SupportedUICultures
                 .Select(c => new SelectListItem { Value = c.DisplayName, Text = c.DisplayName })
                 .ToList();
-            
+
             return list;
         }
 
@@ -313,7 +313,8 @@ namespace WootrixV2.Data
 
             //Allow for searches too
             var setOfArticles = _context.SegmentArticle.ToList();
-            if (!string.IsNullOrEmpty(articleSearchString)) {        
+            if (!string.IsNullOrEmpty(articleSearchString))
+            {
 
                 setOfArticles = _context.SegmentArticle
                     .Where(n => n.CompanyID == companyID)
@@ -360,7 +361,7 @@ namespace WootrixV2.Data
                         {
                             // No search filter
                             segments.Add(_context.CompanySegment.FirstOrDefault(p => p.Title == segmentTitle));
-                            
+
                         }
                         else
                         {
@@ -463,5 +464,65 @@ namespace WootrixV2.Data
             var cs = _context.CompanyLocStates.AsNoTracking().FirstOrDefault(p => p.state_code == StateCode);
             return cs.state_name;
         }
+
+        public void RemoveSegmentFromArticleSegments(SegmentArticle art, string segmentTitle)
+        {
+            var updatedSegmentsAndOrders = "";
+            //Split the segments into a list, grab their order and increment it then save the change
+            var segments = art.Segments;
+            var segmentsList = art.Segments.Split("|");
+            foreach (string segmentTitleAndOrder in segmentsList)
+            {
+                if (!segmentTitleAndOrder.Contains(segmentTitle))
+                {
+
+                    updatedSegmentsAndOrders += segmentTitleAndOrder;
+                }
+            }
+            art.Segments = updatedSegmentsAndOrders;
+            _context.Update(art);
+            _context.SaveChanges();
+        }
+
+        // Decrement everything below it
+        public void DeleteArticleAndUpdateOthersOrder(SegmentArticle article, string segmentTitle)
+        {
+            foreach (var art in _context.SegmentArticle.Where(m => m.CompanyID == article.CompanyID && m.Order > article.Order))
+            {
+                var updatedSegmentsAndOrders = "";
+                //Split the segments into a list, grab their order and increment it then save the change
+                var segments = art.Segments;
+                var segmentsList = art.Segments.Split("|");
+                foreach (string segmentTitleAndOrder in segmentsList)
+                {
+                    var ender = "";
+                    // If this isn't the last title, add a delimited
+                    if (segmentsList.Last() != segmentTitleAndOrder) ender = "|";
+
+                    if (segmentTitleAndOrder.Contains(segmentTitle))
+                    {
+                        //Get the order and increment
+                        var titleAndOrder = segmentTitleAndOrder.Split("/");
+                        int ord;
+                        bool success2 = int.TryParse(titleAndOrder[1], out ord);
+                        ord--;
+                        updatedSegmentsAndOrders += titleAndOrder[0] + "/" + ord + ender;
+                    }
+                    else
+                    {
+                        // just add it unchanged 
+                        updatedSegmentsAndOrders += segmentTitleAndOrder + ender;
+                    }
+                }
+                art.Segments = updatedSegmentsAndOrders;
+                art.Order--;
+                _context.Update(art);
+            }
+
+            // Remove the current segement and order from the passed article
+            RemoveSegmentFromArticleSegments(article, segmentTitle);
+            _context.SaveChanges();
+        }
+
     }
 }

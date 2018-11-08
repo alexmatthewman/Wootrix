@@ -35,7 +35,129 @@ namespace WootrixV2.Controllers
 
         }
 
-        // GET: CompanySegments
+
+        public async Task<IActionResult> ChangeArticleOrder(string id)
+        {
+            var orderArray = id.Split("|");
+            var order = orderArray[0].ToString();
+            int articleID;
+            bool success = Int32.TryParse(orderArray[1].ToString(), out articleID);
+
+            var _companyID = HttpContext.Session.GetInt32("CompanyID") ?? 0;
+            var article = await _context.SegmentArticle.FindAsync(articleID);
+            int whereItCurrentlyIs = article.Order ?? 0;
+            int whereItIsMovingTo;
+            success = Int32.TryParse(order, out whereItIsMovingTo);
+
+            var segID = HttpContext.Session.GetInt32("SegmentID") ?? 0;
+            CompanySegment cs = await _context.CompanySegment.FirstOrDefaultAsync(m => m.ID == segID && m.CompanyID == _companyID);
+
+            var segmentArticle = _context.SegmentArticle
+                .Where(n => n.CompanyID == cs.CompanyID)
+                .Where(m => m.Segments.Contains(cs.Title));
+
+            // So for each segment with an order greater than the order we need to increment the order number
+            if (whereItCurrentlyIs < whereItIsMovingTo)
+            {
+                foreach (var art in segmentArticle.Where(m => m.CompanyID == _companyID && ((m.Order ?? 0) <= whereItIsMovingTo) && (m.Order ?? 0) > whereItCurrentlyIs))
+                {                    
+                    var updatedSegmentsAndOrders = "";
+                    //Split the segments into a list, grab their order and increment it then save the change
+                    var segments = art.Segments;
+                    var segmentsList = art.Segments.Split("|");
+                    foreach (string segmentTitleAndOrder in segmentsList)
+                    {
+                        var ender = "";
+                        // If this isn't the last title, add a delimited
+                        if (segmentsList.Last() != segmentTitleAndOrder) ender = "|";
+
+                        if (segmentTitleAndOrder.Contains(cs.Title))
+                        {
+                            //Get the order and increment
+                            var titleAndOrder = segmentTitleAndOrder.Split("/");
+                            int ord;
+                            bool success2 = int.TryParse(titleAndOrder[1], out ord);
+                            ord--;
+                            updatedSegmentsAndOrders += titleAndOrder[0] + "/" + ord + ender;
+                           
+                        }
+                        else
+                        {
+                            // just add it unchanged 
+                            updatedSegmentsAndOrders += segmentTitleAndOrder + ender;
+                        }
+                    }
+                    art.Segments = updatedSegmentsAndOrders;
+                    art.Order--;
+                    _context.Update(art);
+                }
+            }
+            else
+            {
+                foreach (var art in segmentArticle.Where(m => m.CompanyID == _companyID && ((m.Order ?? 0) >= whereItIsMovingTo) && (m.Order ?? 0) < whereItCurrentlyIs))
+                {
+                    var updatedSegmentsAndOrders = "";
+                    //Split the segments into a list, grab their order and increment it then save the change
+                    var segments = art.Segments;
+                    var segmentsList = art.Segments.Split("|");
+                    foreach (string segmentTitleAndOrder in segmentsList)
+                    {
+                        var ender = "";
+                        // If this isn't the last title, add a delimited
+                        if (segmentsList.Last() != segmentTitleAndOrder) ender = "|";
+
+                        if (segmentTitleAndOrder.Contains(cs.Title))
+                        {
+                            //Get the order and increment
+                            var titleAndOrder = segmentTitleAndOrder.Split("/");
+                            int ord;
+                            bool success2 = int.TryParse(titleAndOrder[1], out ord);
+                            ord++;
+                            updatedSegmentsAndOrders += titleAndOrder[0] + "/" + ord + ender;
+
+                        }
+                        else
+                        {
+                            // just add it unchanged 
+                            updatedSegmentsAndOrders += segmentTitleAndOrder + ender;
+                        }
+                    }
+                    art.Segments = updatedSegmentsAndOrders;
+                    art.Order++;
+                    _context.Update(art);
+                }
+            }            
+            // Update the order of the original Article as well
+            article.Order = whereItIsMovingTo;
+
+            var uso = "";          
+            var segList = article.Segments.Split("|");
+            foreach (string sto in segList)
+            {
+                var ender = "";
+                // If this isn't the last title, add a delimited
+                if (segList.Last() != sto) ender = "|";
+                if (sto.Contains(cs.Title))
+                {
+                    //Get the order and increment
+                    var to = sto.Split("/");
+                    uso += to[0] + "/" + whereItIsMovingTo + ender;
+                }
+                else
+                {
+                    // just add it unchanged 
+                    uso += sto + ender;
+                }
+            }
+            article.Segments = uso;
+
+
+            _context.Update(article);
+            _context.SaveChanges();
+
+            return RedirectToAction("Details", "CompanySegments", new { id = segID }); 
+        }
+
 
         public async Task<IActionResult> ChangeOrder(string id)
         {
@@ -43,16 +165,11 @@ namespace WootrixV2.Controllers
             var order = orderArray[0].ToString();
             int segmentID;
             bool success = Int32.TryParse(orderArray[1].ToString(), out segmentID);
-
-            _companyID = HttpContext.Session.GetInt32("CompanyID") ?? 0;
-            // Each segment with an order higher can stay unchanged.
-
-
+            _companyID = HttpContext.Session.GetInt32("CompanyID") ?? 0;           
             var segment = await _context.CompanySegment.FindAsync(segmentID);
             int whereItCurrentlyIs = segment.Order ?? 0;
             int whereItIsMovingTo;
             success = Int32.TryParse(order, out whereItIsMovingTo);
-
 
             // So for each segment with an order greater than the order we need to increment the order number
             if (whereItCurrentlyIs < whereItIsMovingTo)
@@ -70,16 +187,38 @@ namespace WootrixV2.Controllers
                     seg.Order++;
                     _context.Update(seg);
                 }
-            }
-
+            }           
             // Update the order of the segmentID to be as passed
             segment.Order = whereItIsMovingTo;
             _context.Update(segment);
-
             _context.SaveChanges();
-
             return RedirectToAction(nameof(Index));
         }
+
+        // Decrement everything else
+        public void InsertAtOrder1()
+        {
+            var _companyID = HttpContext.Session.GetInt32("CompanyID") ?? 0;
+            foreach (var seg in _context.CompanySegment.Where(m => m.CompanyID == _companyID))
+            {
+                seg.Order++;
+                _context.Update(seg);
+            }
+            _context.SaveChanges();
+        }
+
+        // Decrement everything below it
+        public void DeleteSegmentAndUpdateOthersOrder(int deletedSegmentOrder)
+        {
+            var _companyID = HttpContext.Session.GetInt32("CompanyID") ?? 0;
+            foreach (var seg in _context.CompanySegment.Where(m => m.CompanyID == _companyID && m.Order > deletedSegmentOrder))
+            {
+                seg.Order--;
+                _context.Update(seg);
+            }
+            _context.SaveChanges();
+        }
+
 
         // GET: CompanySegments
         public async Task<IActionResult> UserSegmentSearch(string SearchString)
@@ -149,7 +288,8 @@ namespace WootrixV2.Controllers
             _companyID = HttpContext.Session.GetInt32("CompanyID") ?? 0;
             var segmentArticle = _context.SegmentArticle
                 .Where(n => n.CompanyID == _companyID)
-                .Where(m => m.Segments.Contains(id));
+                .Where(m => m.Segments.Contains(id))
+                .OrderBy(p => p.Order);
 
             //Also add the Segment to the Viewbag so we can get the Image
             CompanySegment cs = await _context.CompanySegment.FirstOrDefaultAsync(m => m.Title == id && m.CompanyID == _companyID);
@@ -188,17 +328,46 @@ namespace WootrixV2.Controllers
             return View(await segmentArticle.ToListAsync());
         }
 
-
         // GET: CompanySegments/Details/5
         public async Task<IActionResult> Details(int id)
         {
-
+            HttpContext.Session.SetInt32("SegmentID", id);
             _companyID = HttpContext.Session.GetInt32("CompanyID") ?? 0;
             CompanySegment cs = await _context.CompanySegment.FirstOrDefaultAsync(m => m.ID == id && m.CompanyID == _companyID);
 
             var segmentArticle = _context.SegmentArticle
                 .Where(n => n.CompanyID == cs.CompanyID)
                 .Where(m => m.Segments.Contains(cs.Title));
+
+            // OK so now we are going to set the article Order field to be as show in the Segments so its easier to work with. 
+            // We will need to save the segments back again if there is a change
+
+            foreach (SegmentArticle item in segmentArticle)
+            {
+                //Split the segments into a list, grab their order and increment it then save the change
+                var segments = item.Segments;
+                var segmentsList = item.Segments.Split("|");
+                foreach (string segmentTitleAndOrder in segmentsList)
+                {
+                    if (segmentTitleAndOrder.Contains(cs.Title))
+                    {
+                        //Get the order and increment
+                        var titleAndOrder = segmentTitleAndOrder.Split("/");
+                        int ord;
+                        bool success = int.TryParse(titleAndOrder[1], out ord);
+
+                        // Set the article Order
+                        item.Order = ord;
+                    }
+                }
+                _context.Update(item);
+            }
+
+            _context.SaveChanges();
+            segmentArticle = _context.SegmentArticle
+                .Where(n => n.CompanyID == cs.CompanyID)
+                .Where(m => m.Segments.Contains(cs.Title))
+                .OrderBy(p => p.Order);
 
             //Also add the Segment to the Viewbag so we can get the Image
             ViewBag.Segment = cs;
@@ -256,6 +425,9 @@ namespace WootrixV2.Controllers
                 mySegment.Department = cps.Department;
                 mySegment.Tags = cps.Tags;
                 mySegment.ClientName = cps.ClientName ?? _user.name;
+                InsertAtOrder1();
+                mySegment.Order = 1;
+                
 
                 IFormFile coverImage = cps.CoverImage;
                 if (coverImage != null)
@@ -450,6 +622,8 @@ namespace WootrixV2.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var companySegment = await _context.CompanySegment.FindAsync(id);
+            //Update order of other segments
+            DeleteSegmentAndUpdateOthersOrder(companySegment.Order ?? 1);
             _context.CompanySegment.Remove(companySegment);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

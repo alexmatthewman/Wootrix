@@ -14,6 +14,16 @@
     var _companyName = UserManager.GetUserAsync(User).GetAwaiter().GetResult().companyName;
 }
 
+
+<div class="articleBackButtonContainer">
+    <a asp-controller="Company" asp-action="Home" asp-route-id="@_companyName">
+        <button class="articleBackButton button">
+            <span class="glyphicon glyphicon-menu-left"></span>
+            Admin Home
+        </button>
+    </a>
+</div>
+
 <div class="bodyBox">
     <h2>Article List</h2>
 
@@ -23,9 +33,7 @@
     <table class="table">
         <thead>
             <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Order)
-                </th>
+               
 
                 <th>
                     @Html.DisplayNameFor(model => model.Title)
@@ -85,9 +93,7 @@
             @foreach (var item in Model)
             {
                 <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Order)
-                    </td>
+                    
 
                     <td>
                         @Html.DisplayFor(modelItem => item.Title)
