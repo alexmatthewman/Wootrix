@@ -891,6 +891,39 @@ input[type="file"] {
     padding-top: 10px !important;
 }
 
+
+.inner .features li {
+    width: 100%;
+}
+    .inner .features li h3 {
+        display: inline-flex;
+        float: left;
+    }
+    .inner .features li p {
+        display: inline-flex;
+        padding-left: 8em;
+    }
+        .inner .features li p a {
+            text-decoration: none;
+            color: #fff;
+            padding-left: 2em;
+            font-weight: bold;
+            display: inline-flex;
+        }
+
+        .inner .features li  div {
+            text-decoration: none;
+            color: #fff;
+            display: inline-flex;
+            font-weight: bold;
+        }
+
+.major h2, .content h2, .signin-social h3 {
+    font-weight: bold;
+    padding-left: unset;
+    font-size: x-large;
+}
+
 .sign-in {
     /*background: url(../images/website_images/sprite-image.png) no-repeat 49px -238px !important;*/
     background: none !important;

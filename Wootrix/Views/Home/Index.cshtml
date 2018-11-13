@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Wootrix 2.0 Home Page";
+    ViewData["Title"] = Localizer["Home"];
 
     var companyID = -1;
     Layout = "~/Views/Shared/_LayoutCompany.cshtml";
@@ -25,7 +25,7 @@
         <div class="fix-container clearfix">
             <div class="super-admin-cont">
                 <div class="admin-profile clearfix">
-                    <h4>Super Admin</h4>
+                    <h4>@Localizer["Super Admin"]</h4>
                     <h5>@UserManager.GetUserName(User)</h5>
 
                 </div>
@@ -74,25 +74,25 @@ else
             <div class="span5 right">
                 <div class="social-login-cont">
                     <div class="signin-social">
-                        <h3>Entrar com</h3>
-                        <div class="social-icons clearfix">
-                            <ul>
-                                <li class="fb"><a href="https://www.facebook.com/v2.12/dialog/oauth?client_id=1627701464153107&amp;state=f00046d081144491894cf1e6024f52b1&amp;response_type=code&amp;sdk=php-sdk-5.6.2&amp;redirect_uri=http%3A%2F%2Fwww.wootrix.com%2Findex.php%2FfbCallback&amp;scope=email">Facebook</a></li>
-                                <li class="twitter"><a href="http://wootrix.com/index.php/website/login_twitter/index">Twitter</a></li>
-                                <li class="linkedin"><a href="http://wootrix.com/index.php/website/loginWithLinkedIn">linkedin</a></li>
-                                <li class="google"><a href="https://accounts.google.com/o/oauth2/auth?response_type=code&redirect_uri=http%3A%2F%2Fwootrix.com%2Findex.php%2FgCallback&client_id=181469443324-j5neoccka33afjuvm4gnu2itnn07oo0n.apps.googleusercontent.com&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email&access_type=offline&approval_prompt=force&state=+-++-++-++-+">google</a></li>
-                            </ul>
-                        </div>
-                        <div class="login-divider">
-                            <span>ou</span>
-                        </div>
+                        <h3>@Localizer["The smart way to find and distribute knowledge."]</h3>
+                        @*<div class="social-icons clearfix">
+                                <ul>
+                                    <li class="fb"><a href="https://www.facebook.com/v2.12/dialog/oauth?client_id=1627701464153107&amp;state=f00046d081144491894cf1e6024f52b1&amp;response_type=code&amp;sdk=php-sdk-5.6.2&amp;redirect_uri=http%3A%2F%2Fwww.wootrix.com%2Findex.php%2FfbCallback&amp;scope=email">Facebook</a></li>
+                                    <li class="twitter"><a href="http://wootrix.com/index.php/website/login_twitter/index">Twitter</a></li>
+                                    <li class="linkedin"><a href="http://wootrix.com/index.php/website/loginWithLinkedIn">linkedin</a></li>
+                                    <li class="google"><a href="https://accounts.google.com/o/oauth2/auth?response_type=code&redirect_uri=http%3A%2F%2Fwootrix.com%2Findex.php%2FgCallback&client_id=181469443324-j5neoccka33afjuvm4gnu2itnn07oo0n.apps.googleusercontent.com&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email&access_type=offline&approval_prompt=force&state=+-++-++-++-+">google</a></li>
+                                </ul>
+                            </div>
+                            <div class="login-divider">
+                                <span>ou</span>
+                            </div>*@
                     </div>
                     <div class="btn-box clearfix">
-                        <a asp-area="Identity" class="register-bttn" asp-page="/Account/Register">Register</a>
+                        <a asp-area="Identity" class="register-bttn" asp-page="/Account/Login">@Localizer["Login"]</a>
                     </div>
                     <div class="register-form condition">
                         <div class="input-box">
-                            <small>By Signing up, you are agreeing to Wootrix <a href="http://wootrix.com/index.php/wootrix-terms-services" target="_blank">Terms and Privacy</a></small>
+                            <a href="http://wootrix.com/index.php/wootrix-terms-services" target="_blank"> <small>@Localizer["By Signing up, you are agreeing to Wootrix Terms and Privacy"]</small></a>
                         </div>
                     </div>
                 </div>
@@ -103,7 +103,7 @@ else
     <section id="one" class="wrapper style1 special">
         <div class="inner">
             <header class="major">
-                <h2>A maneira inteligente de se encontrar e distribuir conhecimento.</h2>
+                <h2>@Localizer["Bring your content to your audience with ease"]</h2>
             </header>
         </div>
     </section>
@@ -113,56 +113,83 @@ else
         <section class="spotlight">
             <div class="image"><img src="~/images/pic01.jpg" alt="Example Picture of Application 1" /></div><div class="content">
                 <h2>
-                    Customize<br />
-                    sua publicação
+                    @Localizer["Customize your post"]
+
                 </h2>
-                <p>Determine os tópicos e os idiomas de seu interesse e nossos algoritmos montam uma revista digital gratuita sob medida para você.</p>
+                <p>@Localizer["Determine the topics and languages ​​of your interest and our algorithms put together a free digital magazine tailored for you."]</p>
             </div>
         </section>
         <section class="spotlight">
             <div class="image"><img src="~/images/pic02.jpg" alt="Example Picture of Application 2" /></div><div class="content">
                 <h2>
-                    Plataforma de curadoria,<br />
-                    com aparência amigável ao usuário.
+                    @Localizer["Curatorial platform, with user-friendly appearance."]
+
                 </h2>
-                <p>Através de um layout moderno, bonito e de fácil leitura, a plataforma direciona você a conteúdos relevantes minuciosamente selecionados.</p>
+                <p>@Localizer["Through a modern, beautiful and easy-to-read layout, the platform guides you to minutely selected relevant content."]</p>
             </div>
         </section>
         <section class="spotlight">
             <div class="image"><img src="~/images/pic03.jpg" alt="Example Picture of Application 3" /></div><div class="content">
                 <h2>
-                    Revistas Customizadas<br />
+                    @Localizer["Custom Magazines"]
+
                 </h2>
                 <p>
-                    Você poderá ser convidado a ler revistas de empresas, universidades,entidades e etc, ter acesso a um canal 24x7 contendo notícias, cases de sucesso, catálogos de produtos, lançamentos e muito mais. Sempre grátis para o leitor.
+                    @Localizer["You can be invited to read magazines of companies, universities, entities and etc, have access to a 24x7 channel containing news, case studies, product catalogs, releases and more. Always free to the reader."]
                 </p>
             </div>
         </section>
     </section>
 
     <!-- Three -->
-    <section id="three" class="wrapper style3 special">
+    <section id="one" class="wrapper style3 special">
         <div class="inner">
             <header class="major">
-                <h2>Preços e Planos</h2>
-                <p><h1>Revistas Customizadas</h1></p>
+                <h2>@Localizer["Prices and Plans"]</h2>
             </header>
             <ul class="features">
                 <li class="icon icon-money">
-                    <h3>Pacote Bronze</h3>
-                    <p> até 100 usuários - <strong>R$399,00</strong> por mês. Fale conosco no chat ao lado ou Através do email <a href="mailto:wootrix@wootrix.com"><strong>wootrix@wootrix.com</strong></a></p>
+                    <h3>@Localizer["Bronze Package"]</h3>
+                    <p>
+
+                        <div>@Localizer["Up to"]</div>
+                        <div>100</div>
+                        <div>@Localizer["users"]</div>
+                        <div>R $ 399.00 - </div>
+                        <div>@Localizer["per month"]</div>
+
+                    </p>
                 </li>
                 <li class="icon icon-money">
-                    <h3>Pacote Prata</h3>
-                    <p> até 200 usuários - <strong>R$778,00</strong> por mês. Fale conosco no chat ao lado ou Através do email <a href="mailto:wootrix@wootrix.com"><strong>wootrix@wootrix.com</strong></a></p>
+                    <h3>@Localizer["Silver Package"]</h3>
+                    <p>
+
+                        <div>@Localizer["Up to"]</div>
+                        <div>200</div>
+                        <div>@Localizer["users"]</div>
+                        <div>R $ 778.00 - </div>
+                        <div>@Localizer["per month"]</div>
+
+                    </p>
                 </li>
                 <li class="icon icon-money">
-                    <h3>Pacote Ouro</h3>
-                    <p> até 300 usuários - <strong>R$1137,00</strong> por mês. Fale conosco no chat ao lado ou Através do email <a href="mailto:wootrix@wootrix.com"><strong>wootrix@wootrix.com</strong></a></p>
+                    <h3>@Localizer["Gold Package"]</h3>
+                    <p>
+                        <div>@Localizer["Up to"]</div>
+                        <div>200</div>
+                        <div>@Localizer["users"]</div>
+                        <div>R $ 1137.00 - </div>
+                        <div>@Localizer["per month"]</div>
+
+                    </p>
                 </li>
                 <li class="icon icon-money">
-                    <h3>Precisa de mais usuários</h3>
-                    <p>Fale conosco no chat ao lado ou Através do email <a href="mailto:wootrix@wootrix.com"><strong>wootrix@wootrix.com</strong></a></p>
+                    <h3>@Localizer["Need more users?"]</h3>
+                    <p>
+                        <a href="mailto:wootrix@wootrix.com">
+                            @Localizer["Contact us through email"]
+                        </a>
+                    </p>
                 </li>
             </ul>
         </div>

@@ -342,11 +342,7 @@ namespace WootrixV2.Controllers
                 myArticle.ArticleUrl = sa.ArticleUrl;
 
                 myArticle.Tags = sa.Tags;
-                //As they want order to be associated with segment I'm putting the order in a new field
-                if (sa.SelectedSegments.Count > 0)
-                {
-                    myArticle.Segments = CreateSegmentsStringWithOrder1(sa.SelectedSegments);
-                }
+                
                 myArticle.Languages = string.Join("|", sa.SelectedLanguages);
                 myArticle.Groups = string.Join("|", sa.SelectedGroups);
                 myArticle.Topics = string.Join("|", sa.SelectedTopics);
@@ -377,6 +373,12 @@ namespace WootrixV2.Controllers
                     }
                     //The file has been saved to disk - now save the file name to the DB
                     myArticle.EmbeddedVideo = vid.FileName;
+                }
+
+                // As they want order to be associated with segment now im having to smush it in with the current field....a bit ugly 
+                if (sa.SelectedSegments.Count > 0)
+                {
+                    myArticle.Segments = CreateSegmentsStringWithOrder1(sa.SelectedSegments);
                 }
 
                 _context.Add(myArticle);
@@ -584,10 +586,7 @@ namespace WootrixV2.Controllers
                 myArticle.ArticleContent = sa.ArticleContent;
                 myArticle.Author = sa.Author;
 
-                var oldSegments = myArticle.Segments.Split("|");
-                //Even though it is an edit we are resetting the order to 1...its waaay to complicated otherwise.
-                myArticle.Segments = CreateSegmentsStringWithOrder1ButWithCheckToMakeSureNotAt1Already(sa.SelectedSegments, oldSegments);
-
+                
                 myArticle.Tags = sa.Tags;
                 myArticle.ArticleUrl = sa.ArticleUrl;
 
@@ -627,6 +626,10 @@ namespace WootrixV2.Controllers
 
                 try
                 {
+                    var oldSegments = myArticle.Segments.Split("|");
+                    //Even though it is an edit we are resetting the order to 1...its waaay to complicated otherwise.
+                    myArticle.Segments = CreateSegmentsStringWithOrder1ButWithCheckToMakeSureNotAt1Already(sa.SelectedSegments, oldSegments);
+                                                                                                                                                                           
                     _context.Update(myArticle);
                     await _context.SaveChangesAsync();
 

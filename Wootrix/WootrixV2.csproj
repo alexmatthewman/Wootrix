@@ -87,7 +87,7 @@
 
 
   <ItemGroup>
-    <None Include=".ebextensions\permissions.config" />
+    <None Include="C:\Users\gigalaptop\Desktop\permissions.config" Link="permissions.config" />
     <None Include="wwwroot\images\Uploads\Kumon_LIght-Box-INSTITUCIONALv.jpg" />
     <None Include="wwwroot\images\Uploads\Kumon_logokumon.gif" />
     <None Include="wwwroot\images\Uploads\Kumon_logo_kumon00.gif" />
@@ -100,14 +100,11 @@
 
 
   <ItemGroup>
-    <EmbeddedResource Update="Resources\Views.Shared._LayoutCompany.en.resx">
-      <Generator></Generator>
+    <EmbeddedResource Update="Resources\ViewResource.es.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\Views.Shared._LayoutCompany.es.resx">
-      <Generator></Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Resources\Views.Shared._LayoutCompany.pt.resx">
-      <Generator></Generator>
+    <EmbeddedResource Update="Resources\ViewResource.pt.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
     </EmbeddedResource>
   </ItemGroup>
 </Project>

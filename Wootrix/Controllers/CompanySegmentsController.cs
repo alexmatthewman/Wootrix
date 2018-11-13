@@ -425,8 +425,7 @@ namespace WootrixV2.Controllers
                 mySegment.Department = cps.Department;
                 mySegment.Tags = cps.Tags;
                 mySegment.ClientName = cps.ClientName ?? _user.name;
-                InsertAtOrder1();
-                mySegment.Order = 1;
+                
                 
 
                 IFormFile coverImage = cps.CoverImage;
@@ -573,9 +572,13 @@ namespace WootrixV2.Controllers
                     //The file has been saved to disk - now save the file name to the DB
                     mySegment.CoverImageMobileFriendly = cli.FileName;
                 }
-
+                
+                
                 try
                 {
+                    // Done later to avoid ordering failures if the image upload fails.
+                    InsertAtOrder1();
+                    mySegment.Order = 1;
                     _context.Update(mySegment);
                     await _context.SaveChangesAsync();
                 }

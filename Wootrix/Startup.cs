@@ -23,6 +23,9 @@ using Microsoft.AspNetCore.Mvc.Razor;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Localization;
+using System.Reflection;
+using WootrixV2.Resources;
 
 namespace Wootrix
 {
@@ -108,7 +111,16 @@ namespace Wootrix
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
                 .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix, opts => { opts.ResourcesPath = "Resources"; })
-                .AddDataAnnotationsLocalization();
+               .AddDataAnnotationsLocalization(o =>
+               {
+                   var type = typeof(ViewResource);
+                   var assemblyName = new AssemblyName(type.GetTypeInfo().Assembly.FullName);
+                   var factory = services.BuildServiceProvider().GetService<IStringLocalizerFactory>();
+                   var localizer = factory.Create("ViewResource", assemblyName.Name);
+                   o.DataAnnotationLocalizerProvider = (t, f) => localizer;
+               });
+
+
 
             services.Configure<RequestLocalizationOptions>(opts =>
             {
@@ -127,8 +139,7 @@ namespace Wootrix
             });
 
 
-            //services.AddSingleton<IS3Service, S3Service>();
-           // services.AddAWSService<IAmazonS3>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -152,16 +163,16 @@ namespace Wootrix
             //    FileProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath, "Uploads")),
             //    RequestPath = new PathString("/Uploads")
             //});
-
-            //app.UseStaticFiles();
             app.UseDeveloperExceptionPage();
+
+            //More multi-lingual Support
             var options = app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>();
             app.UseRequestLocalization(options.Value);
 
             app.UseHttpsRedirection();
             app.UseCookiePolicy();
             app.UseSession();
-            app.UseAuthentication();            
+            app.UseAuthentication();
 
             app.UseMvc(routes =>
             {
@@ -233,7 +244,7 @@ namespace Wootrix
             {
 
                 ApplicationUser user = await UserManager.FindByEmailAsync("amazon@wootrix.com");
-                var ac = await UserManager.GetClaimsAsync(user);
+                IList<Claim> ac = await UserManager.GetClaimsAsync(user);
 
 
                 //// Main user has all roles

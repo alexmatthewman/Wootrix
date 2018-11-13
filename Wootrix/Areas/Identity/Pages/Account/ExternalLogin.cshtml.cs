@@ -44,6 +44,7 @@ namespace WootrixV2.Areas.Identity.Pages.Account
         {
             [Required]
             [EmailAddress]
+            [Display(Name = "Email")]
             public string Email { get; set; }
         }
 
