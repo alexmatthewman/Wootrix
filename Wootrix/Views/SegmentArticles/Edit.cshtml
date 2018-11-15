@@ -1,28 +1,82 @@
 ﻿@model WootrixV2.Models.SegmentArticleViewModel
 
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = Localizer["Edit"];
     Layout = "~/Views/Shared/_LayoutCompany.cshtml";
 }
 
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 
+@section Scripts {
 
 
-<script src="~/ckeditor/ckeditor.js"></script>
+    <script src="~/ckeditor/ckeditor.js"></script>
 
+    @*https://www.pluralsight.com/guides/asp-net-mvc-populating-dropdown-lists-in-razor-views-using-the-mvvm-design-pattern-entity-framework-and-ajax*@
+    <script type="text/javascript">
+
+
+$("#Countries").change(function () {
+    var selectedCountry = $("#Countries").val();
+    var regionsSelect = $("#States");
+    regionsSelect.empty();
+    var citySelect = $("#Cities");
+    citySelect.empty();
+    if (selectedCountry != null && selectedCountry != "") {
+        $.getJSON('@Url.Action("GetStates")', { countryCode: selectedCountry }, function (states) {
+
+            if (states != null && !jQuery.isEmptyObject(states))
+            {
+                regionsSelect.append($('<option/>', {
+                    value: null,
+                    text: ""
+                }));
+                $.each(states, function (index, state) {
+
+                    regionsSelect.append($("<option />").val(this.value).text(this.text));
+                });
+            }
+        });
+    }
+});
+
+
+$("#States").change(function () {
+    var selectedState = $("#States").val();
+    var citySelect = $("#Cities");
+    citySelect.empty();
+    if (selectedState != null && selectedState != "") {
+        $.getJSON('@Url.Action("GetCities")', { stateCode: selectedState }, function (cities) {
+            if (cities != null && !jQuery.isEmptyObject(cities)) {
+                citySelect.append($("<option />", {
+                    value: null,
+                    text: ""
+                }));
+                $.each(cities, function (index, city) {
+                    citySelect.append($("<option />").val(this.value).text(this.text));
+                });
+            }
+        });
+    }
+});
+    </script>
+
+}
 
 <div class="bodyBox">
-    <h2>Edit</h2>
+    <h2>@Localizer["Edit"]</h2>
 
-    <h4>SegmentArticle</h4>
+    <h4>@Localizer["Edit Article"]</h4>
     <hr />
     <div class="row">
         <div class="col-md-4">
             <form asp-action="Edit" enctype="multipart/form-data">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <input type="hidden" asp-for="ID" />
-                
+
                 <div class="form-group">
                     <label asp-for="ArticleUrl" class="control-label"></label>
                     <input asp-for="ArticleUrl" class="form-control" />
@@ -65,7 +119,12 @@
                 </div>
                 <div class="form-group">
                     <label asp-for="AllowComments" class="control-label"></label>
-                    @Html.EditorFor(x => x.AllowComments)
+                    <select class="form-control" id="AllowComments" name="AllowComments">
+                        <option value="">@Localizer["Not Set"]</option>
+                        <option selected="selected" value="true">@Localizer["True"]</option>
+                        <option value="false">@Localizer["False"]</option>
+                    </select>
+                    @*@Html.EditorFor(x => x.AllowComments)*@
                     <span asp-validation-for="AllowComments" class="text-danger"></span>
                 </div>
 
@@ -126,87 +185,57 @@
                     {
                         <div class="checkbox">
                             <label>
-                                <input type="checkbox" name="SelectedLanguages" checked="@item.Selected" value="@item.Value" /> @item.Text
+                                <input type="checkbox" name="SelectedLanguages" checked="@item.Selected" value="@item.Text" /> @Localizer[item.Text]
                             </label>
                         </div>
                     }
                 </div>
 
                 <div class="form-group">
+                   
                     @Html.LabelFor(x => Model.Country, htmlAttributes: new { @class = "control-label" })
-                    @Html.DropDownListFor(x => Model.Country, new SelectList(Model.Countries, "Value", "Text"), htmlAttributes: new { @class = "form-control", id = "Countries" })
+                    <select class="form-control" id="Countries" name="Country">
+                        @foreach (var i in Model.Countries)
+                        {
+                            <option value="@i.Value">@Localizer[i.Text]</option>
+                        }
+                    </select>
                     @Html.ValidationMessageFor(x => x.Country, "", new { @class = "text-danger" })
                 </div>
 
                 <div class="form-group">
                     @Html.LabelFor(x => Model.State, htmlAttributes: new { @class = "control-label" })
-                    @Html.DropDownListFor(x => Model.State, new SelectList(Model.States, "Value", "Text"), htmlAttributes: new { @class = "form-control", id = "States" })
+                    <select class="form-control" id="States" name="State">
+                        @foreach (var i in Model.States)
+                        {
+                            <option value="@i.Value">@Localizer[i.Text]</option>
+                        }
+                    </select>
                     @Html.ValidationMessageFor(x => x.State, "", new { @class = "text-danger" })
                 </div>
 
                 <div class="form-group">
                     @Html.LabelFor(x => Model.City, htmlAttributes: new { @class = "control-label" })
-                    @Html.DropDownListFor(x => Model.City, new SelectList(Model.Cities, "Value", "Text"), htmlAttributes: new { @class = "form-control", id = "Cities" })
+                    <select class="form-control" id="Cities" name="City">
+                        @foreach (var i in Model.Cities)
+                        {
+                            <option value="@i.Value">@Localizer[i.Text]</option>
+                        }
+                    </select>
                     @Html.ValidationMessageFor(x => x.City, "", new { @class = "text-danger" })
                 </div>
 
                 <div class="form-group">
-                    <input type="submit" value="Save" class="btn btn-default" />
+                    <input type="submit" value="@Localizer["Save"]" class="btn btn-default" />
                 </div>
             </form>
         </div>
     </div>
 
     <div>
-        <a asp-action="Index">Back to List</a>
+        <a asp-action="Index">@Localizer["Back to List"]</a>
     </div>
 
 </div>
 
 <script>CKEDITOR.replace('editor1');</script>
-
-<script type="text/javascript">
-
-$("#Countries").change(function () {
-    var selectedCountry = $("#Countries").val();
-    var regionsSelect = $("#States");
-    regionsSelect.empty();
-    var citySelect = $("#Cities");
-    citySelect.empty();
-    if (selectedCountry != null && selectedCountry != "") {
-        $.getJSON('@Url.Action("GetStates")', { countryCode: selectedCountry }, function (states) {
-
-            if (states != null && !jQuery.isEmptyObject(states))
-            {
-                regionsSelect.append($('<option/>', {
-                    value: null,
-                    text: ""
-                }));
-                $.each(states, function (index, state) {
-
-                    regionsSelect.append($("<option />").val(this.value).text(this.text));
-                });
-            }
-        });
-    }
-    });
-
-    $("#States").change(function () {
-        var selectedState = $("#States").val();
-        var citySelect = $("#Cities");
-        citySelect.empty();
-        if (selectedState != null && selectedState != "") {
-            $.getJSON('@Url.Action("GetCities")', { stateCode: selectedState }, function (cities) {
-                if (cities != null && !jQuery.isEmptyObject(cities)) {
-                    citySelect.append($("<option />", {
-                        value: null,
-                        text: ""
-                    }));
-                    $.each(cities, function (index, city) {
-                        citySelect.append($("<option />").val(this.value).text(this.text));
-                    });
-                }
-            });
-        }
-    });
-</script>

@@ -1,15 +1,20 @@
 ﻿@model WootrixV2.Models.SegmentArticleViewModel
 
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = Localizer["Create"];
     Layout = "~/Views/Shared/_LayoutCompany.cshtml";
 }
 
-<script src="~/ckeditor/ckeditor.js"></script>
+@section Scripts {
 
 
-@*https://www.pluralsight.com/guides/asp-net-mvc-populating-dropdown-lists-in-razor-views-using-the-mvvm-design-pattern-entity-framework-and-ajax*@
-<script type="text/javascript">
+    <script src="~/ckeditor/ckeditor.js"></script>
+
+    @*https://www.pluralsight.com/guides/asp-net-mvc-populating-dropdown-lists-in-razor-views-using-the-mvvm-design-pattern-entity-framework-and-ajax*@
+    <script type="text/javascript">
 
 
 $("#Countries").change(function () {
@@ -55,23 +60,24 @@ $("#States").change(function () {
         });
     }
 });
-</script>
+    </script>
 
+}
 
 
 
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 
 <div class="bodyBox">
-    <h2>Create</h2>
+    <h2>@Localizer["Create"]</h2>
 
-    <h4>Article</h4>
+    <h4>@Localizer["Article"]</h4>
     <hr />
     <div class="row">
         <div class="col-md-4">
             <form asp-action="Create" enctype="multipart/form-data">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-               
+
                 <div class="form-group">
                     <label asp-for="ArticleUrl" class="control-label"></label>
                     <input asp-for="ArticleUrl" class="form-control" />
@@ -116,7 +122,18 @@ $("#States").change(function () {
                 </div>
                 <div class="form-group">
                     <label asp-for="AllowComments" class="control-label"></label>
-                    @Html.EditorFor(x => x.AllowComments)
+
+                    <select class="form-control" id="AllowComments" name="AllowComments">
+                        <option value="">@Localizer["Not Set"]</option>
+                        <option selected="selected" value="true">@Localizer["True"]</option>
+                        <option value="false">@Localizer["False"]</option>
+                    </select>
+                    @*@Html.EditorFor(x => x.AllowComments)*@
+                    @*<select class="list-box tri-state" id="AllowComments" name="AllowComments">
+                            <option value="">Not Set</option>
+                            <option selected="selected" value="true">True</option>
+                            <option value="false">False</option>
+                        </select>*@
                     <span asp-validation-for="AllowComments" class="text-danger"></span>
                 </div>
 
@@ -179,7 +196,7 @@ $("#States").change(function () {
                     @foreach (var item in Model.AvailableLanguages)
                     {
                         <div class="checkbox">
-                            <label><input type="checkbox" name="SelectedLanguages" value="@item.Value">@item.Text</label>
+                            <label><input type="checkbox" name="SelectedLanguages" checked="@item.Selected" value="@item.Value" /> @Localizer[item.Text]</label>
                         </div>
                     }
                 </div>
@@ -187,24 +204,39 @@ $("#States").change(function () {
 
                 <div class="form-group">
                     @Html.LabelFor(x => Model.Country, htmlAttributes: new { @class = "control-label" })
-                    @Html.DropDownListFor(x => Model.Country, new SelectList(Model.Countries, "Value", "Text"), htmlAttributes: new { @class = "form-control", id = "Countries" })
+                    <select class="form-control" id="Countries" name="Country">
+                        @foreach (var i in Model.Countries)
+                        {
+                            <option value="@i.Value">@Localizer[i.Text]</option>
+                        }
+                    </select>
                     @Html.ValidationMessageFor(x => x.Country, "", new { @class = "text-danger" })
                 </div>
 
                 <div class="form-group">
                     @Html.LabelFor(x => Model.State, htmlAttributes: new { @class = "control-label" })
-                    @Html.DropDownListFor(x => Model.State, new SelectList(Model.States, "Value", "Text"), htmlAttributes: new { @class = "form-control", id = "States" })
+                    <select class="form-control" id="States" name="State">
+                        @foreach (var i in Model.States)
+                        {
+                            <option value="@i.Value">@Localizer[i.Text]</option>
+                        }
+                    </select>
                     @Html.ValidationMessageFor(x => x.State, "", new { @class = "text-danger" })
                 </div>
 
                 <div class="form-group">
                     @Html.LabelFor(x => Model.City, htmlAttributes: new { @class = "control-label" })
-                    @Html.DropDownListFor(x => Model.City, new SelectList(Model.Cities, "Value", "Text"), htmlAttributes: new { @class = "form-control", id = "Cities" })
+                    <select class="form-control" id="Cities" name="City">
+                        @foreach (var i in Model.Cities)
+                        {
+                            <option value="@i.Value">@Localizer[i.Text]</option>
+                        }
+                    </select>
                     @Html.ValidationMessageFor(x => x.City, "", new { @class = "text-danger" })
                 </div>
 
                 <div class="form-group">
-                    <input type="submit" value="Create" class="btn btn-default" />
+                    <input type="submit" value="@Localizer["Create"]" class="btn btn-default" />
                 </div>
 
             </form>
@@ -212,7 +244,7 @@ $("#States").change(function () {
     </div>
 
     <div>
-        <a asp-action="Index">Back to List</a>
+        <a asp-action="Index">@Localizer["Back to List"]</a>
     </div>
 </div>
 

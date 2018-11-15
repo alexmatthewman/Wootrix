@@ -1,14 +1,16 @@
 ﻿@model IEnumerable<WootrixV2.Models.User>
 
-
-
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.Http;
 @using System.Security.Claims
 @using WootrixV2.Data;
 
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
 @{
-    ViewData["Title"] = "User Management";
+    ViewData["Title"] = Localizer["User Managment"];
+
     Layout = "~/Views/Shared/_LayoutCompany.cshtml";
     var t = Context.Session.GetString("ManageType");
     var _type = t;
@@ -16,11 +18,10 @@
     {
         _type = "Company Admins";
     }
-
     var _companyName = Context.Session.GetString("CompanyName");
 }
 <div class="articleBackButtonContainer">
-    <a asp-controller="Company" asp-action="Home" asp-route-id="@_companyName"><button class="articleBackButton button"><span class="glyphicon glyphicon-menu-left"></span>&nbsp;Back to Admin Menu</button></a>
+    <a asp-controller="Company" asp-action="Home" asp-route-id="@_companyName"><button class="articleBackButton button"><span class="glyphicon glyphicon-menu-left"></span>&nbsp;@Localizer["Back to Admin Menu"]</button></a>
 </div>
 
 
@@ -30,7 +31,7 @@
     {
         // Need to create a dropdownlist of companies so a Super Admin can create the new Company Admins
         <div id="ChooseYourCompany" class="col-lg-offset-1">
-            <label>Create new Company Admin in:</label>
+            <label>@Localizer["Create new Company Admin in:"]</label>
             <select class="form-control" id="CompanyChoose" name="CompanyChoose">
                 @foreach (var comp in ViewBag.Companies)
                 {
@@ -43,16 +44,16 @@
     else
     {
         <div class="articleBackButtonContainer">
-            <a asp-controller="Users" asp-action="BulkUpload"><button class="articleBackButton button"><span class="glyphicon glyphicon-glyphicon-open"></span>&nbsp;Bulk Upload Users</button></a>
+            <a asp-controller="Users" asp-action="BulkUpload"><button class="articleBackButton button"><span class="glyphicon glyphicon-glyphicon-open"></span>&nbsp;@Localizer["Bulk Upload Users"]</button></a>
         </div>
 
-        <p>Note that if a filter like Group, Language, User type, Topic or Location is not set all articles will be shown as opposed to those marked with a particular filter</p>
+        <p>@Localizer["Note that if a filter like Group, Language, User type, Topic or Location is not set all articles will be shown as opposed to those marked with a particular filter"]</p>
 
         <p>
-            <a asp-action="Create" class="button">Create New @_type</a>
+            <a asp-action="Create" class="button">@Localizer["Create New"]&nbsp;@Localizer[_type]</a>
         </p>
     }
-    <h2>List of @_type</h2>
+    <h2>@Localizer[_type]</h2>
 
 
     <table class="table">
@@ -127,78 +128,144 @@
         <tbody>
             @foreach (var item in Model)
             {
-            <tr>
-                @if (t == "Admin")
-                {
-                    <td>
-                        @Html.DisplayFor(modelItem => item.CompanyName)
-                    </td>
-                }
-                <td>
-                    @Html.DisplayFor(modelItem => item.EmailAddress)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                @if (t == "CompanyAdmin")
-                {
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Categories)
-                    </td>
-                }
-                <td>
-                    @Html.DisplayFor(modelItem => item.InterfaceLanguage)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PhoneNumber)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Gender)
-                </td>
-                <td>
-
-                    @{
-                        var fn = item.CompanyName + "_" + item.Photo;
+                <tr>
+                    @if (t == "Admin")
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CompanyName)
+                        </td>
                     }
-                    <img src="~/images/Uploads/Users/@fn" class="tableimg" />
-                </td>
+                    <td>
+                        @item.EmailAddress
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    @if (t == "CompanyAdmin")
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Categories)
+                        </td>
+                    }
+                    <td>
+                        @Localizer[item.InterfaceLanguage]
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PhoneNumber)
+                    </td>
+                    <td>
+                        @Localizer[item.Gender]
+                    </td>
+                    <td>
 
-                @if (_type == "CompanyAdmin")
-                {
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Categories)
-                    </td>
-                }
-                @if (_type == "User")
-                {
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Groups)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Topics)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.TypeOfUser)
+                        @{
+                            var fn = item.CompanyName + "_" + item.Photo;
+                        }
+                        <img src="~/images/Uploads/Users/@fn" class="tableimg" />
                     </td>
 
+                    @if (_type == "CompanyAdmin")
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Categories)
+                        </td>
+                    }
+                    @if (_type == "User")
+                    {
+                        <td>
+                            @if (!string.IsNullOrEmpty(item.Groups))
+                            {
+                                if (item.Groups.Contains("|"))
+                                {
+                                    var e = item.Groups.Replace("|", ", ");
+                                    <q>@e</q>
+                                }
+                            }
+                            else
+                            {
+                                @Html.DisplayFor(modelItem => item.Groups)
+                            }
+                            @*@Html.DisplayFor(modelItem => item.Groups)*@
+                        </td>
+                        <td>
+
+                            @if (!string.IsNullOrEmpty(item.Topics))
+                            {
+                                if (item.Topics.Contains("|"))
+                                {
+                                    var e = item.Topics.Replace("|", ", ");
+                                    <q>@e</q>
+                                }
+                            }
+                            else
+                            {
+                                @Html.DisplayFor(modelItem => item.Topics)
+                            }
+                            @*@Html.DisplayFor(modelItem => item.Topics)*@
+                        </td>
+                        <td>
+                            @{
+
+                                if (!string.IsNullOrEmpty(item.TypeOfUser))
+                                {
+                                    if (item.TypeOfUser.Contains("|"))
+                                    {
+                                        var e = item.TypeOfUser.Replace("|", ", ");
+                                        <q>@e</q>
+                                    }
+                                }
+                                else
+                                {
+                                    @Html.DisplayFor(modelItem => item.TypeOfUser)
+                                }
+                            }
+                            @*@Html.DisplayFor(modelItem => item.TypeOfUser)*@
+                        </td>
+
+                        <td>
+
+
+                            @{
+                                //Split the languages and localise
+                                if (!string.IsNullOrEmpty(item.WebsiteLanguage))
+                                {
+                                    if (item.WebsiteLanguage.Contains("|"))
+                                    {
+                                        string[] langs = item.WebsiteLanguage.Split("|"); ;
+
+                                        foreach (string la in langs)
+                                        {
+                                            @Localizer[la ?? ""]<q>@(langs.Last() == la ? " " : ", ")</q>;
+
+                                        }
+                                    }
+                                    else
+                                    {
+                                        @Localizer[item.WebsiteLanguage]
+                                    }
+                                }
+                                else
+                                {
+                                    @Html.DisplayFor(modelItem => item.WebsiteLanguage)
+                                }
+                            }
+                            @*@Html.DisplayFor(modelItem => item.WebsiteLanguage)*@
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Country)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.State)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.City)
+                        </td>
+                    }
                     <td>
-                        @Html.DisplayFor(modelItem => item.WebsiteLanguage)
+                        <a asp-action="Edit" asp-route-id="@item.ID">@Localizer["Edit"]</a> |
+                        <a asp-action="Delete" asp-route-id="@item.ID">@Localizer["Delete"]</a>
                     </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Country)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.State)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.City)
-                    </td>
-                }
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                    <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-                </td>
-            </tr>
+                </tr>
             }
         </tbody>
     </table>

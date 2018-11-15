@@ -1,8 +1,12 @@
 ﻿@model WootrixV2.Models.UserViewModel
 
 @using Microsoft.AspNetCore.Http;
+
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = Localizer["Edit"];
     Layout = "~/Views/Shared/_LayoutCompany.cshtml";
 
     var _type = Context.Session.GetString("ManageType");
@@ -62,9 +66,9 @@ $("#States").change(function () {
 
 
 <div class="bodyBox">
-    <h2>Edit</h2>
+    <h2>@Localizer["Edit"]</h2>
 
-    <h4>User</h4>
+    <h4>@Localizer["User"]</h4>
     <hr />
     <div class="row">
         <div class="col-md-4">
@@ -95,8 +99,12 @@ $("#States").change(function () {
                 {
                     <div class="form-group">
                         @Html.LabelFor(x => Model.Categories, htmlAttributes: new { @class = "control-label" })
-
-                        @Html.DropDownListFor(x => Model.Categories, new SelectList(Model.Departments, "Value", "Text"), htmlAttributes: new { @class = "form-control", id = "Departments" })
+                        <select class="form-control" id="Departments" name="Categories">
+                            @foreach (var i in Model.Departments)
+                            {
+                                <option value="@i.Value">@Localizer[i.Text]</option>
+                            }
+                        </select>
                         @Html.ValidationMessageFor(x => x.Categories, "", new { @class = "text-danger" })
 
                     </div>
@@ -108,7 +116,12 @@ $("#States").change(function () {
                 </div>
                 <div class="form-group">
                     @Html.LabelFor(x => Model.Gender, htmlAttributes: new { @class = "control-label" })
-                    @Html.DropDownListFor(x => Model.Gender, new SelectList(Model.Genders, "Value", "Text"), htmlAttributes: new { @class = "form-control", id = "Genders" })
+                    <select class="form-control" id="Genders" name="Gender">
+                        @foreach (var i in Model.Genders)
+                        {
+                            <option value="@i.Text">@Localizer[i.Text]</option>
+                        }
+                    </select>
                     @Html.ValidationMessageFor(x => x.Gender, "", new { @class = "text-danger" })
                 </div>
                 <div class="form-group">
@@ -119,7 +132,12 @@ $("#States").change(function () {
 
                 <div class="form-group">
                     @Html.LabelFor(x => Model.InterfaceLanguage, htmlAttributes: new { @class = "control-label" })
-                    @Html.DropDownListFor(x => Model.InterfaceLanguage, new SelectList(Model.InterfaceLanguages, "Value", "Text"), htmlAttributes: new { @class = "form-control", id = "InterfaceLanguages" })
+                    <select class="form-control" id="InterfaceLanguages" name="InterfaceLanguage">
+                        @foreach (var i in Model.InterfaceLanguages)
+                        {
+                            <option value="@i.Value">@Localizer[i.Text]</option>
+                        }
+                    </select>
                     @Html.ValidationMessageFor(x => x.InterfaceLanguage, "", new { @class = "text-danger" })
 
                 </div>
@@ -169,7 +187,7 @@ $("#States").change(function () {
                         {
                             <div class="checkbox">
                                 <label>
-                                    <input type="checkbox" name="SelectedLanguages" checked="@item.Selected" value="@item.Value" /> @item.Text
+                                    <input type="checkbox" name="SelectedLanguages" value="@item.Value">@Localizer[item.Text]
                                 </label>
                             </div>
                         }
@@ -177,33 +195,48 @@ $("#States").change(function () {
 
                     <div class="form-group">
                         @Html.LabelFor(x => Model.Country, htmlAttributes: new { @class = "control-label" })
-                        @Html.DropDownListFor(x => Model.Country, new SelectList(Model.Countries, "Value", "Text"), htmlAttributes: new { @class = "form-control", id = "Countries" })
+                        <select class="form-control" id="Countries" name="Country">
+                            @foreach (var i in Model.Countries)
+                            {
+                                <option value="@i.Value">@Localizer[i.Text]</option>
+                            }
+                        </select>
                         @Html.ValidationMessageFor(x => x.Country, "", new { @class = "text-danger" })
                     </div>
 
                     <div class="form-group">
                         @Html.LabelFor(x => Model.State, htmlAttributes: new { @class = "control-label" })
-                        @Html.DropDownListFor(x => Model.State, new SelectList(Model.States, "Value", "Text"), htmlAttributes: new { @class = "form-control", id = "States" })
+                        <select class="form-control" id="States" name="State">
+                            @foreach (var i in Model.States)
+                            {
+                                <option value="@i.Value">@Localizer[i.Text]</option>
+                            }
+                        </select>
                         @Html.ValidationMessageFor(x => x.State, "", new { @class = "text-danger" })
                     </div>
 
                     <div class="form-group">
                         @Html.LabelFor(x => Model.City, htmlAttributes: new { @class = "control-label" })
-                        @Html.DropDownListFor(x => Model.City, new SelectList(Model.Cities, "Value", "Text"), htmlAttributes: new { @class = "form-control", id = "Cities" })
+                        <select class="form-control" id="Cities" name="City">
+                            @foreach (var i in Model.Cities)
+                            {
+                                <option value="@i.Value">@Localizer[i.Text]</option>
+                            }
+                        </select>
                         @Html.ValidationMessageFor(x => x.City, "", new { @class = "text-danger" })
                     </div>
 
 
                 }
                 <div class="form-group">
-                    <input type="submit" value="Save" class="btn btn-default" />
+                    <input type="submit" value="@Localizer["Save"]" class="btn btn-default" />
                 </div>
             </form>
         </div>
     </div>
 
     <div>
-        <a asp-action="Index" asp-route-id="@_type">Back to List</a>
+        <a asp-action="Index" asp-route-id="@_type">@Localizer["Back to List"]</a>
     </div>
 
-    </div>
+</div>

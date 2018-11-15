@@ -1,31 +1,34 @@
 ﻿@model WootrixV2.Models.BulkUploadViewModel
 
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
 @{
-    ViewData["Title"] = "Bulk Upload";
+    ViewData["Title"] = Localizer["Bulk Upload"];
     Layout = "~/Views/Shared/_LayoutCompany.cshtml";
 }
 
-    <div class="articleBackButtonContainer">
-        <a asp-controller="Users" asp-action="Index" asp-route-id="User"><button class="articleBackButton button"><span class="glyphicon glyphicon-menu-left"></span>&nbsp;Back to User List</button></a>
+<div class="articleBackButtonContainer">
+    <a asp-controller="Users" asp-action="Index" asp-route-id="User"><button class="articleBackButton button"><span class="glyphicon glyphicon-menu-left"></span>&nbsp;@Localizer["Back to User List"]</button></a>
+</div>
+
+<div class="bodyBox">
+    <h2>@Localizer["Bulk Upload Users"]</h2><p> </p>
+                                                       <a class="upload-example-file" href="~/ExampleBulkUpload.csv">@Localizer["Example Upload File"]</a>
+    <div>
+        <form asp-action="BulkUpload" enctype="multipart/form-data">
+            <div class="form-group">
+                <label asp-for="BulkUploadFile" class="control-label"></label>
+                <input asp-for="BulkUploadFile" type="file" class="form-control" />
+                <span asp-validation-for="BulkUploadFile" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="@Localizer["Upload"]" class="btn btn-default" />
+            </div>
+        </form>
     </div>
-
-    <div class="bodyBox">
-        <h2>Bulk Upload Users</h2><p> </p>
-        <a class="upload-example-file" href="~/ExampleBulkUpload.csv">Example Upload File</a>
-        <div>
-            <form asp-action="BulkUpload" enctype="multipart/form-data">
-                <div class="form-group">
-                    <label asp-for="BulkUploadFile" class="control-label"></label>
-                    <input asp-for="BulkUploadFile" type="file" class="form-control" />
-                    <span asp-validation-for="BulkUploadFile" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <input type="submit" value="Upload" class="btn btn-default" />
-                </div>
-            </form>
-        </div>
-        <p>All users are created with password: <h1>ChangePassword1!</h1></p>
-        <div class="upload-log"><p>Upload Status/Error Log: @ViewBag.Message</p></div>
+    <p>@Localizer["All users are created with password:"]<h1>ChangePassword1!</h1></p>
+    <div class="upload-log"><p>@Localizer["Upload Status/Error Log:"] @ViewBag.Message</p></div>
 
 
-    </div>
+</div>

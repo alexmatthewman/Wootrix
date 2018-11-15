@@ -4,7 +4,7 @@
     "profile" : "WootrixDev",
     "region"  : "us-west-2",
     "application" : "WootrixV2",
-    "environment" : "WootrixV2-dev",
+    "environment" : "WootrixV2-test",
     "cname"       : "wootrixv2-dev",
     "solution-stack" : "64bit Windows Server 2016 v1.2.0 running IIS 10.0",
     "environment-type" : "SingleInstance",

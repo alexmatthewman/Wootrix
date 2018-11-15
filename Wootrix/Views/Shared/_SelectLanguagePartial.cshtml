@@ -14,14 +14,21 @@
     var cultureItems = LocOptions.Value.SupportedUICultures
         .Select(c => new SelectListItem { Value = c.Name, Text = c.DisplayName })
         .ToList();
+    var cultureName = requestCulture.RequestCulture.UICulture.Name;
 }
 
 <div title="@Localizer["Request culture provider:"] @requestCulture?.Provider?.GetType().Name">
     <form id="selectLanguage" asp-controller="Home"
           asp-action="SetLanguage" asp-route-returnUrl="@Context.Request.Path"
           method="post" class="form-horizontal" role="form">
-        @Localizer["Interface Language:"] <select name="culture"
-                                                  asp-for="@requestCulture.RequestCulture.UICulture.Name" asp-items="cultureItems"></select>
+        <div>@Localizer["Interface Language:"]</div>
+
+        <select name="culture" asp-for="@cultureName" >
+            @foreach (SelectListItem lang in cultureItems)
+            {
+                <option value="@lang.Value">@Localizer[lang.Text]</option>
+            }
+        </select>
         <button type="submit" class="btn btn-default btn-xs">@Localizer["Save"]</button>
 
     </form>

@@ -8,7 +8,7 @@
 @inject UserManager<ApplicationUser> UserManager
 
 @{
-    ViewData["Title"] = "Magazine Articles";
+    ViewData["Title"] =  "Magazine Articles";
     Layout = "~/Views/Shared/_LayoutCompany.cshtml";
 
     var _companyName = UserManager.GetUserAsync(User).GetAwaiter().GetResult().companyName;

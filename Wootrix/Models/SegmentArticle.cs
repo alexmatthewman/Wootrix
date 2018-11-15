@@ -16,6 +16,7 @@ namespace WootrixV2.Models
         [ScaffoldColumn(false)]
         public int CompanyID { get; set; }
 
+        [Display(Name = "Order")]
         public int? Order { get; set; }
 
         [Display(Name = "Article Url", Prompt = "Please enter the article url if applicable", Description = "Article Url")]
@@ -95,6 +96,7 @@ namespace WootrixV2.Models
         [ScaffoldColumn(false)]
         public int CompanyID { get; set; }
 
+        [Display(Name = "Order")]
         public int? Order { get; set; }
 
         [Display(Name = "Article Url", Prompt = "Please enter the article url if applicable", Description = "Article Url")]

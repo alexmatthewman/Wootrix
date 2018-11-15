@@ -353,21 +353,24 @@ namespace WootrixV2.Data
                 var articleSegments = item.Segments.Split(',').ToList();
                 foreach (var segmentTitle in articleSegments)
                 {
-                    // Check if the segment title is in the existing segment list
-                    if (segments.FirstOrDefault(p => p.Title == segmentTitle) == null)
+                    if (segments.Count > 1)
                     {
-                        // Not in list so add it
-                        if (string.IsNullOrEmpty(segmentSearchString))
+                        // Check if the segment title is in the existing segment list
+                        if (segments.FirstOrDefault(p => p.Title == segmentTitle) == null)
                         {
-                            // No search filter
-                            segments.Add(_context.CompanySegment.FirstOrDefault(p => p.Title == segmentTitle));
+                            // Not in list so add it
+                            if (string.IsNullOrEmpty(segmentSearchString))
+                            {
+                                // No search filter
+                                segments.Add(_context.CompanySegment.FirstOrDefault(p => p.Title == segmentTitle));
 
-                        }
-                        else
-                        {
-                            //Have to filter on search string too
-                            var seg = _context.CompanySegment.FirstOrDefault(p => p.Title == segmentTitle && (p.Title.Contains(segmentSearchString) || p.Tags.Contains(segmentSearchString)));
-                            if (seg != null) segments.Add(seg);
+                            }
+                            else
+                            {
+                                //Have to filter on search string too
+                                var seg = _context.CompanySegment.FirstOrDefault(p => p.Title == segmentTitle && (p.Title.Contains(segmentSearchString) || p.Tags.Contains(segmentSearchString)));
+                                if (seg != null) segments.Add(seg);
+                            }
                         }
                     }
                 }

@@ -117,20 +117,180 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Article Languages" xml:space="preserve">
+    <value>Artigo Idiomas</value>
+    <comment>User</comment>
+  </data>
+  <data name="Avatar Photo" xml:space="preserve">
+    <value>Foto de Avatar</value>
+    <comment>User</comment>
+  </data>
+  <data name="City" xml:space="preserve">
+    <value>Cidade</value>
+    <comment>User</comment>
+  </data>
+  <data name="Company Name" xml:space="preserve">
+    <value>Nome da empresa</value>
+    <comment>Register</comment>
+  </data>
+  <data name="Confirm password" xml:space="preserve">
+    <value>Confirme a Senha</value>
+    <comment>Register</comment>
+  </data>
+  <data name="Department" xml:space="preserve">
+    <value>Departamento</value>
+    <comment>User</comment>
+  </data>
   <data name="Email" xml:space="preserve">
     <value>Email</value>
     <comment>Login</comment>
+  </data>
+  <data name="Email address" xml:space="preserve">
+    <value>Endereço de e-mail</value>
+    <comment>User</comment>
+  </data>
+  <data name="Full Name" xml:space="preserve">
+    <value>Nome completo</value>
+    <comment>User</comment>
+  </data>
+  <data name="Gender" xml:space="preserve">
+    <value>Gênero</value>
+    <comment>User</comment>
+  </data>
+  <data name="Interface Language" xml:space="preserve">
+    <value>Idioma da interface</value>
+    <comment>User</comment>
   </data>
   <data name="Invalid login attempt." xml:space="preserve">
     <value>Tentativa de login inválida.</value>
     <comment>Login</comment>
   </data>
+  <data name="Limit editors to this Department" xml:space="preserve">
+    <value>Limite de editores para este departamento</value>
+    <comment>User</comment>
+  </data>
   <data name="Password" xml:space="preserve">
     <value>Senha</value>
     <comment>Login</comment>
   </data>
+  <data name="Phone Number" xml:space="preserve">
+    <value>Número de telefone</value>
+    <comment>User</comment>
+  </data>
   <data name="Remember me?" xml:space="preserve">
     <value>Lembre de mim?</value>
     <comment>Login</comment>
+  </data>
+  <data name="Role" xml:space="preserve">
+    <value>Função</value>
+    <comment>User</comment>
+  </data>
+  <data name="State" xml:space="preserve">
+    <value>Estado</value>
+    <comment>User</comment>
+  </data>
+  <data name="The password and confirmation password do not match." xml:space="preserve">
+    <value>A senha e a senha de confirmação não correspondem.</value>
+    <comment>Register</comment>
+  </data>
+  <data name="Type Of User" xml:space="preserve">
+    <value>Tipo de usuário</value>
+    <comment>User</comment>
+  </data>
+  <data name="User Country" xml:space="preserve">
+    <value>País do usuário</value>
+    <comment>User</comment>
+  </data>
+  <data name="User groups" xml:space="preserve">
+    <value>Grupos de usuários</value>
+    <comment>User</comment>
+  </data>
+  <data name="User Topics" xml:space="preserve">
+    <value>Tópicos do usuário</value>
+    <comment>User</comment>
+  </data>
+  <data name="Bulk Upload File" xml:space="preserve">
+    <value>Arquivo de upload em massa</value>
+    <comment>User</comment>
+  </data>
+  <data name="Country" xml:space="preserve">
+    <value>País</value>
+    <comment>User</comment>
+  </data>
+  <data name="Groups" xml:space="preserve">
+    <value>Grupos</value>
+    <comment>User</comment>
+  </data>
+  <data name="Please upload a csv file in the format of the example file above" xml:space="preserve">
+    <value>Por favor, faça o upload de um arquivo csv no formato do arquivo de exemplo acima</value>
+    <comment>User</comment>
+  </data>
+  <data name="Topics" xml:space="preserve">
+    <value>Tópicos</value>
+    <comment>User</comment>
+  </data>
+  <data name="User Type" xml:space="preserve">
+    <value>Tipo de usuário</value>
+    <comment>User</comment>
+  </data>
+  <data name="Allow Comments" xml:space="preserve">
+    <value>Permitir comentários</value>
+    <comment>SegmentArticles</comment>
+  </data>
+  <data name="Article Content" xml:space="preserve">
+    <value>Artigo Conteúdo</value>
+    <comment>SegmentArticles</comment>
+  </data>
+  <data name="Article Url" xml:space="preserve">
+    <value>URL do artigo</value>
+    <comment>SegmentArticles</comment>
+  </data>
+  <data name="Cover Image" xml:space="preserve">
+    <value>Imagem de capa</value>
+    <comment>SegmentArticles</comment>
+  </data>
+  <data name="Embedded Video File" xml:space="preserve">
+    <value>Arquivo de vídeo incorporado</value>
+    <comment>SegmentArticles</comment>
+  </data>
+  <data name="Finish Date" xml:space="preserve">
+    <value>Data de término</value>
+    <comment>SegmentArticles</comment>
+  </data>
+  <data name="Languages" xml:space="preserve">
+    <value>Línguas</value>
+    <comment>SegmentArticles</comment>
+  </data>
+  <data name="Order" xml:space="preserve">
+    <value>Ordem</value>
+    <comment>SegmentArticles</comment>
+  </data>
+  <data name="Publish Date" xml:space="preserve">
+    <value>Data de publicação</value>
+    <comment>SegmentArticles</comment>
+  </data>
+  <data name="Publisher Name" xml:space="preserve">
+    <value>Nome do editor</value>
+    <comment>SegmentArticles</comment>
+  </data>
+  <data name="Segments which have this Article" xml:space="preserve">
+    <value>Segmentos que possuem este artigo</value>
+    <comment>SegmentArticles</comment>
+  </data>
+  <data name="Tags for search" xml:space="preserve">
+    <value>Tags para pesquisa</value>
+    <comment>SegmentArticles</comment>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>Título</value>
+    <comment>SegmentArticles</comment>
+  </data>
+  <data name="Article appears in these segments" xml:space="preserve">
+    <value>O artigo aparece nesses segmentos</value>
+    <comment>SegmentArticles</comment>
+  </data>
+  <data name="Embedded Video Url" xml:space="preserve">
+    <value>URL de vídeo incorporado</value>
+    <comment>SegmentArticles</comment>
   </data>
 </root>

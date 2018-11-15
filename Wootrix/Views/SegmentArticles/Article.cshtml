@@ -5,12 +5,14 @@
 @using WootrixV2.Data;
 @using System.Net;
 
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
 @{
-    ViewData["Title"] = "Article";
+    ViewData["Title"] = Localizer["Article"];
     Layout = "~/Views/Shared/_LayoutCompany.cshtml";
 
     var _companyName = Context.Session.GetString("CompanyName");
@@ -19,7 +21,7 @@
 }
 
 <div class="articleBackButtonContainer">
-    <a asp-controller="CompanySegments" asp-action="ArticleList" asp-route-id="@_SegmentListID"><button class="articleBackButton button"><span class="glyphicon glyphicon-menu-left"></span>&nbsp;Back to Article List</button></a>
+    <a asp-controller="CompanySegments" asp-action="ArticleList" asp-route-id="@_SegmentListID"><button class="articleBackButton button"><span class="glyphicon glyphicon-menu-left"></span>&nbsp;@Localizer["Back to Article List"]</button></a>
 </div>
 <main id="UserView">
     <div class="articleContainer">
@@ -53,7 +55,7 @@
                                 @Html.Raw(Model.ArticleContent)
                                 <div class="publishStuff">
                                     <span class="glyphicon glyphicon-user"></span>
-                                    <div class="author">Posted by @Model.Author&nbsp;</div><div class="publishDate">@Model.PublishFrom</div>
+                                    <div class="author">@Localizer["Posted by"] @Model.Author&nbsp;</div><div class="publishDate">@Model.PublishFrom</div>
                                 </div>
                                 @if (Model.AllowComments ?? false)
                                 {
@@ -61,7 +63,7 @@
                                         <a asp-controller="SegmentArticleComments" asp-action="Index" asp-route-id="@Model.ID">
                                             <span class="glyphicon glyphicon-comment"></span>
                                             <div class="commentCount">@ViewBag.CommentCount &nbsp;</div><div class="commentView">
-                                                Comments
+                                                @Localizer["Comments"]
                                             </div>
                                         </a>
                                     </div>
@@ -83,7 +85,7 @@
                                             @if (!string.IsNullOrWhiteSpace(com.ReplyingToCommentID.ToString()))
                                             {
                                                 <div class="reply-box">
-                                                    <div class="comment-person">Reply from Admin: @com.UserName</div>
+                                                    <div class="comment-person">@Localizer["Reply from Admin:"] @com.UserName</div>
                                                     <div class="comment-text">@com.Comment</div>
                                                 </div>
                                             }
@@ -100,5 +102,5 @@
     </div>
 </main>
 <div class="articleBackButtonContainer">
-    <a asp-controller="CompanySegments" asp-action="ArticleList" asp-route-id="@_SegmentListID"><button class="articleBackButton button"><span class="glyphicon glyphicon-menu-left"></span>&nbsp;Back to Article List</button></a>
+    <a asp-controller="CompanySegments" asp-action="ArticleList" asp-route-id="@_SegmentListID"><button class="articleBackButton button"><span class="glyphicon glyphicon-menu-left"></span>&nbsp;@Localizer["Back to Article List"]</button></a>
 </div>

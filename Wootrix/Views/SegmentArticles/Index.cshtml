@@ -5,10 +5,13 @@
 @using Microsoft.AspNetCore.Identity
 @using WootrixV2.Data
 
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
 @inject UserManager<ApplicationUser> UserManager
 
 @{
-    ViewData["Title"] = "Article List";
+    ViewData["Title"] = @Localizer["Article List"];
     Layout = "~/Views/Shared/_LayoutCompany.cshtml";
 
     var _companyName = UserManager.GetUserAsync(User).GetAwaiter().GetResult().companyName;
@@ -19,21 +22,21 @@
     <a asp-controller="Company" asp-action="Home" asp-route-id="@_companyName">
         <button class="articleBackButton button">
             <span class="glyphicon glyphicon-menu-left"></span>
-            Admin Home
+            @Localizer["Back to Admin Menu"]
         </button>
     </a>
 </div>
 
 <div class="bodyBox">
-    <h2>Article List</h2>
+    <h2>@Localizer["Article List"]</h2>
 
     <p>
-        <a asp-action="Create">Create New</a>
+        <a asp-action="Create">@Localizer["Create New"]</a>
     </p>
     <table class="table">
         <thead>
             <tr>
-               
+
 
                 <th>
                     @Html.DisplayNameFor(model => model.Title)
@@ -92,8 +95,9 @@
         <tbody>
             @foreach (var item in Model)
             {
+
                 <tr>
-                    
+
 
                     <td>
                         @Html.DisplayFor(modelItem => item.Title)
@@ -101,6 +105,9 @@
                     <td>
                         @{
                             var fn = _companyName + "_" + WebUtility.HtmlEncode(item.Title) + "_" + item.Image;
+
+
+
                         }
                         <img src="~/images/Uploads/Articles/@fn" class="tableimg" />
                     </td>
@@ -119,7 +126,8 @@
                         @Html.DisplayFor(modelItem => item.Tags)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.AllowComments)
+                        @Localizer[item.AllowComments.ToString()]
+                        @*@Html.DisplayFor(modelItem => item.AllowComments)*@
                     </td>
 
                     <td>
@@ -127,19 +135,93 @@
                     </td>
 
                     <td>
-                        @Html.DisplayFor(modelItem => item.Segments)
+                        @if (!string.IsNullOrEmpty(item.Segments))
+                        {
+                            if (item.Segments.Contains("|"))
+                            {
+                                var e = item.Segments.Replace("|", ", ");
+                                <q>@e</q>
+                            }
+                        }
+                        else
+                        {
+                            @Html.DisplayFor(modelItem => item.Segments)
+                        }
+                        @*@Html.DisplayFor(modelItem => item.Segments)*@
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Groups)
+                        @if (!string.IsNullOrEmpty(item.Groups))
+                        {
+                            if (item.Groups.Contains("|"))
+                            {
+                                var e = item.Groups.Replace("|", ", ");
+                                <q>@e</q>
+                            }
+                        }
+                        else
+                        {
+                            @Html.DisplayFor(modelItem => item.Groups)
+                        }
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Topics)
+                        @if (!string.IsNullOrEmpty(item.Topics))
+                        {
+                            if (item.Topics.Contains("|"))
+                            {
+                                var e = item.Topics.Replace("|", ", ");
+                                <q>@e</q>
+                            }
+                        }
+                        else
+                        {
+                            @Html.DisplayFor(modelItem => item.Topics)
+                        }
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.TypeOfUser)
+                        @{
+
+                            if (!string.IsNullOrEmpty(item.TypeOfUser))
+                            {
+                                if (item.TypeOfUser.Contains("|"))
+                                {
+                                    var e = item.TypeOfUser.Replace("|", ", ");
+                                    <q>@e</q>
+                                }
+                            }
+                            else
+                            {
+                                @Html.DisplayFor(modelItem => item.TypeOfUser)
+                            }
+                        }
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Languages)
+
+
+                        @{
+                            //Split the languages and localise
+                            if (!string.IsNullOrEmpty(item.Languages))
+                            {
+                                if (item.Languages.Contains("|"))
+                                {
+                                    string[] langs = item.Languages.Split("|"); ;
+
+                                    foreach (string la in langs)
+                                    {
+                                        @Localizer[la ?? ""]<q>@(langs.Last() == la ? " " : ", ")</q>;
+
+                                    }
+                                }
+                                else
+                                {
+                                    @Localizer[item.Languages]
+                                }
+                            }
+                            else
+                            {
+                                @Html.DisplayFor(modelItem => item.Languages)
+                            }
+                        }
+                        @*@Html.DisplayFor(modelItem => item.Languages)*@
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Country)
@@ -153,9 +235,9 @@
 
 
                     <td>
-                        <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                        <a asp-action="Edit" asp-route-id="@item.ID">@Localizer["Edit"]</a> |
+                        <a asp-action="Details" asp-route-id="@item.ID">@Localizer["Details"]</a> |
+                        <a asp-action="Delete" asp-route-id="@item.ID">@Localizer["Delete"]</a>
                     </td>
                 </tr>
             }

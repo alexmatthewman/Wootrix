@@ -4,7 +4,7 @@
 @using WootrixV2.Data;
 @inject UserManager<ApplicationUser> UserManager
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] =  "Create";
     Layout = "~/Views/Shared/_LayoutCompany.cshtml";
 
     var _companyName = UserManager.GetUserAsync(User).GetAwaiter().GetResult().companyName;
