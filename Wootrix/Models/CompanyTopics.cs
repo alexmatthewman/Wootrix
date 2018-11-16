@@ -17,7 +17,7 @@ namespace WootrixV2.Models
         [Required]
         [RegularExpression(@"^[A-Z]+[a-zA-Z""'\s-]*$", ErrorMessage = "Please only enter a string")]
         [StringLength(1000)]
-        [Display(Name = "Company Topics", Prompt = "Topics", Description = "Company Topics")]
+        [Display(Name = "Topics", Prompt = "Topics", Description = "Company Topics")]
         public string Topic { get; set; }
         
     }

@@ -15,7 +15,7 @@ namespace WootrixV2.Models
         public string state_code { get; set; }
 
         [Key]
-        [Display(Name = "City Name", Prompt = "Select the City name", Description = "City Name")]
+        [Display(Name = "City", Prompt = "Select the City name", Description = "City Name")]
         [StringLength(500)]
         public string city_name_ascii { get; set; }
     }

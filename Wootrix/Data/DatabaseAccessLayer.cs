@@ -350,29 +350,28 @@ namespace WootrixV2.Data
             // We need to loop through them and for each Segement found, if it is not already in the list, add it
             foreach (SegmentArticle item in articles)
             {
-                var articleSegments = item.Segments.Split(',').ToList();
+                var articleSegments = item.Segments.Split('|').ToList();
                 foreach (var segmentTitle in articleSegments)
                 {
-                    if (segments.Count > 1)
-                    {
+                    var justSegTitle = segmentTitle.Split('/');
                         // Check if the segment title is in the existing segment list
-                        if (segments.FirstOrDefault(p => p.Title == segmentTitle) == null)
+                        if (segments.FirstOrDefault(p => p.Title == justSegTitle[0].ToString()) == null)
                         {
                             // Not in list so add it
                             if (string.IsNullOrEmpty(segmentSearchString))
                             {
                                 // No search filter
-                                segments.Add(_context.CompanySegment.FirstOrDefault(p => p.Title == segmentTitle));
+                                segments.Add(_context.CompanySegment.FirstOrDefault(p => p.Title == justSegTitle[0].ToString()));
 
                             }
                             else
                             {
                                 //Have to filter on search string too
-                                var seg = _context.CompanySegment.FirstOrDefault(p => p.Title == segmentTitle && (p.Title.Contains(segmentSearchString) || p.Tags.Contains(segmentSearchString)));
+                                var seg = _context.CompanySegment.FirstOrDefault(p => p.Title == justSegTitle[0].ToString() && (p.Title.Contains(segmentSearchString) || p.Tags.Contains(segmentSearchString)));
                                 if (seg != null) segments.Add(seg);
                             }
                         }
-                    }
+                    
                 }
             }
 
@@ -386,7 +385,7 @@ namespace WootrixV2.Data
             // For groups, If both are null or equal it's fine. If not cycle through the user Groups and if the Article groups match one then if it allowed
             if (string.IsNullOrEmpty(articleCSVFilter) && string.IsNullOrEmpty(userCSVFilter)) return true;
 
-            var filterList = userCSVFilter.Split(',').ToList();
+            var filterList = userCSVFilter.Split('|').ToList();
             foreach (var filter in filterList)
             {
                 if (articleCSVFilter != null)

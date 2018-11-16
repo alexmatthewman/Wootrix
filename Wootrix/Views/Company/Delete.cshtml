@@ -1,8 +1,11 @@
 ﻿@model WootrixV2.Models.Company
 
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
 @using Microsoft.AspNetCore.Http;
 @{
-    ViewData["Title"] =  "Delete";
+    ViewData["Title"] = Localizer["Delete"];
     Layout = "~/Views/Shared/_LayoutCompany.cshtml";
 
 
@@ -10,14 +13,15 @@
 }
 
 <div class="articleBackButtonContainer">
-    <a asp-controller="Company" asp-action="Home" asp-route-id="@_companyName"><button class="articleBackButton button"><span class="glyphicon glyphicon-menu-left"></span>&nbsp;Back to Admin Menu</button></a>
+    <a asp-controller="Company" asp-action="Home" asp-route-id="@_companyName">
+    <button class="articleBackButton button glow"><span class="glyphicon glyphicon-menu-left"></span>&nbsp;@Localizer["Back to Admin Menu"]</button></a>
 </div>
 <div class="bodyBox">
-    <h2>Delete</h2>
+    <h2>@Localizer["Delete"]</h2>
 
-    <h3>Are you sure you want to delete this?</h3>
+    <h3>@Localizer["Are you sure you want to delete this?"]</h3>
     <div>
-        <h4>Company</h4>
+        <h4>@Localizer["Company"]</h4>
         <hr />
         <dl class="dl-horizontal">
             <dt>
@@ -102,8 +106,8 @@
 
         <form asp-action="Delete">
             <input type="hidden" asp-for="ID" />
-            <input type="submit" value="Delete" class="btn btn-default" /> |
-            <a asp-action="Index">Back to List</a>
+            <input type="submit" value="@Localizer["Delete"]" class="btn btn-default" /> |
+            <a asp-action="Index">@Localizer["Back to List"]</a>
         </form>
     </div>
 </div>

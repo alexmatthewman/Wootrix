@@ -16,7 +16,7 @@ namespace WootrixV2.Models
 
         [Required]
         [StringLength(1000)]
-        [Display(Name = "Group Name", Prompt = "Enter the Group name", Description = "Group Name")]
+        [Display(Name = "Groups", Prompt = "Enter the Group name", Description = "Group Name")]
         public string GroupName { get; set; }
         
     }

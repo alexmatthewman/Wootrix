@@ -21,6 +21,7 @@ namespace WootrixV2.Models
         [ScaffoldColumn(false)]
         public int CompanyID { get; set; }
 
+        [Display(Name = "Order")]
         public int? Order { get; set; }
 
         [Required]
@@ -60,6 +61,7 @@ namespace WootrixV2.Models
         public string StandardColor { get; set; }
 
         [ScaffoldColumn(false)]
+        [Display(Name = "Draft")]
         public bool Draft { get; set; }
 
         [Display(Name = "Limit editors to this Department", Prompt = "Limit editors to this Department", Description = "Limit editors to this Department")]
@@ -81,6 +83,7 @@ namespace WootrixV2.Models
         [ScaffoldColumn(false)]
         public int CompanyID { get; set; }
 
+        [Display(Name = "Order")]
         public int? Order { get; set; }
 
         [Required]
@@ -118,6 +121,7 @@ namespace WootrixV2.Models
         public string StandardColor { get; set; }
 
         [ScaffoldColumn(false)]
+        [Display(Name = "Draft")]
         public bool Draft { get; set; }
 
         [Display(Name = "Limit editors to this Department", Prompt = "Limit editors to this Department", Description = "Limit editors to this Department")]

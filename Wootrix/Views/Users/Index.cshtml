@@ -20,8 +20,30 @@
     }
     var _companyName = Context.Session.GetString("CompanyName");
 }
+
+@section Scripts {
+   
+    <script type="text/javascript">
+
+        $("#CompanyChoose").change(function () {
+
+            var companyID = $('option:selected', $(this)).val();
+            var companyName = $('option:selected', $(this)).text();
+            alert("CompanyID:" + companyID + "  CompanyName:" + companyName);
+
+            window.location.href = '/Users/Create/' + companyID;
+        });
+
+    </script>
+
+}
+
+
+
+
 <div class="articleBackButtonContainer">
-    <a asp-controller="Company" asp-action="Home" asp-route-id="@_companyName"><button class="articleBackButton button"><span class="glyphicon glyphicon-menu-left"></span>&nbsp;@Localizer["Back to Admin Menu"]</button></a>
+    <a asp-controller="Company" asp-action="Home" asp-route-id="@_companyName">
+    <button class="articleBackButton button glow"><span class="glyphicon glyphicon-menu-left"></span>&nbsp;@Localizer["Back to Admin Menu"]</button></a>
 </div>
 
 
@@ -44,7 +66,7 @@
     else
     {
         <div class="articleBackButtonContainer">
-            <a asp-controller="Users" asp-action="BulkUpload"><button class="articleBackButton button"><span class="glyphicon glyphicon-glyphicon-open"></span>&nbsp;@Localizer["Bulk Upload Users"]</button></a>
+            <a asp-controller="Users" asp-action="BulkUpload"><button class="articleBackButton button glow"><span class="glyphicon glyphicon-glyphicon-open"></span>&nbsp;@Localizer["Bulk Upload Users"]</button></a>
         </div>
 
         <p>@Localizer["Note that if a filter like Group, Language, User type, Topic or Location is not set all articles will be shown as opposed to those marked with a particular filter"]</p>

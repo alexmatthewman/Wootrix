@@ -3,10 +3,13 @@
 
 @using Microsoft.AspNetCore.Identity;
 @using WootrixV2.Data;
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
 @inject UserManager<ApplicationUser> UserManager
 
 @{
-    ViewData["Title"] =  "Edit";
+    ViewData["Title"] = Localizer["Edit Magazine"];
     Layout = "~/Views/Shared/_LayoutCompany.cshtml";
 
     var _companyName = UserManager.GetUserAsync(User).GetAwaiter().GetResult().companyName;
@@ -15,17 +18,17 @@
 
 <div class="articleBackButtonContainer">
     <a asp-controller="CompanySegments" asp-action="Index" asp-route-id="@_companyName">
-        <button class="articleBackButton button">
+        <button class="articleBackButton button glow">
             <span class="glyphicon glyphicon-menu-left"></span>
-            Back to Magazines
+            @Localizer["Back to Magazines"]
         </button>
     </a>
 </div>
 
 <div class="bodyBox">
-    <h2>Edit</h2>
+    <h2>@Localizer["Edit"]</h2>
 
-    <h4>Edit Magazine</h4>
+    <h4>@Localizer["Edit Magazine"]</h4>
     <hr />
     <div class="row">
         <div class="col-md-4">
@@ -33,7 +36,7 @@
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <input type="hidden" asp-for="ID" />
                 <input type="hidden" asp-for="CompanyID" />
-               
+
                 <div class="form-group">
                     <label asp-for="Title" class="control-label"></label>
                     <input asp-for="Title" class="form-control" />
@@ -44,13 +47,13 @@
                     @Html.EditorFor(x => x.CoverImage)
                     @*<input asp-for="CoverImage" type="file" class="form-control" />*@
                     <span asp-validation-for="CoverImage" class="text-danger"></span>
-                    <p>Images with ratio 5 wide x 8 high work best</p>
+                    <p>@Localizer["Images with ratio 5 wide x 8 high work best"]</p>
                 </div>
                 <div class="form-group">
                     <label asp-for="CoverImageMobileFriendly" class="control-label"></label>
                     <input asp-for="CoverImageMobileFriendly" type="file" class="form-control" />
                     <span asp-validation-for="CoverImageMobileFriendly" class="text-danger"></span>
-                    <p>Same image but smaller file size for quicker loading</p>
+                    <p>@Localizer["Same image but smaller file size for quicker loading"]</p>
                 </div>
                 <div class="form-group">
                     <label asp-for="PublishDate" class="control-label"></label>
@@ -84,8 +87,13 @@
                     </div>*@
                 <div class="form-group">
                     @Html.LabelFor(x => Model.Department, htmlAttributes: new { @class = "control-label" })
-
-                    @Html.DropDownListFor(x => Model.Department, new SelectList(Model.Departments, "Value", "Text"), htmlAttributes: new { @class = "form-control", id = "Departments" })
+                    <select class="form-control" id="Departments" name="Categories">
+                        @foreach (var i in Model.Departments)
+                        {
+                            <option value="@i.Value">@Localizer[i.Text]</option>
+                        }
+                    </select>
+                    @*@Html.DropDownListFor(x => Model.Department, new SelectList(Model.Departments, "Value", "Text"), htmlAttributes: new { @class = "form-control", id = "Departments" })*@
                     @Html.ValidationMessageFor(x => x.Department, "", new { @class = "text-danger" })
 
                 </div>
@@ -95,13 +103,13 @@
                     <span asp-validation-for="Tags" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <input type="submit" value="Save" class="btn btn-default" />
+                    <input type="submit" value="@Localizer["Save"]" class="btn btn-default" />
                 </div>
             </form>
         </div>
     </div>
 
     <div>
-        <a asp-action="Index">Back to List</a>
+        <a asp-action="Index">@Localizer["Back to List"]</a>
     </div>
 </div>

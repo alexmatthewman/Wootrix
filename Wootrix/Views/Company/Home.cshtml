@@ -1,11 +1,10 @@
 ﻿@model WootrixV2.Models.Company
 
-@inject SignInManager<ApplicationUser> SignInManager
-@inject UserManager<ApplicationUser> UserManager
-
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
 
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
 
 @{
     Layout = "~/Views/Shared/_LayoutCompany.cshtml";
@@ -35,7 +34,7 @@
     @if (!SignInManager.IsSignedIn(User))
     {
 
-        <section class="background" style="height: 92vh; background-repeat: no-repeat; background-image: -webkit-linear-gradient(left, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 20%, rgba(0,0,0,0) 80%, rgba(0,0,0,0.9) 100%), url(../../images/Uploads/@bImage);" alt="Home screen background" >
+        <section class="background" style="height: 92vh; background-repeat: no-repeat; background-image: -webkit-linear-gradient(left, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 20%, rgba(0,0,0,0) 80%, rgba(0,0,0,0.9) 100%), url(../../images/Uploads/@bImage);" alt="Home screen background">
 
 
             <div class="container clearfix">
@@ -79,7 +78,7 @@
                 <!--Should build in the old style interface for consistency-->
                 <div class="fix-container clearfix">
                     <div class="super-admin-cont">
-                        <div class="admin-profile clearfix">
+                        <div class="admin-profile clearfix glow bump">
                             <div class="profile-image-cont"><img src="~/images/Uploads/@fImage" id="CompanyFocusImage" alt="Company Focus Image" /></div>
                             <h4>@Localizer["Company Admin"]</h4>
                             <h5>@UserManager.GetUserName(User)</h5>
@@ -87,13 +86,13 @@
                         </div>
                         <div class="categories">
                             <ul>
-                                <li>
+                                <li class="glow bump">
                                     <a asp-controller="Users" asp-action="Index" asp-route-id="CompanyAdmin" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
                                         <span><img src="~/images/icon-2.png" alt="" /></span>
                                         <strong>@Localizer["Manage Company Admins"]</strong>
                                     </a>
                                 </li>
-                                <li>
+                                <li class="glow bump">
                                     <a asp-controller="Users" asp-action="Index" asp-route-id="User" class="dropdown-item" style="color:@Context.Session.GetString("CompanyHeaderFontColor")">
                                         <span><img src="~/images/icon-3.png" alt="" /></span>
                                         <strong>@Localizer["Manage Users"]</strong>
@@ -101,7 +100,7 @@
                                 </li>
 
 
-                                <li>
+                                <li class="glow bump">
                                     <a asp-area="" asp-controller="CompanySegments" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
 
                                         <span><img src="~/images/icon-5.png" alt="" /></span>
@@ -109,7 +108,7 @@
                                     </a>
                                 </li>
 
-                                <li>
+                                <li class="glow bump">
                                     <a asp-area="" asp-controller="SegmentArticles" asp-action="Index" asp-route-id="@companyName" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
 
                                         <span><img src="~/images/icon-6.png" alt="" /></span>
@@ -118,7 +117,7 @@
 
                                 </li>
 
-                                <li>
+                                <li class="glow bump">
 
                                     <a asp-area="" asp-controller="SegmentArticleComments" asp-action="Admin" asp-route-id="@Model.ID" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
                                         <span><img src="~/images/icon-6.png" alt="" /></span>
@@ -146,14 +145,14 @@
                                         </a>
                                     </li>*@
 
-                                <li>
+                                <li class="glow bump">
                                     <a href="">
                                         <span><img src="~/images/icon-9.png" alt="" /></span>
                                         <strong>@Localizer["Push Notifications"]</strong>
                                     </a>
                                 </li>
 
-                                <li>
+                                <li class="glow bump">
                                     <a href="">
                                         <span><img src="~/images/icon-6.png" alt="" /></span>
                                         <strong>@Localizer["Reports"]</strong>
@@ -166,30 +165,30 @@
                                             <strong>Department Filters</strong>
                                         </a>
                                     </li>*@
-                                <li>
+                                <li class="glow bump">
                                     <a asp-area="" asp-controller="CompanyGroups" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
                                         <span><img src="~/images/icon-1.png" alt="Group Filters" /></span>
                                         <strong>@Localizer["Group Filters"]</strong>
                                     </a>
                                 </li>
-                                <li>
+                                <li class="glow bump">
                                     <a asp-area="" asp-controller="CompanyTopics" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
                                         <span><img src="~/images/icon-1.png" alt="Topic Filters" /></span>
                                         <strong>@Localizer["Topic Filters"]</strong>
                                     </a>
                                 </li>
-                                <li>
+                                <li class="glow bump">
                                     <a asp-area="" asp-controller="CompanyTypeOfUsers" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
                                         <span><img src="~/images/icon-1.png" alt="User Type Filters" /></span>
                                         <strong>@Localizer["User Type Filters"]</strong>
                                     </a>
                                 </li>
-                                <li>
+                                @*<li>
                                     <a asp-controller="CompanyLanguages" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
                                         <span><img src="~/images/icon-1.png" alt="Company Languages" /></span>
                                         <strong>@Localizer["Company Languages"]</strong>
                                     </a>
-                                </li>
+                                </li>*@
                                 @*<li>
                                         <a asp-area="" asp-controller="Fruit" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
                                             <span><img src="~/images/icon-2.png" alt="Department Filters" /></span>
@@ -212,7 +211,7 @@
                 <!--Should build in the old style interface for consistency-->
                 <div class="fix-container clearfix">
                     <div class="super-admin-cont">
-                        <div class="admin-profile clearfix">
+                        <div class="admin-profile clearfix glow bump">
                             <div class="profile-image-cont"><img src="~/images/Uploads/@fImage" id="CompanyFocusImage" alt="Company Focus Image" /></div>
                             <h4>@Localizer["Super Admin"]</h4>
                             <h5>@UserManager.GetUserName(User)</h5>
@@ -220,19 +219,19 @@
                         </div>
                         <div class="categories">
                             <ul>
-                                <li>
+                                <li class="glow bump">
                                     <a asp-controller="Users" asp-action="Index" asp-route-id="Admin" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
                                         <span><img src="~/images/icon-3.png" alt="" /></span>
                                         <strong>@Localizer["Manage Company Admins"]</strong>
                                     </a>
                                 </li>
-                                <li>
+                                <li class="glow bump">
                                     <a asp-area="" asp-controller="Company" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
                                         <span><img src="~/images/icon-5.png" alt="Manage Companies" /></span>
                                         <strong>@Localizer["Manage Companies"]</strong>
                                     </a>
                                 </li>
-                                <li>
+                                <li class="glow bump">
                                     <a asp-area="" asp-controller="CompanyDepartments" asp-action="Index" asp-route-id="@Model.ID" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
                                         <span><img src="~/images/icon-1.png" alt="Department Filters" /></span>
                                         <strong>@Localizer["Department Filters"]</strong>
@@ -258,7 +257,7 @@
                                     <form asp-controller="CompanySegments" asp-action="UserSegmentSearch">
                                         <p>
                                             <input class="search-string" type="text" name="SearchString" title="Search String">
-                                            <input class="search-submit" type="submit" value="@Localizer["Search"]" />
+                                            <input class="search-submit glow" type="submit" value="@Localizer["Search"]" />
                                         </p>
                                     </form>
                                 </div>
@@ -271,7 +270,7 @@
                             @foreach (var item in ViewBag.Segments)
                             {
 
-                                <td class="magazine" @*style="border:4px solid @item.ThemeColor;  background:@item.StandardColor;" *@>
+                                <td class="magazine glow bump" @*style="border:4px solid @item.ThemeColor;  background:@item.StandardColor;" *@>
                                     <a asp-controller="CompanySegments" asp-action="ArticleList" asp-route-id="@item.Title">
                                         <div class="magazine-pic">
                                             @{

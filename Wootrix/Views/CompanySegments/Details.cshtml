@@ -4,11 +4,13 @@
 @using System.Net
 @using Microsoft.AspNetCore.Identity
 @using WootrixV2.Data
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 @inject UserManager<ApplicationUser> UserManager
 
 @{
-    ViewData["Title"] =  "Magazine Articles";
+    ViewData["Title"] = Localizer["Article List"];
     Layout = "~/Views/Shared/_LayoutCompany.cshtml";
 
     var _companyName = UserManager.GetUserAsync(User).GetAwaiter().GetResult().companyName;
@@ -16,18 +18,18 @@
 
 <div class="articleBackButtonContainer">
     <a asp-controller="CompanySegments" asp-action="Index" asp-route-id="@_companyName">
-        <button class="articleBackButton button">
+        <button class="articleBackButton button glow">
             <span class="glyphicon glyphicon-menu-left"></span>
-            Back to Magazines
+            @Localizer["Back to Magazines"]
         </button>
     </a>
 </div>
 
 <div class="bodyBox">
-    <h2>Magazine Articles</h2>
+    <h2>@Localizer["Article List"]</h2>
 
     <p>
-        <a asp-controller="SegmentArticles" asp-action="Create">Create New</a>
+        <a asp-controller="SegmentArticles" asp-action="Create">@Localizer["Create New"]</a>
     </p>
     <table class="table">
         <thead>
@@ -75,7 +77,7 @@
                 <tr>
                     <td>
                         <div class="article-order">
-                            <label class="control-label">Order</label>
+                            @*<label class="control-label">@Localizer["Order"]</label>*@
                             <select class="ArtOrderSelector">
 
                                 @foreach (var it in Model)
@@ -119,7 +121,8 @@
                         @Html.DisplayFor(modelItem => item.Tags)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.AllowComments)
+                        @Localizer[item.AllowComments.ToString()]
+                        @*@Html.DisplayFor(modelItem => item.AllowComments)*@
                     </td>
 
                     <td>
@@ -127,13 +130,25 @@
                     </td>
 
                     <td>
-                        @Html.DisplayFor(modelItem => item.Segments)
+                        @if (!string.IsNullOrEmpty(item.Segments))
+                        {
+                            if (item.Segments.Contains("|"))
+                            {
+                                var e = item.Segments.Replace("|", ", ");
+                                <q>@e</q>
+                            }
+                        }
+                        else
+                        {
+                            @Html.DisplayFor(modelItem => item.Segments)
+                        }
+                        @*@Html.DisplayFor(modelItem => item.Segments)*@
                     </td>
 
                     <td>
-                        <a asp-controller="SegmentArticles" asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                        <a asp-controller="SegmentArticles" asp-action="RemoveFromMagazine" asp-route-id="@item.ID">Remove From Magazine</a> |
-                        <a asp-controller="SegmentArticles" asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                        <a asp-controller="SegmentArticles" asp-action="Edit" asp-route-id="@item.ID">@Localizer["Edit"]</a> |
+                        <a asp-controller="SegmentArticles" asp-action="RemoveFromMagazine" asp-route-id="@item.ID">@Localizer["Remove from Magazine"]</a> |
+                        <a asp-controller="SegmentArticles" asp-action="Delete" asp-route-id="@item.ID">@Localizer["Delete"]</a>
                     </td>
                 </tr>
             }

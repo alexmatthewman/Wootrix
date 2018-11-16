@@ -683,7 +683,7 @@ namespace WootrixV2.Controllers
                     var userId = await _userManager.GetUserIdAsync(thisUser);
                     if (!result.Succeeded)
                     {
-                        throw new InvalidOperationException($"Unexpected error occurred deleteing user with ID '{userId}'.");
+                        throw new InvalidOperationException($"Unexpected error occurred editing user with ID '{userId}'.");
                     }
 
                     _context.Update(un);

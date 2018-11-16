@@ -11,7 +11,7 @@
 @inject UserManager<ApplicationUser> UserManager
 
 @{
-    ViewData["Title"] = @Localizer["Article List"];
+    ViewData["Title"] = Localizer["Article List"];
     Layout = "~/Views/Shared/_LayoutCompany.cshtml";
 
     var _companyName = UserManager.GetUserAsync(User).GetAwaiter().GetResult().companyName;
@@ -20,7 +20,7 @@
 
 <div class="articleBackButtonContainer">
     <a asp-controller="Company" asp-action="Home" asp-route-id="@_companyName">
-        <button class="articleBackButton button">
+        <button class="articleBackButton button glow">
             <span class="glyphicon glyphicon-menu-left"></span>
             @Localizer["Back to Admin Menu"]
         </button>

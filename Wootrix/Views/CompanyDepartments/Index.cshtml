@@ -1,36 +1,51 @@
 ﻿@model IEnumerable<WootrixV2.Models.CompanyDepartments>
 
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
 @{
-    ViewData["Title"] =  "Index";
+    ViewData["Title"] = Localizer["Index"];
     Layout = "~/Views/Shared/_LayoutCompany.cshtml";
 }
 
-<div class="bodyBox">
-    <h2>Index</h2>
-
-    <script>
 
 
+@section Scripts {
+    
+    <script type="text/javascript">
+        $("#CompanySelector").change(function () {
+            var companyID = $('option:selected', $(this)).val();
+            window.location.href = '/CompanyDepartments/Index/' + companyID;
+        });
+       
     </script>
+
+}
+
+
+<div class="bodyBox">
+    <h2>@Localizer["Index"]</h2>
 
     <div class="row">
         <div class="col-md-4">
 
 
             <div class="form-group">
-                <label class="control-label">Select Company</label>
+                <label class="control-label">@Localizer["Select Company"]</label>
                 <select id="CompanySelector" class="form-control">
                     @foreach (var company in ViewBag.Companies)
                     {
-                        <option value="@company.Value">@company.Text</option>
+                    <option value="@company.Value">@Localizer[company.Text]</option>
                     }
                 </select>
+
+               
             </div>
         </div>
     </div>
 
     <p>
-        <a asp-action="Create">Create New</a>
+        <a asp-action="Create">@Localizer["Create New"]</a>
     </p>
 
     <table class="table">
@@ -50,9 +65,9 @@
                         @Html.DisplayFor(modelItem => item.CompanyDepartmentName)
                     </td>
                     <td>
-                        <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                        <a asp-action="Edit" asp-route-id="@item.ID">@Localizer["Edit"]</a> |
+                        <a asp-action="Details" asp-route-id="@item.ID">@Localizer["Details"]</a> |
+                        <a asp-action="Delete" asp-route-id="@item.ID">@Localizer["Delete"]</a>
                     </td>
                 </tr>
             }

@@ -153,6 +153,9 @@
     <value>Idiomas de la empresa</value>
     <comment>Company\Home</comment>
   </data>
+  <data name="Company List" xml:space="preserve">
+    <value>Lista de empresas</value>
+  </data>
   <data name="CookieStuff" xml:space="preserve">
     <value>Seguir usando este sitio significa que acepta nuestro uso de cookies y nuestra &lt;a href="http://wootrix.com/index.php/wootrix-terms-services"&gt; política de privacidad &lt;/a&gt;. ¡Solo usamos cookies para ayudarlo a iniciar sesión más rápido!</value>
     <comment>Company\Home</comment>

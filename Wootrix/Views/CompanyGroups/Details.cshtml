@@ -1,15 +1,18 @@
 ﻿@model WootrixV2.Models.CompanyGroups
 
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
 @{
-    ViewData["Title"] =  "Details";
+    ViewData["Title"] = Localizer["Details"];
     Layout = "~/Views/Shared/_LayoutCompany.cshtml";
 }
 
 <div class="bodyBox">
-    <h2>Details</h2>
+    <h2>@Localizer["Details"]</h2>
 
     <div>
-        <h4>Company Groups</h4>
+        <h4>@Localizer["Groups"]</h4>
         <hr />
         <dl class="dl-horizontal">
             <dt>
@@ -21,7 +24,7 @@
         </dl>
     </div>
     <div>
-        <a asp-action="Edit" asp-route-id="@Model.ID">Edit</a> |
-        <a asp-action="Index">Back to List</a>
+        <a asp-action="Edit" asp-route-id="@Model.ID">@Localizer["Edit"]</a> |
+        <a asp-action="Index">@Localizer["Back to List"]</a>
     </div>
 </div>

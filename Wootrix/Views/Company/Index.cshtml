@@ -1,21 +1,25 @@
 ﻿@model IEnumerable<WootrixV2.Models.Company>
 
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
 @using Microsoft.AspNetCore.Http;
 @{
-    ViewData["Title"] =  "Index";
+    ViewData["Title"] = Localizer["Index"];
     Layout = "~/Views/Shared/_LayoutCompany.cshtml";
 
     var _companyName = Context.Session.GetString("CompanyName");
 }
 
 <div class="articleBackButtonContainer">
-    <a asp-controller="Company" asp-action="Home" asp-route-id="@_companyName"><button class="articleBackButton button"><span class="glyphicon glyphicon-menu-left"></span>&nbsp;Back to Admin Menu</button></a>
+    <a asp-controller="Company" asp-action="Home" asp-route-id="@_companyName">
+    <button class="articleBackButton button glow"><span class="glyphicon glyphicon-menu-left"></span>&nbsp;@Localizer["Back to Admin Menu"]</button></a>
 </div>
 <div class="bodyBox">
-    <h2>Company List</h2>
+    <h2>@Localizer["Company List"]</h2>
 
     <p>
-        <a asp-action="Create">Create New</a>
+        <a asp-action="Create">@Localizer["Create New"]</a>
     </p>
     <table class="table">
         <thead>
@@ -114,9 +118,9 @@
                         @Html.DisplayFor(modelItem => item.CompanyNumberOfPushNotifications)
                     </td>
                     <td>
-                        <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                        <a asp-action="Edit" asp-route-id="@item.ID">@Localizer["Edit"]</a> |
+                        <a asp-action="Details" asp-route-id="@item.ID">@Localizer["Details"]</a> |
+                        <a asp-action="Delete" asp-route-id="@item.ID">@Localizer["Delete"]</a>
                     </td>
                 </tr>
             }

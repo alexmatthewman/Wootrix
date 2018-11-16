@@ -144,6 +144,9 @@
   <data name="Company Languages" xml:space="preserve">
     <value>Idiomas da empresa</value>
   </data>
+  <data name="Company List" xml:space="preserve">
+    <value>Lista de empresas</value>
+  </data>
   <data name="CookieStuff" xml:space="preserve">
     <value>Continuar a usar este site significa que você aceita o uso de cookies e nossa &lt;a href="http://wootrix.com/index.php/wootrix-terms-services"&gt; política de privacidade &lt;/a&gt;. Nós só usamos cookies para ajudá-lo a logar mais rápido!</value>
   </data>

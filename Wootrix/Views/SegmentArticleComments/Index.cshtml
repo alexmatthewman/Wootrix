@@ -2,11 +2,14 @@
 
 
 
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
 @{
-    ViewData["Title"] =  "Index";
+    ViewData["Title"] = Localizer["Comments"];
     Layout = "~/Views/Shared/_LayoutCompany.cshtml";
     //Roses are red, violets are blue, here on the weekend, I'm commenting on you
     //Roses are red, violets are blue, it's so sunny outside, but I'm stuck here with you
@@ -19,13 +22,14 @@
 
 
 <div class="articleBackButtonContainer">
-    <a asp-controller="SegmentArticles" asp-action="Article" asp-route-id="@ViewBag.ArticleID"><button class="articleBackButton button"><span class="glyphicon glyphicon-menu-left"></span>&nbsp;Back to Article</button></a>
+    <a asp-controller="SegmentArticles" asp-action="Article" asp-route-id="@ViewBag.ArticleID">
+    <button class="articleBackButton button glow"><span class="glyphicon glyphicon-menu-left"></span>&nbsp;@Localizer["Back to Article"]</button></a>
 </div>
 <div class="bodyBox">
-    <h2>Index</h2>
+    <h2>@Localizer["Comments"]</h2>
 
     <p>
-        <a asp-action="Create" asp-route-id="@ViewBag.ArticleID">Create New</a>
+        <a asp-action="Create" asp-route-id="@ViewBag.ArticleID">@Localizer["Create New"]</a>
     </p>
     <table class="table">
         <thead>
@@ -64,7 +68,7 @@
                             @Html.DisplayFor(modelItem => item.Comment)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.Status)
+                            @Localizer[item.Status]
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.CreatedDate)
@@ -77,8 +81,8 @@
                             {
                                 //Only show edit and delete if the current user is the creator
 
-                                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a>
-                                <a asp-action="Delete" asp-route-id="@item.ID"> Delete </a>
+                            <a asp-action="Edit" asp-route-id="@item.ID">@Localizer["Edit"]</a>
+                            <a asp-action="Delete" asp-route-id="@item.ID">@Localizer["Delete"] </a>
                             }
                         </td>
                     </tr>
@@ -86,5 +90,5 @@
             }
         </tbody>
     </table>
-    <p>N.B. Only approved comments can be seen by all people. Comments in Review state can be seen and edited only by the creator.</p>
+    <p>@Localizer["N.B. Only approved comments can be seen by all people. Comments in Review state can be seen and edited only by the creator."]</p>
 </div>

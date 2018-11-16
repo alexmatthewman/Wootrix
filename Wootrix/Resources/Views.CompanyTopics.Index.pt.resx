@@ -1,0 +1,282 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Admin" xml:space="preserve">
+    <value>Admin</value>
+  </data>
+  <data name="Approve" xml:space="preserve">
+    <value>Aprovar</value>
+  </data>
+  <data name="Approve and Reply to Comment" xml:space="preserve">
+    <value>Aprovar e responder ao comentário</value>
+  </data>
+  <data name="Approve with Reply" xml:space="preserve">
+    <value>Aprovar com resposta</value>
+  </data>
+  <data name="Approved" xml:space="preserve">
+    <value>Aprovado</value>
+  </data>
+  <data name="Are you sure you want to delete this?" xml:space="preserve">
+    <value>Tem certeza de que deseja excluir isso?</value>
+  </data>
+  <data name="Article" xml:space="preserve">
+    <value>Artigo</value>
+  </data>
+  <data name="Article Comment Edit" xml:space="preserve">
+    <value>Artigo Comentário Editar</value>
+  </data>
+  <data name="Article List" xml:space="preserve">
+    <value>Lista de artigos</value>
+  </data>
+  <data name="Back to Admin Menu" xml:space="preserve">
+    <value>Volver al menú de administración</value>
+  </data>
+  <data name="Back to Article List" xml:space="preserve">
+    <value>Voltar à lista de artigos</value>
+  </data>
+  <data name="Back to Comment Admin" xml:space="preserve">
+    <value>Voltar para o comentário Admin</value>
+  </data>
+  <data name="Back to List" xml:space="preserve">
+    <value>De volta à lista</value>
+  </data>
+  <data name="Back to Magazines" xml:space="preserve">
+    <value>Voltar para Revistas</value>
+  </data>
+  <data name="Bulk Upload Users" xml:space="preserve">
+    <value>Carga masiva de usuarios</value>
+  </data>
+  <data name="Comment on Article" xml:space="preserve">
+    <value>Comente sobre o artigo</value>
+  </data>
+  <data name="Comments" xml:space="preserve">
+    <value>Comentários</value>
+  </data>
+  <data name="Comments Needing Review" xml:space="preserve">
+    <value>Comentários que precisam de revisão</value>
+  </data>
+  <data name="Company Admins" xml:space="preserve">
+    <value>Administradores de la empresa</value>
+  </data>
+  <data name="Country" xml:space="preserve">
+    <value>País</value>
+  </data>
+  <data name="Create" xml:space="preserve">
+    <value>Crio</value>
+  </data>
+  <data name="Create Magazine" xml:space="preserve">
+    <value>Criar Revista</value>
+  </data>
+  <data name="Create New" xml:space="preserve">
+    <value>Crear nuevo</value>
+  </data>
+  <data name="Create new Company Admin in:" xml:space="preserve">
+    <value>Crear nuevo administrador de la empresa en:</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Borrar</value>
+  </data>
+  <data name="Delete Magazine" xml:space="preserve">
+    <value>Excluir revista</value>
+  </data>
+  <data name="Details" xml:space="preserve">
+    <value>Detalhes</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Editar</value>
+  </data>
+  <data name="Edit Article" xml:space="preserve">
+    <value>Editar artigo</value>
+  </data>
+  <data name="Edit Magazine" xml:space="preserve">
+    <value>Editar revista</value>
+  </data>
+  <data name="English" xml:space="preserve">
+    <value>Inglês</value>
+  </data>
+  <data name="False" xml:space="preserve">
+    <value>Falso</value>
+  </data>
+  <data name="Female" xml:space="preserve">
+    <value>Hembra</value>
+  </data>
+  <data name="Groups" xml:space="preserve">
+    <value>Los grupos</value>
+  </data>
+  <data name="Index" xml:space="preserve">
+    <value>Índice</value>
+  </data>
+  <data name="Male" xml:space="preserve">
+    <value>Masculino</value>
+  </data>
+  <data name="N.B. Only approved comments can be seen by all people. Comments in Review state can be seen and edited only by the creator." xml:space="preserve">
+    <value>N.B. Somente comentários aprovados podem ser vistos por todas as pessoas. Os comentários no estado de revisão podem ser vistos e editados apenas pelo criador.</value>
+  </data>
+  <data name="Not Identified" xml:space="preserve">
+    <value>No identificado</value>
+  </data>
+  <data name="Note that if a filter like Group, Language, User type, Topic or Location is not set all articles will be shown as opposed to those marked with a particular filter" xml:space="preserve">
+    <value>Tenga en cuenta que si no se establece un filtro como Grupo, Idioma, Tipo de usuario, Tema o Ubicación, todos los artículos se mostrarán en lugar de aquellos marcados con un filtro en particular</value>
+  </data>
+  <data name="Original comment:" xml:space="preserve">
+    <value>Comentário original:</value>
+  </data>
+  <data name="Other" xml:space="preserve">
+    <value>Otro</value>
+  </data>
+  <data name="Portuguese" xml:space="preserve">
+    <value>Portugués</value>
+  </data>
+  <data name="Posted by" xml:space="preserve">
+    <value>Postado por</value>
+  </data>
+  <data name="Reply from Admin:" xml:space="preserve">
+    <value>Resposta de Admin:</value>
+  </data>
+  <data name="Review" xml:space="preserve">
+    <value>Reveja</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Salve</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Procurar</value>
+  </data>
+  <data name="Spanish" xml:space="preserve">
+    <value>Español</value>
+  </data>
+  <data name="Topics" xml:space="preserve">
+    <value>Tópicos</value>
+  </data>
+  <data name="True" xml:space="preserve">
+    <value>Verdade</value>
+  </data>
+  <data name="Type of User" xml:space="preserve">
+    <value>Tipo de usuário</value>
+  </data>
+  <data name="User" xml:space="preserve">
+    <value>Usuario</value>
+  </data>
+  <data name="User Managment" xml:space="preserve">
+    <value>Gestión de usuarios</value>
+  </data>
+  <data name="User Type" xml:space="preserve">
+    <value>Tipo de usuario</value>
+  </data>
+</root>

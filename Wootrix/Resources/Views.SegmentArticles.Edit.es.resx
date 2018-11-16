@@ -189,6 +189,9 @@
   <data name="Portuguese" xml:space="preserve">
     <value>Portugués</value>
   </data>
+  <data name="Save" xml:space="preserve">
+    <value>Salvar</value>
+  </data>
   <data name="Spanish" xml:space="preserve">
     <value>Español</value>
   </data>

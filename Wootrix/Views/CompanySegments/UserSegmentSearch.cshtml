@@ -4,12 +4,14 @@
 @using Microsoft.AspNetCore.Http;
 @using System.Security.Claims
 @using WootrixV2.Data;
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
 @{
-    ViewData["Title"] =  "Index";
+    ViewData["Title"] = Localizer["Magazine Search"];
     Layout = "~/Views/Shared/_LayoutCompany.cshtml";
     var _companyName = UserManager.GetUserAsync(User).GetAwaiter().GetResult().companyName;
 }
@@ -17,9 +19,9 @@
 
 <div class="articleBackButtonContainer">
     <a asp-controller="Company" asp-action="Home" asp-route-id="@_companyName">
-        <button class="articleBackButton button">
+        <button class="articleBackButton button glow">
             <span class="glyphicon glyphicon-menu-left"></span>
-            Home
+            @Localizer["Home"]
         </button>
     </a>
 </div>
@@ -28,12 +30,12 @@
     <thead>
         <tr>
             <th class="magazine-header-text">
-                <h2>Magazines</h2>
+                <h2>@Localizer["Magazines"]</h2>
                 <div class="search">
                     <form asp-controller="CompanySegments" asp-action="UserSegmentSearch">
                         <p>
                             <input class="search-string" type="text" name="SearchString" title="Search String">
-                            <input class="search-submit" type="submit" value="Search" />
+                            <input class="search-submit glow" type="submit" value="@Localizer["Search"]" />
                         </p>
                     </form>
                 </div>
@@ -44,23 +46,23 @@
         <tr>
 
             @foreach (var item in Model)
-                {
-            <td class="magazine" @*style="border:4px solid @item.ThemeColor;  background:@item.StandardColor;" *@>
-                <a asp-controller="CompanySegments" asp-action="ArticleList" asp-route-id="@item.Title">
-                    <div class="magazine-pic">
-                        @{
-                                                var fn = _companyName + "_" + item.CoverImage;
-                        }
-                        <img src="~/images/Uploads/@fn" />
-                    </div>
-                    <div class="magazine-text">
-                        <div class="magazine-text-title">
-                            @item.Title
-                        </div>
-                    </div>
-                </a>
-            </td>
+            {
+                <td class="magazine glow bump" @*style="border:4px solid @item.ThemeColor;  background:@item.StandardColor;" *@>
+                    <a asp-controller="CompanySegments" asp-action="ArticleList" asp-route-id="@item.Title">
+                        <div class="magazine-pic">
+                            @{
+                                var fn = _companyName + "_" + item.CoverImage;
                             }
+                            <img src="~/images/Uploads/@fn" />
+                        </div>
+                        <div class="magazine-text">
+                            <div class="magazine-text-title">
+                                @item.Title
+                            </div>
+                        </div>
+                    </a>
+                </td>
+            }
         </tr>
     </tbody>
 </table>

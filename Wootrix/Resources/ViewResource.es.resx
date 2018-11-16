@@ -225,7 +225,7 @@
     <value>Suba un archivo csv en el formato del archivo de ejemplo anterior</value>
     <comment>User</comment>
   </data>
-  <data name="Tópicos" xml:space="preserve">
+  <data name="Topics" xml:space="preserve">
     <value>Los temas</value>
     <comment>User</comment>
   </data>
@@ -292,5 +292,121 @@
   <data name="Embedded Video Url" xml:space="preserve">
     <value>Video incrustado url</value>
     <comment>SegmentArticles</comment>
+  </data>
+  <data name="Comment" xml:space="preserve">
+    <value>Comentario</value>
+    <comment>SegmentArticleComment</comment>
+  </data>
+  <data name="Comment Status" xml:space="preserve">
+    <value>Estado del comentario</value>
+    <comment>SegmentArticleComment</comment>
+  </data>
+  <data name="Company Background Color" xml:space="preserve">
+    <value>Color de fondo de la empresa</value>
+    <comment>Company</comment>
+  </data>
+  <data name="Company Background Image" xml:space="preserve">
+    <value>Imagen de fondo de la empresa</value>
+    <comment>Company</comment>
+  </data>
+  <data name="Company Focus Image" xml:space="preserve">
+    <value>Imagen de enfoque de la empresa</value>
+    <comment>Company</comment>
+  </data>
+  <data name="Company Font Header Color" xml:space="preserve">
+    <value>Color de encabezado de fuente de la empresa</value>
+    <comment>Company</comment>
+  </data>
+  <data name="Company Header Background Color" xml:space="preserve">
+    <value>Color de fondo del encabezado de la empresa</value>
+    <comment>Company</comment>
+  </data>
+  <data name="Company Highlight Color" xml:space="preserve">
+    <value>Color de resaltado de la compañía</value>
+    <comment>Company</comment>
+  </data>
+  <data name="Company Logo" xml:space="preserve">
+    <value>Logo de la compañía</value>
+    <comment>Company</comment>
+  </data>
+  <data name="Company Main Font Color" xml:space="preserve">
+    <value>Color de resaltado de la compañía</value>
+    <comment>Company</comment>
+  </data>
+  <data name="Company Text Main" xml:space="preserve">
+    <value>Texto de la empresa principal</value>
+    <comment>Company</comment>
+  </data>
+  <data name="Company Text Secondary" xml:space="preserve">
+    <value>Texto de la empresa Secundario</value>
+    <comment>Company</comment>
+  </data>
+  <data name="Country Name" xml:space="preserve">
+    <value>Nombre del país</value>
+    <comment>LocationCountry</comment>
+  </data>
+  <data name="Cover Image Mobile Friendly" xml:space="preserve">
+    <value>Imagen de portada para dispositivos móviles</value>
+    <comment>CompanySegment</comment>
+  </data>
+  <data name="Date of comment" xml:space="preserve">
+    <value>Fecha de comentario</value>
+    <comment>SegmentArticleComment</comment>
+  </data>
+  <data name="Date of last edit" xml:space="preserve">
+    <value>Fecha de la última edición</value>
+    <comment>SegmentArticleComment</comment>
+  </data>
+  <data name="Language Name" xml:space="preserve">
+    <value>Nombre del lenguaje</value>
+    <comment>CompanyLanguages</comment>
+  </data>
+  <data name="Number of Allowed Users" xml:space="preserve">
+    <value>Número de usuarios permitidos</value>
+    <comment>Company</comment>
+  </data>
+  <data name="Number of Push Notifications" xml:space="preserve">
+    <value>Número de notificaciones push</value>
+    <comment>Company</comment>
+  </data>
+  <data name="State Name" xml:space="preserve">
+    <value>Nombre del Estado</value>
+    <comment>LocationState</comment>
+  </data>
+  <data name="Tags" xml:space="preserve">
+    <value>Etiquetas</value>
+    <comment>CompanySegment</comment>
+  </data>
+  <data name="User Name" xml:space="preserve">
+    <value>Nombre de usuario</value>
+    <comment>SegmentArticleComment</comment>
+  </data>
+  <data name="Company Header Font Color" xml:space="preserve">
+    <value>Color de fuente de encabezado de empresa</value>
+    <comment>Company</comment>
+  </data>
+  <data name="Draft" xml:space="preserve">
+    <value>Borrador</value>
+    <comment>CompanySegments</comment>
+  </data>
+  <data name="Publisher Avatar Image" xml:space="preserve">
+    <value>Imagen de avatar del editor</value>
+    <comment>CompanySegment</comment>
+  </data>
+  <data name="Confirm new password" xml:space="preserve">
+    <value>Confirmar nueva contraseña</value>
+    <comment>ChangePassword</comment>
+  </data>
+  <data name="Current password" xml:space="preserve">
+    <value>Contraseña actual</value>
+    <comment>ChangePassword</comment>
+  </data>
+  <data name="New password" xml:space="preserve">
+    <value>Nueva contraseña</value>
+    <comment>ChangePassword</comment>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>Nombre de usuario</value>
+    <comment>IdentityIndex</comment>
   </data>
 </root>

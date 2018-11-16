@@ -71,7 +71,7 @@ namespace WootrixV2.Controllers
 
             // Saving all this company stuff to the session so the layout isn't dependent on the model
             // Note that it is all non-sensitive stuff
-            //byte[] asdf = new byte[8];
+            
             HttpContext.Session.SetInt32("CompanyID", company.ID);
             HttpContext.Session.SetString("CompanyName", company.CompanyName);
             HttpContext.Session.SetString("CompanyTextMain", company.CompanyTextMain);

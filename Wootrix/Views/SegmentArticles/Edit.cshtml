@@ -134,6 +134,7 @@ $("#States").change(function () {
                     <span asp-validation-for="Author" class="text-danger"></span>
                 </div>
                 <div class="form-group checkbox-box">
+                    <label asp-for="Segments" class="control-label"></label>
                     @foreach (var item in Model.AvailableSegments)
                     {
                         <div class="checkbox">

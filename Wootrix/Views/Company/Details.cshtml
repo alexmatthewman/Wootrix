@@ -1,8 +1,11 @@
 ﻿@model WootrixV2.Models.Company
 
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
 @using Microsoft.AspNetCore.Http;
 @{
-    ViewData["Title"] =  "Details";
+    ViewData["Title"] = Localizer["Details"];
     Layout = "~/Views/Shared/_LayoutCompany.cshtml";
     var item = Model;
 
@@ -10,13 +13,14 @@
 }
 
 <div class="articleBackButtonContainer">
-    <a asp-controller="Company" asp-action="Home" asp-route-id="@_companyName"><button class="articleBackButton button"><span class="glyphicon glyphicon-menu-left"></span>&nbsp;Back to Admin Menu</button></a>
+    <a asp-controller="Company" asp-action="Home" asp-route-id="@_companyName">
+    <button class="articleBackButton button glow"><span class="glyphicon glyphicon-menu-left"></span>&nbsp;@Localizer["Back to Admin Menu"]</button></a>
 </div>
 <div class="bodyBox">
-    <h2>Details</h2>
+    <h2>@Localizer["Details"]</h2>
 
     <div>
-        <h4>Company</h4>
+        <h4>@Localizer["Company"]</h4>
         <hr />
         <dl class="dl-horizontal">
             <dt>
@@ -100,7 +104,7 @@
         </dl>
     </div>
     <div>
-        <a asp-action="Edit" asp-route-id="@Model.ID">Edit</a> |
-        <a asp-action="Index">Back to List</a>
+        <a asp-action="Edit" asp-route-id="@Model.ID">@Localizer["Edit"]</a> |
+        <a asp-action="Index">@Localizer["Back to List"]</a>
     </div>
 </div>

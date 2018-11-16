@@ -4,12 +4,14 @@
 @using Microsoft.AspNetCore.Http;
 @using System.Security.Claims
 @using WootrixV2.Data;
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
 @{
-    ViewData["Title"] =  "Index";
+    ViewData["Title"] = Localizer["Magazine List"];
     Layout = "~/Views/Shared/_LayoutCompany.cshtml";
     var _companyName = UserManager.GetUserAsync(User).GetAwaiter().GetResult().companyName;
 }
@@ -17,25 +19,25 @@
 
 <div class="articleBackButtonContainer">
     <a asp-controller="Company" asp-action="Home" asp-route-id="@_companyName">
-        <button class="articleBackButton button">
+        <button class="articleBackButton button glow">
             <span class="glyphicon glyphicon-menu-left"></span>
-            Admin Home
+            @Localizer["Back to Admin Menu"]
         </button>
     </a>
 
 </div>
 
 <div class="bodyBox">
-    <h2>Magazines</h2>
+    <h2>@Localizer["Magazines"]</h2>
 
     <p>
-        <a asp-action="Create">Create New</a>
+        <a asp-action="Create">@Localizer["Create New"]</a>
     </p>
     <table class="table">
         <thead>
             <tr>
                 <th class="magazine-header-text">
-                    <h2>Magazines</h2>
+                    <h2>@Localizer["Magazines"]</h2>
                 </th>
             </tr>
         </thead>
@@ -43,11 +45,11 @@
             <tr>
 
                 @foreach (var item in Model)
-                {                   
-                    <td class="magazine" @*style="border:4px solid @item.ThemeColor;  background:@item.StandardColor;" *@>
+                {
+                    <td class="magazine glow bump" @*style="border:4px solid @item.ThemeColor;  background:@item.StandardColor;" *@>
 
                         <div class="magazine-order">
-                            <label class="control-label">Order</label>
+                            <label class="control-label">@Localizer["Order"]</label>
                             <select class="OrderSelector">
 
                                 @foreach (var it in Model)
@@ -103,17 +105,17 @@
                                 }
                             }
                             <div class="magazine-text-draft btn btn-default" style="background:@color">
-                                @draftOrNot
+                                @Localizer[draftOrNot]
                             </div>
                             <a asp-action="Edit" class="btn btn-default" asp-route-id="@item.ID">
                                 <div class="magazine-text-edit" style="background:@Html.DisplayFor(modelItem => item.StandardColor)">
-                                    Edit
+                                    @Localizer["Edit"]
 
                                 </div>
                             </a>
                             <a asp-action="Delete" class="btn btn-default" asp-route-id="@item.ID">
                                 <div class="magazine-text-delete" style="background:@Html.DisplayFor(modelItem => item.StandardColor)">
-                                    Delete
+                                    @Localizer["Delete"]
 
                                 </div>
                             </a>

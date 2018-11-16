@@ -1,13 +1,16 @@
 ﻿@model WootrixV2.Models.CompanyPushNotification
 
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
 @{
-    ViewData["Title"] =  "Delete";
+    ViewData["Title"] = Localizer["Delete"];
     Layout = "~/Views/Shared/_LayoutCompany.cshtml";
 }
 
-<h2>Delete</h2>
+<h2>@Localizer["Delete"]</h2>
 
-<h3>Are you sure you want to delete this?</h3>
+<h3>@Localizer["Are you sure you want to delete this?"]</h3>
 <div>
     <h4>CompanyPushNotification</h4>
     <hr />
@@ -43,10 +46,10 @@
             @Html.DisplayFor(model => model.SentAt)
         </dd>
     </dl>
-    
+
     <form asp-action="Delete">
         <input type="hidden" asp-for="ID" />
-        <input type="submit" value="Delete" class="btn btn-default" /> |
-        <a asp-action="Index">Back to List</a>
+        <input type="submit" value="@Localizer["Delete"]" class="btn btn-default" /> |
+        <a asp-action="Index">@Localizer["Back to List"]</a>
     </form>
 </div>

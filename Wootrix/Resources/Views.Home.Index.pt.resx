@@ -150,7 +150,7 @@
   <data name="Home" xml:space="preserve">
     <value>Casa</value>
   </data>
-  <data name="Login1" xml:space="preserve">
+  <data name="Login" xml:space="preserve">
     <value>Entrar</value>
   </data>
   <data name="Manage Companies" xml:space="preserve">

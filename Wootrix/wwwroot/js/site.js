@@ -34,20 +34,12 @@ $("#OrderSelector").change(function () {
 });
 
 
-$("#CompanySelector").change(function () {
-    var companyID = $('option:selected', $(this)).val();
-    window.location.href = '/CompanyDepartments/Index/' + companyID;
-});
-
-
-//$("#CompanyChoose").change(function () {
-    
+//$("#CompanySelector").change(function () {
 //    var companyID = $('option:selected', $(this)).val();
-//    var companyName = $('option:selected', $(this)).text();
-//   // alert("CompanyID:" + companyID + "  CompanyName:" + companyName);
-
-//    window.location.href = '/Users/Create/' + companyID; 
+//    window.location.href = '/CompanyDepartments/Index/' + companyID;
 //});
+
+
 
 
 

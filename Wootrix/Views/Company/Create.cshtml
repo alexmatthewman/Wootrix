@@ -1,19 +1,24 @@
 ﻿@model WootrixV2.Models.Company
 
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
 @using Microsoft.AspNetCore.Http;
 @{
-    ViewData["Title"] =  "Create";
+    ViewData["Title"] = Localizer["Create"];
     Layout = "~/Views/Shared/_LayoutCompany.cshtml";
 
     var _companyName = Context.Session.GetString("CompanyName");
 }
 <div class="articleBackButtonContainer">
-    <a asp-controller="Company" asp-action="Home" asp-route-id="@_companyName"><button class="articleBackButton button"><span class="glyphicon glyphicon-menu-left"></span>&nbsp;Back to Admin Menu</button></a>
+    <a asp-controller="Company" asp-action="Home" asp-route-id="@_companyName">
+        <button class="articleBackButton button glow"><span class="glyphicon glyphicon-menu-left"></span>&nbsp;@Localizer["Back to Admin Menu"]</button>
+    </a>
 </div>
 <div class="bodyBox">
-    <h2>Create</h2>
-
-    <h4>Company</h4>
+    <h2>@Localizer["Create"]</h2>
+    
+    <h4>@Localizer["Company"]</h4>
     <hr />
     <div class="row">
         <div class="col-md-4">
@@ -85,14 +90,14 @@
                     <span asp-validation-for="CompanyNumberOfPushNotifications" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <input type="submit" value="Create" class="btn btn-default" />
+                    <input type="submit" value="@Localizer["Create"]" class="btn btn-default" />
                 </div>
             </form>
         </div>
     </div>
 
     <div>
-        <a asp-action="Index">Back to List</a>
+        <a asp-action="Index">@Localizer["Back to List"]</a>
     </div>
 
     @section Scripts {
