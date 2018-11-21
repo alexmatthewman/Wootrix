@@ -207,6 +207,23 @@ namespace WootrixV2.Controllers
             _context.SaveChanges();
         }
 
+        // Decrement everything else
+        public void InsertAtOrder1(int oldOrder)
+        {
+            // If the magazine was at position 5 we only need to decrement the order
+            // of magazines 1-4
+            var _companyID = HttpContext.Session.GetInt32("CompanyID") ?? 0;
+            foreach (var seg in _context.CompanySegment.Where(m => m.CompanyID == _companyID))
+            {
+                if (seg.Order < oldOrder)
+                {
+                    seg.Order++;
+                    _context.Update(seg);
+                }
+            }
+            _context.SaveChanges();
+        }
+
         // Decrement everything below it
         public void DeleteSegmentAndUpdateOthersOrder(int deletedSegmentOrder)
         {
@@ -425,7 +442,7 @@ namespace WootrixV2.Controllers
                 mySegment.Department = cps.Department;
                 mySegment.Tags = cps.Tags;
                 mySegment.ClientName = cps.ClientName ?? _user.name;
-                
+
                 
 
                 IFormFile coverImage = cps.CoverImage;
@@ -463,7 +480,7 @@ namespace WootrixV2.Controllers
                     //The file has been saved to disk - now save the file name to the DB
                     mySegment.CoverImageMobileFriendly = cli.FileName;
                 }
-
+                InsertAtOrder1();
                 _context.Add(mySegment);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -526,7 +543,7 @@ namespace WootrixV2.Controllers
             {
                 //ID,Order,Title,CoverImage,CoverImageMobileFriendly,PublishDate,FinishDate,ClientName,ClientLogoImage,ThemeColor,StandardColor,Draft,Department,Tags
                 mySegment.CompanyID = _user.companyID;
-                mySegment.Order = cps.Order ?? 1;
+                
                 mySegment.Title = cps.Title;
                 mySegment.PublishDate = cps.PublishDate;
                 mySegment.FinishDate = cps.FinishDate;
@@ -577,7 +594,11 @@ namespace WootrixV2.Controllers
                 try
                 {
                     // Done later to avoid ordering failures if the image upload fails.
-                    InsertAtOrder1();
+                    if (mySegment.Order != 1)
+                    {
+                        // We only need to decrement articles above it (lower order)
+                        InsertAtOrder1(mySegment.Order ?? 1);
+                    }                    
                     mySegment.Order = 1;
                     _context.Update(mySegment);
                     await _context.SaveChangesAsync();

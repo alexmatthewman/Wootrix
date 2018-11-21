@@ -84,7 +84,7 @@ function hideStuff(id) {
 
 //Show a single hidden element
 function showStuff(id) {
-    document.getElementById(id).style.display = 'block';
+    document.getElementById(id).style.display = 'block !important';
 }
 
 //Change a CSS Element

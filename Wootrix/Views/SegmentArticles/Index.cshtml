@@ -142,6 +142,10 @@
                                 var e = item.Segments.Replace("|", ", ");
                                 <q>@e</q>
                             }
+                            else
+                            {
+                                @Html.DisplayFor(modelItem => item.Segments)
+                            }
                         }
                         else
                         {
@@ -157,6 +161,10 @@
                                 var e = item.Groups.Replace("|", ", ");
                                 <q>@e</q>
                             }
+                            else
+                            {
+                                @Html.DisplayFor(modelItem => item.Groups)
+                            }
                         }
                         else
                         {
@@ -170,6 +178,10 @@
                             {
                                 var e = item.Topics.Replace("|", ", ");
                                 <q>@e</q>
+                            }
+                            else
+                            {
+                                @Html.DisplayFor(modelItem => item.Topics)
                             }
                         }
                         else
@@ -186,6 +198,10 @@
                                 {
                                     var e = item.TypeOfUser.Replace("|", ", ");
                                     <q>@e</q>
+                                }
+                                else
+                                {
+                                    @Html.DisplayFor(modelItem => item.TypeOfUser)
                                 }
                             }
                             else
