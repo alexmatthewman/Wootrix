@@ -1,5 +1,5 @@
 ﻿@model WootrixV2.Models.SegmentArticleComment
-
+@using Microsoft.AspNetCore.Http;
 @using Microsoft.AspNetCore.Identity;
 @using WootrixV2.Data;
 @using Microsoft.AspNetCore.Mvc.Localization
@@ -22,10 +22,10 @@
 
 
 <div class="bodyBox">
-    <h2>@Localizer["Approve with Reply"]</h2>
+    <h2 style="color:@Context.Session.GetString("CompanyMainFontColor") !important">@Localizer["Approve with Reply"]</h2>
     <p> </p>
     <p>@Localizer["Original comment:"]  </p>
-    <h2>@ViewBag.OriginalComment</h2>
+    <h2 style="color:@Context.Session.GetString("CompanyMainFontColor") !important">@ViewBag.OriginalComment</h2>
     <hr />
     <div class="row">
         <div class="col-md-4">

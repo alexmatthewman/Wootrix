@@ -7,13 +7,13 @@
     ViewData["Title"] = Localizer["Details"];
     Layout = "~/Views/Shared/_LayoutCompany.cshtml";
 }
-
+@using Microsoft.AspNetCore.Http;
 
 <div class="bodyBox">
-    <h2>@Localizer["Details"]</h2>
+    <h2 style="color:@Context.Session.GetString("CompanyMainFontColor") !important">@Localizer["Details"]</h2>
 
     <div>
-        <h4>@Localizer["Article"]</h4>
+        <h4 style="color:@Context.Session.GetString("CompanyMainFontColor") !important">@Localizer["Article"]</h4>
         <hr />
         <dl class="dl-horizontal">
             <dt>

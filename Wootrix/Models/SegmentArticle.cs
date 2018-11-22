@@ -104,13 +104,14 @@ namespace WootrixV2.Models
 
         [Required]
         [StringLength(1000)]
+        [RegularExpression(@"^[^\|]+$", ErrorMessage = "Please no | characters")]
         [Display(Name = "Title", Prompt = "Please enter the title", Description = "Title")]
         public string Title { get; set; }
         
         [Display(Name = "Cover Image", Prompt = "Please select the cover image", Description = "Cover Image")]
         public IFormFile Image { get; set; }
 
-        [Display(Name = "Embedded Video Url", Prompt = "Please enter the video url if applicable", Description = "Embedded Video Url")]
+        [Display(Name = "Upload Video", Prompt = "Please enter the video url if applicable", Description = "Embedded Video Url")]
         public IFormFile EmbeddedVideo { get; set; }
 
         [StringLength(10000)]

@@ -75,7 +75,7 @@ namespace WootrixV2.Models
 
     public class CompanySegmentViewModel
     {
-
+        private const string V = @"^[^\|]+$";
 
         [Key]
         public int ID { get; set; }
@@ -88,6 +88,7 @@ namespace WootrixV2.Models
 
         [Required]
         [StringLength(1000)]
+        [RegularExpression(V, ErrorMessage = "Please no | characters")]
         [Display(Name = "Title", Prompt = "Please enter the title", Description = "Title")]
         public string Title { get; set; }
 

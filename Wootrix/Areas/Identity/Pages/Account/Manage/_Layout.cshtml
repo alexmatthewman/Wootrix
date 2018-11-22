@@ -1,20 +1,20 @@
 ﻿@{
     Layout = "/Views/Shared/_LayoutCompany.cshtml";
 }
-
+@using Microsoft.AspNetCore.Http;
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
 
-<h2>@Localizer["Manage your account"]</h2>
+<h2 style="color:@Context.Session.GetString("CompanyMainFontColor") !important">@Localizer["Manage your account"]</h2>
 
 <div>
-    <h4>@Localizer["Change your account settings"]</h4>
+    <h4 style="color:@Context.Session.GetString("CompanyMainFontColor") !important">@Localizer["Change your account settings"]</h4>
     <hr />
     <div class="row">
         <div class="col-md-3">
             <partial name="_ManageNav" />
         </div>
-        <div class="col-md-9">
+        <div class="col-md-9 identitypages">
             @RenderBody()
         </div>
     </div>

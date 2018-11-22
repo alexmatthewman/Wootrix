@@ -44,14 +44,12 @@ namespace WootrixV2.Controllers
         {
             var orderArray = id.Split("|");
             var order = orderArray[0].ToString();
-            int articleID;
-            bool success = Int32.TryParse(orderArray[1].ToString(), out articleID);
+            bool success = Int32.TryParse(orderArray[1].ToString(), out int articleID);
 
             var _companyID = HttpContext.Session.GetInt32("CompanyID") ?? 0;
             var article = await _context.SegmentArticle.FindAsync(articleID);
             int whereItCurrentlyIs = article.Order ?? 0;
-            int whereItIsMovingTo;
-            success = Int32.TryParse(order, out whereItIsMovingTo);
+            success = Int32.TryParse(order, out int whereItIsMovingTo);
 
             // So for each segment with an order greater than the order we need to increment the order number
             if (whereItCurrentlyIs < whereItIsMovingTo)
@@ -297,12 +295,9 @@ namespace WootrixV2.Controllers
                         //Get the order and increment
 
                         var titleAndOrder = segmentTitleAndOrder.Split("/");
-                        int ord;
-                        bool success = int.TryParse(titleAndOrder[1], out ord);
+                        bool success = int.TryParse(titleAndOrder[1], out int ord);
                         ord++;
                         updatedSegmentsAndOrders += titleAndOrder[0] + "/" + ord + ender;
-
-
                     }
                     else
                     {

@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<WootrixV2.Models.SegmentArticle>
 
-
+@using Microsoft.AspNetCore.Http;
 @using System.Net
 @using Microsoft.AspNetCore.Identity
 @using WootrixV2.Data
@@ -26,7 +26,7 @@
 </div>
 
 <div class="bodyBox">
-    <h2>@Localizer["Article List"]</h2>
+    <h2 style="color:@Context.Session.GetString("CompanyMainFontColor") !important">@Localizer["Article List"]</h2>
 
     <p>
         <a asp-controller="SegmentArticles" asp-action="Create">@Localizer["Create New"]</a>

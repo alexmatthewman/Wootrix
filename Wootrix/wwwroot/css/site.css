@@ -2,7 +2,9 @@
 @import url(font-awesome.min.css);
 
 
-
+.identitypages h2, .identitypages h4 {
+    color: #ccc;
+}
 
 
 

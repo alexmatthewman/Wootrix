@@ -1,49 +1,36 @@
 ﻿@model WootrixV2.Models.Company
 
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Http;
+@using System.Security.Claims
+@using WootrixV2.Data;
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
-
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
 @{
     Layout = "~/Views/Shared/_LayoutCompany.cshtml";
     ViewData["Title"] = Localizer["Home"];
-
     var companyName = Model.CompanyName;
-
     var bImage = companyName + "_" + Model.CompanyBackgroundImage;
     var fImage = companyName + "_" + Model.CompanyFocusImage;
-
     if (!SignInManager.IsSignedIn(User))
     {
         var _user = UserManager.GetUserAsync(User).GetAwaiter().GetResult();
     }
 }
 
-@using Microsoft.AspNetCore.Identity
-@using Microsoft.AspNetCore.Http;
-@using System.Security.Claims
-@using WootrixV2.Data;
-
-
-
 <div class="companyHome" company="@companyName">
-
     <!-- Banner -->
     @if (!SignInManager.IsSignedIn(User))
     {
-
         <section class="background" style="height: 92vh; background-repeat: no-repeat; background-image:  url('../../images/Uploads/@bImage');" alt="Home screen background">
-
-
             <div class="container clearfix">
                 <div class="span7 left">
                     <figure class="main-home-image">
                         <!--COMPANY FOCUS IMAGE-->
-
                         <img src="~/images/Uploads/@fImage" id="CompanyFocusImage" alt="Company Focus Image" />
-
                     </figure>
                 </div>
                 <div class="span5 right">
@@ -65,14 +52,11 @@
                     </div>
                 </div>
             </div>
-
-
         </section>
     }
     else
     {
         <section style="background-color:@Model.CompanyBackgroundColor;">
-
             @if (User.HasClaim(ClaimTypes.Role, "CompanyAdmin"))
             {
                 <!--Should build in the old style interface for consistency-->
@@ -80,9 +64,8 @@
                     <div class="super-admin-cont">
                         <div class="admin-profile clearfix glow bump">
                             <div class="profile-image-cont"><img src="~/images/Uploads/@fImage" id="CompanyFocusImage" alt="Company Focus Image" /></div>
-                            <h4>@Localizer["Company Admin"]</h4>
+                            <h4 style="color:@Context.Session.GetString("CompanyMainFontColor") !important">@Localizer["Company Admin"]</h4>
                             <h5>@UserManager.GetUserName(User)</h5>
-
                         </div>
                         <div class="categories">
                             <ul>
@@ -98,11 +81,8 @@
                                         <strong>@Localizer["Manage Users"]</strong>
                                     </a>
                                 </li>
-
-
                                 <li class="glow bump">
                                     <a asp-area="" asp-controller="CompanySegments" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
-
                                         <span><img src="~/images/icon-5.png" alt="" /></span>
                                         <strong>@Localizer["Magazines"]</strong>
                                     </a>
@@ -110,7 +90,6 @@
 
                                 <li class="glow bump">
                                     <a asp-area="" asp-controller="SegmentArticles" asp-action="Index" asp-route-id="@companyName" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
-
                                         <span><img src="~/images/icon-6.png" alt="" /></span>
                                         <strong>@Localizer["Articles"]</strong>
                                     </a>
@@ -184,11 +163,11 @@
                                     </a>
                                 </li>
                                 @*<li>
-                                    <a asp-controller="CompanyLanguages" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
-                                        <span><img src="~/images/icon-1.png" alt="Company Languages" /></span>
-                                        <strong>@Localizer["Company Languages"]</strong>
-                                    </a>
-                                </li>*@
+                                        <a asp-controller="CompanyLanguages" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
+                                            <span><img src="~/images/icon-1.png" alt="Company Languages" /></span>
+                                            <strong>@Localizer["Company Languages"]</strong>
+                                        </a>
+                                    </li>*@
                                 @*<li>
                                         <a asp-area="" asp-controller="Fruit" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
                                             <span><img src="~/images/icon-2.png" alt="Department Filters" /></span>
@@ -213,7 +192,7 @@
                     <div class="super-admin-cont">
                         <div class="admin-profile clearfix glow bump">
                             <div class="profile-image-cont"><img src="~/images/Uploads/@fImage" id="CompanyFocusImage" alt="Company Focus Image" /></div>
-                            <h4>@Localizer["Super Admin"]</h4>
+                            <h4 style="color:@Context.Session.GetString("CompanyMainFontColor") !important">@Localizer["Super Admin"]</h4>
                             <h5>@UserManager.GetUserName(User)</h5>
 
                         </div>
@@ -238,21 +217,17 @@
                                     </a>
                                 </li>
                             </ul>
-
-
                         </div>
                     </div>
                 </div>
             }
             @if (!User.HasClaim(ClaimTypes.Role, "CompanyAdmin") && !User.HasClaim(ClaimTypes.Role, "Admin"))
-            {
-
-
+            {                
                 <table class="table searchHeadTable">
                     <thead>
                         <tr>
                             <th class="magazine-header-text">
-                                <h2>@Localizer["Magazines"]</h2>
+                                <h2 style="color:@Context.Session.GetString("CompanyMainFontColor") !important">@Localizer["Magazines"]</h2>
                                 <div class="search">
                                     <form asp-controller="CompanySegments" asp-action="UserSegmentSearch">
                                         <p>
@@ -266,10 +241,8 @@
                     </thead>
                     <tbody>
                         <tr class="segmentsRow">
-
                             @foreach (var item in ViewBag.Segments)
                             {
-
                                 <td class="magazine glow bump" @*style="border:4px solid @item.ThemeColor;  background:@item.StandardColor;" *@>
                                     <a asp-controller="CompanySegments" asp-action="ArticleList" asp-route-id="@item.Title">
                                         <div class="magazine-pic">
@@ -392,8 +365,6 @@
                             </div>
                         </div>
                     </main>*@
-
-
             }
         </section>
     }

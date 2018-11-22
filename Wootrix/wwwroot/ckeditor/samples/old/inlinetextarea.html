@@ -43,7 +43,7 @@ var editor = CKEDITOR.inline( 'article-body' );
 </pre>
 	</div>
 	<form action="sample_posteddata.php" method="post">
-		<h2>This is a sample form with some fields</h2>
+		<h2 style="color:@Context.Session.GetString("CompanyMainFontColor") !important">This is a sample form with some fields</h2>
 		<p>
 			Title:<br>
 			<input type="text" name="title" value="Sample Form"></p>

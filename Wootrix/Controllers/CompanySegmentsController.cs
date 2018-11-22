@@ -42,14 +42,13 @@ namespace WootrixV2.Controllers
         {
             var orderArray = id.Split("|");
             var order = orderArray[0].ToString();
-            int articleID;
-            bool success = Int32.TryParse(orderArray[1].ToString(), out articleID);
+            bool success = Int32.TryParse(orderArray[1].ToString(), out int articleID);
 
             var _companyID = HttpContext.Session.GetInt32("CompanyID") ?? 0;
             var article = await _context.SegmentArticle.FindAsync(articleID);
             int whereItCurrentlyIs = article.Order ?? 0;
             int whereItIsMovingTo;
-            success = Int32.TryParse(order, out whereItIsMovingTo);
+            success = int.TryParse(order, out whereItIsMovingTo);
 
             var segID = HttpContext.Session.GetInt32("SegmentID") ?? 0;
             CompanySegment cs = await _context.CompanySegment.FirstOrDefaultAsync(m => m.ID == segID && m.CompanyID == _companyID);

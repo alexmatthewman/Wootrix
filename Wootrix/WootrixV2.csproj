@@ -7,9 +7,13 @@
 
   <ItemGroup>
     <Compile Remove="Services\**" />
+    <Compile Remove="wwwroot\js\jquery-sessionTimeout\**" />
     <Content Remove="Services\**" />
+    <Content Remove="wwwroot\js\jquery-sessionTimeout\**" />
     <EmbeddedResource Remove="Services\**" />
+    <EmbeddedResource Remove="wwwroot\js\jquery-sessionTimeout\**" />
     <None Remove="Services\**" />
+    <None Remove="wwwroot\js\jquery-sessionTimeout\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -19,6 +23,10 @@
     <Compile Remove="Controllers\MagazineArticlesController.cs" />
     <Compile Remove="Controllers\MagazineController.cs" />
     <Compile Remove="Models\Translations.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="wwwroot\js\JSEXAMPLES.js" />
   </ItemGroup>
 
   <ItemGroup>

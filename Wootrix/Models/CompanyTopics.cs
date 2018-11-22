@@ -15,7 +15,7 @@ namespace WootrixV2.Models
         public int CompanyID { get; set; }
 
         [Required]
-        [RegularExpression(@"^[A-Z]+[a-zA-Z""'\s-]*$", ErrorMessage = "Please only enter a string")]
+        [RegularExpression(@"^[^\|]+$", ErrorMessage = "Please no | characters")]
         [StringLength(1000)]
         [Display(Name = "Topics", Prompt = "Topics", Description = "Company Topics")]
         public string Topic { get; set; }

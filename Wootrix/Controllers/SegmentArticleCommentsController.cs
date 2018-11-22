@@ -69,7 +69,6 @@ namespace WootrixV2.Controllers
                 .Where(m => m.Status == "Review")
                 .Where(m => m.CompanyID == id);
             return RedirectToAction("Admin", new { id = segmentArticleComment.CompanyID });
-            // return View(await ctx.ToListAsync());
         }
 
         public async Task<IActionResult> AdminDelete(int id)
@@ -82,8 +81,6 @@ namespace WootrixV2.Controllers
                .Where(m => m.CompanyID == id);
             return RedirectToAction("Admin", new { id = segmentArticleComment.CompanyID });
         }
-
-
 
         // GET: SegmentArticleComments/Create
         public IActionResult Create()

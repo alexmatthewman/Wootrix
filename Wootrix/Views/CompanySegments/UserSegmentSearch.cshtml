@@ -30,7 +30,7 @@
     <thead>
         <tr>
             <th class="magazine-header-text">
-                <h2>@Localizer["Magazines"]</h2>
+                <h2 style="color:@Context.Session.GetString("CompanyMainFontColor") !important">@Localizer["Magazines"]</h2>
                 <div class="search">
                     <form asp-controller="CompanySegments" asp-action="UserSegmentSearch">
                         <p>

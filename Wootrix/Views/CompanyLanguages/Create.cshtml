@@ -1,5 +1,5 @@
 ﻿@model WootrixV2.Models.CompanyLanguages
-
+@using Microsoft.AspNetCore.Http;
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
 
@@ -9,9 +9,9 @@
 }
 
 <div class="bodyBox">
-    <h2>@Localizer["Create"]</h2>
+    <h2 style="color:@Context.Session.GetString("CompanyMainFontColor") !important">@Localizer["Create"]</h2>
 
-    <h4>Company Languages</h4>
+    <h4 style="color:@Context.Session.GetString("CompanyMainFontColor") !important">Company Languages</h4>
     <hr />
     <div class="row">
         <div class="col-md-4">

@@ -1,5 +1,5 @@
 ﻿@model WootrixV2.Models.Company
-
+@using Microsoft.AspNetCore.Http;
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
 
@@ -14,12 +14,13 @@
 
 <div class="articleBackButtonContainer">
     <a asp-controller="Company" asp-action="Home" asp-route-id="@_companyName">
-    <button class="articleBackButton button glow"><span class="glyphicon glyphicon-menu-left"></span>&nbsp;@Localizer["Back to Admin Menu"]</button></a>
+        <button class="articleBackButton button glow"><span class="glyphicon glyphicon-menu-left"></span>&nbsp;@Localizer["Back to Admin Menu"]</button>
+    </a>
 </div>
 <div class="bodyBox">
-    <h2>@Localizer["Edit"]</h2>
+    <h2 style="color:@Context.Session.GetString("CompanyMainFontColor") !important">@Localizer["Edit"]</h2>
 
-    <h4>@Localizer["Company"]</h4>
+    <h4 style="color:@Context.Session.GetString("CompanyMainFontColor") !important">@Localizer["Company"]</h4>
     <hr />
     <div class="row">
         <div class="col-md-4">

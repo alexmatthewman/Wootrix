@@ -1,5 +1,5 @@
 ﻿@model WootrixV2.Models.CompanyGroups
-
+@using Microsoft.AspNetCore.Http;
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
 
@@ -9,10 +9,10 @@
 }
 
 <div class="bodyBox">
-    <h2>@Localizer["Details"]</h2>
+    <h2 style="color:@Context.Session.GetString("CompanyMainFontColor") !important">@Localizer["Details"]</h2>
 
     <div>
-        <h4>@Localizer["Groups"]</h4>
+        <h4 style="color:@Context.Session.GetString("CompanyMainFontColor") !important">@Localizer["Groups"]</h4>
         <hr />
         <dl class="dl-horizontal">
             <dt>

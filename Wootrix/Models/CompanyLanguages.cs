@@ -16,6 +16,7 @@ namespace WootrixV2.Models
         public int CompanyID { get; set; }
 
         [Required]
+        [RegularExpression(@"^[^\|]+$", ErrorMessage = "Please no | characters")]
         [StringLength(100)]
         [Display(Name = "Language Name", Prompt = "Enter the Language name", Description = "Language Name")]
         public string LanguageName { get; set; }

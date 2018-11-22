@@ -1,9 +1,8 @@
 ﻿@model IEnumerable<WootrixV2.Models.Company>
-
+@using Microsoft.AspNetCore.Http;
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
 
-@using Microsoft.AspNetCore.Http;
 @{
     ViewData["Title"] = Localizer["Index"];
     Layout = "~/Views/Shared/_LayoutCompany.cshtml";
@@ -13,10 +12,11 @@
 
 <div class="articleBackButtonContainer">
     <a asp-controller="Company" asp-action="Home" asp-route-id="@_companyName">
-    <button class="articleBackButton button glow"><span class="glyphicon glyphicon-menu-left"></span>&nbsp;@Localizer["Back to Admin Menu"]</button></a>
+        <button class="articleBackButton button glow"><span class="glyphicon glyphicon-menu-left"></span>&nbsp;@Localizer["Back to Admin Menu"]</button>
+    </a>
 </div>
 <div class="bodyBox">
-    <h2>@Localizer["Company List"]</h2>
+    <h2 style="color:@Context.Session.GetString("CompanyMainFontColor") !important">@Localizer["Company List"]</h2>
 
     <p>
         <a asp-action="Create">@Localizer["Create New"]</a>

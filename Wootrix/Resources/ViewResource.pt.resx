@@ -409,4 +409,8 @@
     <value>Nome de usuário</value>
     <comment>IdentityIndex</comment>
   </data>
+  <data name="Upload Video" xml:space="preserve">
+    <value>Envio vídeo</value>
+    <comment>SegmentArticle</comment>
+  </data>
 </root>

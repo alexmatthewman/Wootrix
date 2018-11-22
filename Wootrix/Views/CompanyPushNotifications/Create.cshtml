@@ -1,5 +1,5 @@
 ﻿@model WootrixV2.Models.CompanyPushNotification
-
+@using Microsoft.AspNetCore.Http;
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
 
@@ -8,9 +8,9 @@
     Layout = "~/Views/Shared/_LayoutCompany.cshtml";
 }
 
-<h2>@Localizer["Create"]</h2>
+<h2 style="color:@Context.Session.GetString("CompanyMainFontColor") !important">@Localizer["Create"]</h2>
 
-<h4>CompanyPushNotification</h4>
+<h4 style="color:@Context.Session.GetString("CompanyMainFontColor") !important">CompanyPushNotification</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">

@@ -1,5 +1,5 @@
 ﻿@model WootrixV2.Models.SegmentArticleViewModel
-
+@using Microsoft.AspNetCore.Http;
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
 
@@ -69,9 +69,9 @@ $("#States").change(function () {
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 
 <div class="bodyBox">
-    <h2>@Localizer["Create"]</h2>
+    <h2 style="color:@Context.Session.GetString("CompanyMainFontColor") !important">@Localizer["Create"]</h2>
 
-    <h4>@Localizer["Article"]</h4>
+    <h4 style="color:@Context.Session.GetString("CompanyMainFontColor") !important">@Localizer["Article"]</h4>
     <hr />
     <div class="row">
         <div class="col-md-4">

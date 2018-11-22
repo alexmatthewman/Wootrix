@@ -28,7 +28,7 @@
 </div>
 
 <div class="bodyBox">
-    <h2>@Localizer["Magazines"]</h2>
+    <h2 style="color:@Context.Session.GetString("CompanyMainFontColor") !important">@Localizer["Magazines"]</h2>
 
     <p>
         <a asp-action="Create">@Localizer["Create New"]</a>
@@ -37,7 +37,7 @@
         <thead>
             <tr>
                 <th class="magazine-header-text">
-                    <h2>@Localizer["Magazines"]</h2>
+                    <h2 style="color:@Context.Session.GetString("CompanyMainFontColor") !important">@Localizer["Magazines"]</h2>
                 </th>
             </tr>
         </thead>

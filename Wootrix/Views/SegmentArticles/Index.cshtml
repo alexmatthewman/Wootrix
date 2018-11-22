@@ -4,7 +4,7 @@
 @using System.Net
 @using Microsoft.AspNetCore.Identity
 @using WootrixV2.Data
-
+@using Microsoft.AspNetCore.Http;
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
 
@@ -28,7 +28,7 @@
 </div>
 
 <div class="bodyBox">
-    <h2>@Localizer["Article List"]</h2>
+    <h2 style="color:@Context.Session.GetString("CompanyMainFontColor") !important">@Localizer["Article List"]</h2>
 
     <p>
         <a asp-action="Create">@Localizer["Create New"]</a>

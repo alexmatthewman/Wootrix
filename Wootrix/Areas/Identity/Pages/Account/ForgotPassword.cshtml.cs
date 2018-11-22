@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Wootrix.Data;
 using WootrixV2.Data;
 
 namespace WootrixV2.Areas.Identity.Pages.Account
@@ -17,6 +18,7 @@ namespace WootrixV2.Areas.Identity.Pages.Account
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IEmailSender _emailSender;
+        private readonly ApplicationDbContext _context;
 
         public ForgotPasswordModel(UserManager<ApplicationUser> userManager, IEmailSender emailSender)
         {

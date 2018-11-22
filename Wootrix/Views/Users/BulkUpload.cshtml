@@ -1,5 +1,5 @@
 ﻿@model WootrixV2.Models.BulkUploadViewModel
-
+@using Microsoft.AspNetCore.Http;
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
 
@@ -13,8 +13,8 @@
 </div>
 
 <div class="bodyBox">
-    <h2>@Localizer["Bulk Upload Users"]</h2><p> </p>
-                                                       <a class="upload-example-file" href="~/ExampleBulkUpload.csv">@Localizer["Example Upload File"]</a>
+    <h2 style="color:@Context.Session.GetString("CompanyMainFontColor") !important">@Localizer["Bulk Upload Users"]</h2><p> </p>
+    <a class="upload-example-file" href="~/ExampleBulkUpload.csv">@Localizer["Example Upload File"]</a>
     <div>
         <form asp-action="BulkUpload" enctype="multipart/form-data">
             <div class="form-group">

@@ -7,14 +7,18 @@ using System.Threading.Tasks;
 namespace WootrixV2.Models
 {
     public class CompanyDepartments
-    { 
+    {
+        private const string V = @"^[^\|]+$";
+
         public int ID { get; set; }
 
         [ScaffoldColumn(false)]
         public int CompanyID { get; set; }
 
-        [Required]
-        [RegularExpression(@"^[A-Z]+[a-zA-Z""'\s-]*$", ErrorMessage = "Please only enter a string")]
+        //[RegularExpression(@"^[A-Z]+[a-zA-Z""'\s-]*$", ErrorMessage = "Please only enter a string")]
+
+        [Required]        
+        [RegularExpression(V, ErrorMessage = "Please no | characters")]
         [StringLength(1000)]
         [Display(Name = "Department", Prompt = "Department Name", Description = "Department Name ")]
         public string CompanyDepartmentName { get; set; }
