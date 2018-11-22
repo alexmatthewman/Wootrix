@@ -89,18 +89,23 @@ namespace Wootrix
             {
                 // Cookie settings
                 options.Cookie.HttpOnly = true;
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(21);
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(2);
                 options.SlidingExpiration = true;
                 options.LoginPath = "/Identity/Account/Login";
                 options.AccessDeniedPath = "/Identity/Account/AccessDenied";
                 options.SlidingExpiration = true;
+                options.LogoutPath = "/Identity/Account/Logout";           
+                options.AccessDeniedPath = "/Identity/Account/Logout";
+                options.ReturnUrlParameter = "";
             });
+
+            
             services.AddDistributedMemoryCache();
 
             services.AddSession(options =>
             {
                 //// Set a short timeout for easy testing.
-                options.IdleTimeout = TimeSpan.FromMinutes(26);
+                options.IdleTimeout = TimeSpan.FromMinutes(5);
                 options.Cookie.HttpOnly = true;
             });
 

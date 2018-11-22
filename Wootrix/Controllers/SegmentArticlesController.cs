@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -19,6 +20,7 @@ using WootrixV2.Models;
 
 namespace WootrixV2.Controllers
 {
+    [Authorize]
     public class SegmentArticlesController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -293,7 +295,7 @@ namespace WootrixV2.Controllers
                     if (segmentTitleAndOrder.Contains(segmentTitleWhereInsertHappened))
                     {
                         //Get the order and increment
-                        
+
                         var titleAndOrder = segmentTitleAndOrder.Split("/");
                         int ord;
                         bool success = int.TryParse(titleAndOrder[1], out ord);
@@ -327,76 +329,84 @@ namespace WootrixV2.Controllers
         {
             _user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();
             var myArticle = new SegmentArticle();
-            if (ModelState.IsValid)
+
+            //Have to check the article title isn't already used
+            var existingArticle = _context.SegmentArticle.FirstOrDefault(n => n.Title == sa.Title && n.CompanyID == sa.CompanyID);
+            if (existingArticle == null)
             {
-                //ID,Order,Title,CoverImage,CoverImageMobileFriendly,PublishDate,FinishDate,ClientName,ClientLogoImage,ThemeColor,StandardColor,Draft,Department,Tags
-                myArticle.CompanyID = _user.companyID;
 
-                myArticle.Title = sa.Title;
-                myArticle.PublishFrom = sa.PublishFrom;
-                myArticle.PublishTill = sa.PublishTill;
-                myArticle.AllowComments = sa.AllowComments;
-                myArticle.ArticleContent = sa.ArticleContent;
-                myArticle.Author = (sa.Author == null ? _user.name : sa.Author); //if null set to be user name
-                myArticle.CreatedBy = _user.UserName;
-                myArticle.ArticleUrl = sa.ArticleUrl;
+                if (ModelState.IsValid)
+                {
+                    //ID,Order,Title,CoverImage,CoverImageMobileFriendly,PublishDate,FinishDate,ClientName,ClientLogoImage,ThemeColor,StandardColor,Draft,Department,Tags
+                    myArticle.CompanyID = _user.companyID;
 
-                myArticle.Tags = sa.Tags;
+                    myArticle.Title = sa.Title;
+                    myArticle.PublishFrom = sa.PublishFrom;
+                    myArticle.PublishTill = sa.PublishTill;
+                    myArticle.AllowComments = sa.AllowComments;
+                    myArticle.ArticleContent = sa.ArticleContent;
+                    myArticle.Author = (sa.Author == null ? _user.name : sa.Author); //if null set to be user name
+                    myArticle.CreatedBy = _user.UserName;
+                    myArticle.ArticleUrl = sa.ArticleUrl;
+
+                    myArticle.Tags = sa.Tags;
+
+                    myArticle.Languages = string.Join("|", sa.SelectedLanguages);
+                    myArticle.Groups = string.Join("|", sa.SelectedGroups);
+                    myArticle.Topics = string.Join("|", sa.SelectedTopics);
+                    myArticle.TypeOfUser = string.Join("|", sa.SelectedTypeOfUser);
+                    if (sa.Country != null && sa.Country != "") myArticle.Country = _context.LocationCountries.FirstOrDefault(m => m.country_code == sa.Country).country_name;
+                    if (sa.State != null && sa.State != "") myArticle.State = _context.LocationStates.FirstOrDefault(n => n.country_code == sa.Country && n.state_code == sa.State).state_name;
+                    myArticle.City = sa.City;
+
+                    IFormFile img = sa.Image;
+                    if (img != null)
+                    {
+                        var filePath = Path.Combine(_rootpath, "images/Uploads/Articles", _user.companyName + "_" + WebUtility.HtmlEncode(myArticle.Title) + "_" + img.FileName);
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await img.CopyToAsync(stream);
+                        }
+                        //The file has been saved to disk - now save the file name to the DB
+                        myArticle.Image = img.FileName;
+                    }
+
+                    IFormFile vid = sa.EmbeddedVideo;
+                    if (vid != null)
+                    {
+                        var filePath = Path.Combine(_rootpath, "images/Uploads/Articles", _user.companyName + "_" + WebUtility.HtmlEncode(myArticle.Title) + "_" + vid.FileName);
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await vid.CopyToAsync(stream);
+                        }
+                        //The file has been saved to disk - now save the file name to the DB
+                        myArticle.EmbeddedVideo = vid.FileName;
+                    }
+
+                    // As they want order to be associated with segment now im having to smush it in with the current field....a bit ugly 
+                    if (sa.SelectedSegments.Count > 0)
+                    {
+                        myArticle.Segments = CreateSegmentsStringWithOrder1(sa.SelectedSegments);
+                    }
+
+                    _context.Add(myArticle);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
                 
-                myArticle.Languages = string.Join("|", sa.SelectedLanguages);
-                myArticle.Groups = string.Join("|", sa.SelectedGroups);
-                myArticle.Topics = string.Join("|", sa.SelectedTopics);
-                myArticle.TypeOfUser = string.Join("|", sa.SelectedTypeOfUser);
-                if (sa.Country != null && sa.Country != "") myArticle.Country = _context.LocationCountries.FirstOrDefault(m => m.country_code == sa.Country).country_name;
-                if (sa.State != null && sa.State != "") myArticle.State = _context.LocationStates.FirstOrDefault(n => n.country_code == sa.Country && n.state_code == sa.State).state_name;
-                myArticle.City = sa.City;
-
-                IFormFile img = sa.Image;
-                if (img != null)
-                {
-                    var filePath = Path.Combine(_rootpath, "images/Uploads/Articles", _user.companyName + "_" + WebUtility.HtmlEncode(myArticle.Title) + "_" + img.FileName);
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await img.CopyToAsync(stream);
-                    }
-                    //The file has been saved to disk - now save the file name to the DB
-                    myArticle.Image = img.FileName;
-                }
-
-                IFormFile vid = sa.EmbeddedVideo;
-                if (vid != null)
-                {
-                    var filePath = Path.Combine(_rootpath, "images/Uploads/Articles", _user.companyName + "_" + WebUtility.HtmlEncode(myArticle.Title) + "_" + vid.FileName);
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await vid.CopyToAsync(stream);
-                    }
-                    //The file has been saved to disk - now save the file name to the DB
-                    myArticle.EmbeddedVideo = vid.FileName;
-                }
-
-                // As they want order to be associated with segment now im having to smush it in with the current field....a bit ugly 
-                if (sa.SelectedSegments.Count > 0)
-                {
-                    myArticle.Segments = CreateSegmentsStringWithOrder1(sa.SelectedSegments);
-                }
-
-                _context.Add(myArticle);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
             }
-
+            else
+            {
+                // Article title already exists
+                ModelState.AddModelError(string.Empty, "Article Title already exists - please choose something unique");
+            }
             DatabaseAccessLayer dla = new DatabaseAccessLayer(_context);
-
 
             var listOfAllSegements = dla.GetArticleSegments(_user.companyID);
             foreach (var seg in listOfAllSegements)
             {
                 sa.AvailableSegments.Add(new SelectListItem { Text = seg.Value, Value = seg.Value });
             }
-
-
-
 
             // Add group checkboxes
             var listOfAllGroups = dla.GetListGroups(_user.companyID);
@@ -574,83 +584,94 @@ namespace WootrixV2.Controllers
             _user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();
             var myArticle = _context.SegmentArticle.Find(id);
 
-            if (ModelState.IsValid)
+            //Have to check the article title isn't already used
+            var existingArticle = _context.SegmentArticle.FirstOrDefault(n => n.Title == sa.Title && n.CompanyID == sa.CompanyID);
+            if (existingArticle == null)
             {
-                myArticle.ID = sa.ID;
-                myArticle.CompanyID = _user.companyID;
-                myArticle.Order = sa.Order ?? 1;
-                myArticle.Title = sa.Title;
-                myArticle.PublishFrom = sa.PublishFrom;
-                myArticle.PublishTill = sa.PublishTill;
-                myArticle.AllowComments = sa.AllowComments;
-                myArticle.ArticleContent = sa.ArticleContent;
-                myArticle.Author = sa.Author;
 
-                
-                myArticle.Tags = sa.Tags;
-                myArticle.ArticleUrl = sa.ArticleUrl;
-
-                myArticle.Languages = string.Join("|", sa.SelectedLanguages);
-                myArticle.Groups = string.Join("|", sa.SelectedGroups);
-                myArticle.Topics = string.Join("|", sa.SelectedTopics);
-                myArticle.TypeOfUser = string.Join("|", sa.SelectedTypeOfUser);
-                myArticle.City = sa.City;
-                if (sa.Country != null && sa.Country != "") myArticle.Country = _context.LocationCountries.FirstOrDefault(m => m.country_code == sa.Country).country_name;
-                if (sa.State != null && sa.State != "") myArticle.State = _context.LocationStates.FirstOrDefault(n => n.country_code == sa.Country && n.state_code == sa.State).state_name;
-
-                IFormFile img = sa.Image;
-                if (img != null)
+                if (ModelState.IsValid)
                 {
-                    var filePath = Path.Combine(_rootpath, "images/Uploads/Articles", _user.companyName + "_" + WebUtility.HtmlEncode(myArticle.Title) + "_" + img.FileName);
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await img.CopyToAsync(stream);
-                    }
-                    //The file has been saved to disk - now save the file name to the DB
-                    myArticle.Image = img.FileName;
-                }
+                    myArticle.ID = sa.ID;
+                    myArticle.CompanyID = _user.companyID;
+                    myArticle.Order = sa.Order ?? 1;
+                    myArticle.Title = sa.Title;
+                    myArticle.PublishFrom = sa.PublishFrom;
+                    myArticle.PublishTill = sa.PublishTill;
+                    myArticle.AllowComments = sa.AllowComments;
+                    myArticle.ArticleContent = sa.ArticleContent;
+                    myArticle.Author = sa.Author;
 
-                IFormFile vid = sa.EmbeddedVideo;
-                if (vid != null)
+
+                    myArticle.Tags = sa.Tags;
+                    myArticle.ArticleUrl = sa.ArticleUrl;
+
+                    myArticle.Languages = string.Join("|", sa.SelectedLanguages);
+                    myArticle.Groups = string.Join("|", sa.SelectedGroups);
+                    myArticle.Topics = string.Join("|", sa.SelectedTopics);
+                    myArticle.TypeOfUser = string.Join("|", sa.SelectedTypeOfUser);
+                    myArticle.City = sa.City;
+                    if (sa.Country != null && sa.Country != "") myArticle.Country = _context.LocationCountries.FirstOrDefault(m => m.country_code == sa.Country).country_name;
+                    if (sa.State != null && sa.State != "") myArticle.State = _context.LocationStates.FirstOrDefault(n => n.country_code == sa.Country && n.state_code == sa.State).state_name;
+
+                    IFormFile img = sa.Image;
+                    if (img != null)
+                    {
+                        var filePath = Path.Combine(_rootpath, "images/Uploads/Articles", _user.companyName + "_" + WebUtility.HtmlEncode(myArticle.Title) + "_" + img.FileName);
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await img.CopyToAsync(stream);
+                        }
+                        //The file has been saved to disk - now save the file name to the DB
+                        myArticle.Image = img.FileName;
+                    }
+
+                    IFormFile vid = sa.EmbeddedVideo;
+                    if (vid != null)
+                    {
+                        var filePath = Path.Combine(_rootpath, "images/Uploads/Articles", _user.companyName + "_" + WebUtility.HtmlEncode(myArticle.Title) + "_" + vid.FileName);
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            //async upload for now seems best as they want large files to be uploadable
+                            //vid.CopyToAsync(stream);
+                            await vid.CopyToAsync(stream);
+                        }
+                        //The file has been saved to disk - now save the file name to the DB
+                        myArticle.EmbeddedVideo = vid.FileName;
+                    }
+
+                    try
+                    {
+                        var oldSegments = myArticle.Segments.Split("|");
+                        //Even though it is an edit we are resetting the order to 1...its waaay to complicated otherwise.
+                        myArticle.Segments = CreateSegmentsStringWithOrder1ButWithCheckToMakeSureNotAt1Already(sa.SelectedSegments, oldSegments);
+
+                        _context.Update(myArticle);
+                        await _context.SaveChangesAsync();
+
+                        //update the selected article segments
+
+                        //DatabaseAccessLayer dla = new DatabaseAccessLayer(_context, _user.companyID);
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        if (!SegmentArticleExists(myArticle.ID))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
+                    return RedirectToAction(nameof(Index));
+                }
+                else
                 {
-                    var filePath = Path.Combine(_rootpath, "images/Uploads/Articles", _user.companyName + "_" + WebUtility.HtmlEncode(myArticle.Title) + "_" + vid.FileName);
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        //async upload for now seems best as they want large files to be uploadable
-                        //vid.CopyToAsync(stream);
-                        await vid.CopyToAsync(stream);
-                    }
-                    //The file has been saved to disk - now save the file name to the DB
-                    myArticle.EmbeddedVideo = vid.FileName;
+                    // Article title already exists
+                    ModelState.AddModelError(string.Empty, "Article Title already exists - please choose something unique");
                 }
-
-                try
-                {
-                    var oldSegments = myArticle.Segments.Split("|");
-                    //Even though it is an edit we are resetting the order to 1...its waaay to complicated otherwise.
-                    myArticle.Segments = CreateSegmentsStringWithOrder1ButWithCheckToMakeSureNotAt1Already(sa.SelectedSegments, oldSegments);
-                                                                                                                                                                           
-                    _context.Update(myArticle);
-                    await _context.SaveChangesAsync();
-
-                    //update the selected article segments
-
-                    //DatabaseAccessLayer dla = new DatabaseAccessLayer(_context, _user.companyID);
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!SegmentArticleExists(myArticle.ID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
             }
-            return View(sa);
+             return RedirectToAction("Edit", new { id = myArticle.ID });
         }
 
         // GET: SegmentArticles/Delete/5

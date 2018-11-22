@@ -45,17 +45,17 @@
 
     <script src="~/js/site.js" asp-append-version="true"></script>
 
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $.sessionTimeout({
-                warnAfter: 900000, /*15mins*/
-                redirAfter: 1200000, /*20 minutes*/
-                logoutUrl: '/Identity/Account/Logout?returnUrl=/Company/Home/@companyName',
-                redirUrl: '/Identity/Account/Login?returnUrl=/Company/Home/@companyName',
-                logoutUrl: '/Identity/Account/Logout?returnUrl=/Company/Home/@companyName',
+    @*<script type="text/javascript">
+            $(document).ready(function () {
+                $.sessionTimeout({
+                    warnAfter: 14400, /* 900000, 15mins*/
+                    redirAfter: 18000, /*1200000, 20 minutes*/
+                    logoutUrl: '/Identity/Account/Logout?returnUrl=/Company/Home/@companyName',
+                    redirUrl: '/Identity/Account/Logout?returnUrl=/Company/Home/@companyName',
+                    keepAliveUrl: '/Identity/Account/Login?returnUrl=/Company/Home/@companyName'
+                });
             });
-        });
-    </script>
+        </script>*@
     <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
 </head>
 <body style="background-color:@Context.Session.GetString("CompanyBackgroundColor"); color:@Context.Session.GetString("CompanyMainFontColor")">
@@ -68,7 +68,9 @@
                 <figure class="logo-container">
                     <a asp-controller="Company" asp-action="Home" asp-route-id="@companyName">
                         @{
-                            var fn = @companyName + "_" + @Context.Session.GetString("CompanyLogoImage");
+                            var logo = (string.IsNullOrEmpty(Context.Session.GetString("CompanyLogoImage")) ? "Wootrix_logo.png" : companyName + "_" + Context.Session.GetString("CompanyLogoImage"));
+                            var fn = logo;
+
                         }
                         <img id="companyLogo" src="~/images/Uploads/@fn" height="35" alt="Company Logo" class="img-responsive" />
                     </a>

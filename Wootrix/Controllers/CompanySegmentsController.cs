@@ -14,9 +14,11 @@ using Microsoft.EntityFrameworkCore;
 using Wootrix.Data;
 using WootrixV2.Data;
 using WootrixV2.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WootrixV2.Controllers
 {
+    [Authorize]
     public class CompanySegmentsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -538,88 +540,116 @@ namespace WootrixV2.Controllers
             _user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();
             //Initialise a new companysegment
             CompanySegment mySegment = await _context.CompanySegment.FindAsync(id);
-
-            if (ModelState.IsValid)
+            
+            //Have to check the Segment title isn't already used - it gets weird otherwise
+            var existingSeg = _context.SegmentArticle.FirstOrDefault(n => n.Title == cps.Title && n.CompanyID == cps.CompanyID);
+            if (existingSeg == null)
             {
-                //ID,Order,Title,CoverImage,CoverImageMobileFriendly,PublishDate,FinishDate,ClientName,ClientLogoImage,ThemeColor,StandardColor,Draft,Department,Tags
-                mySegment.CompanyID = _user.companyID;
-                
-                mySegment.Title = cps.Title;
-                mySegment.PublishDate = cps.PublishDate;
-                mySegment.FinishDate = cps.FinishDate;
-                mySegment.ClientName = cps.ClientName;
-                mySegment.ThemeColor = cps.ThemeColor;
-                mySegment.StandardColor = cps.StandardColor;
-                mySegment.Draft = DateTime.Now > cps.PublishDate ? false : true;
-                mySegment.Department = cps.Department;
-                mySegment.Tags = cps.Tags;
+                if (ModelState.IsValid)
+                {
+                    //ID,Order,Title,CoverImage,CoverImageMobileFriendly,PublishDate,FinishDate,ClientName,ClientLogoImage,ThemeColor,StandardColor,Draft,Department,Tags
+                    mySegment.CompanyID = _user.companyID;
 
-                IFormFile coverImage = cps.CoverImage;
-                if (coverImage != null)
-                {
-                    var filePath = Path.Combine(_rootpath, "images/Uploads", _user.companyName + "_" + coverImage.FileName);
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await coverImage.CopyToAsync(stream);
-                    }
-                    //The file has been saved to disk - now save the file name to the DB
-                    mySegment.CoverImage = coverImage.FileName;
-                }
+                   
+                    mySegment.PublishDate = cps.PublishDate;
+                    mySegment.FinishDate = cps.FinishDate;
+                    mySegment.ClientName = cps.ClientName;
+                    mySegment.ThemeColor = cps.ThemeColor;
+                    mySegment.StandardColor = cps.StandardColor;
+                    mySegment.Draft = DateTime.Now > cps.PublishDate ? false : true;
+                    mySegment.Department = cps.Department;
+                    mySegment.Tags = cps.Tags;
 
-                IFormFile coverImageMB = cps.CoverImageMobileFriendly;
-                if (coverImageMB != null)
-                {
-                    var filePath = Path.Combine(_rootpath, "images/Uploads", _user.companyName + "_" + coverImageMB.FileName);
-                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    IFormFile coverImage = cps.CoverImage;
+                    if (coverImage != null)
                     {
-                        await coverImageMB.CopyToAsync(stream);
+                        var filePath = Path.Combine(_rootpath, "images/Uploads", _user.companyName + "_" + coverImage.FileName);
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await coverImage.CopyToAsync(stream);
+                        }
+                        //The file has been saved to disk - now save the file name to the DB
+                        mySegment.CoverImage = coverImage.FileName;
                     }
-                    //The file has been saved to disk - now save the file name to the DB
-                    mySegment.CoverImageMobileFriendly = coverImageMB.FileName;
-                }
 
-                IFormFile cli = cps.ClientLogoImage;
-                if (cli != null)
-                {
-                    var filePath = Path.Combine(_rootpath, "images/Uploads", _user.companyName + "_" + cli.FileName);
-                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    IFormFile coverImageMB = cps.CoverImageMobileFriendly;
+                    if (coverImageMB != null)
                     {
-                        await cli.CopyToAsync(stream);
+                        var filePath = Path.Combine(_rootpath, "images/Uploads", _user.companyName + "_" + coverImageMB.FileName);
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await coverImageMB.CopyToAsync(stream);
+                        }
+                        //The file has been saved to disk - now save the file name to the DB
+                        mySegment.CoverImageMobileFriendly = coverImageMB.FileName;
                     }
-                    //The file has been saved to disk - now save the file name to the DB
-                    mySegment.CoverImageMobileFriendly = cli.FileName;
-                }
-                
-                
-                try
-                {
-                    // Done later to avoid ordering failures if the image upload fails.
-                    if (mySegment.Order != 1)
+
+                    IFormFile cli = cps.ClientLogoImage;
+                    if (cli != null)
                     {
-                        // We only need to decrement articles above it (lower order)
-                        InsertAtOrder1(mySegment.Order ?? 1);
-                    }                    
-                    mySegment.Order = 1;
-                    _context.Update(mySegment);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!CompanySegmentExists(cps.ID))
-                    {
-                        return NotFound();
+                        var filePath = Path.Combine(_rootpath, "images/Uploads", _user.companyName + "_" + cli.FileName);
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await cli.CopyToAsync(stream);
+                        }
+                        //The file has been saved to disk - now save the file name to the DB
+                        mySegment.CoverImageMobileFriendly = cli.FileName;
                     }
-                    else
+
+
+                    try
                     {
-                        throw;
+                        // Done later to avoid ordering failures if the image upload fails.
+                        if (mySegment.Order != 1)
+                        {
+                            // We only need to decrement articles above it (lower order)
+                            InsertAtOrder1(mySegment.Order ?? 1);
+                        }
+                        mySegment.Order = 1;
+
+                        // Ok but what about the connected articles? We need to update every article segments field and change the old val to the new
+
+                        // If the title changed
+                        if (mySegment.Title != cps.Title)
+                        {
+                            foreach (var art in _context.SegmentArticle.Where(m=> m.CompanyID == _user.companyID))
+                            {
+                                if (art.Segments.Contains(mySegment.Title))
+                                {
+                                    var oldSegments = art.Segments;
+                                    var newSegments = oldSegments.Replace(mySegment.Title, cps.Title);
+                                    art.Segments = newSegments;
+                                    _context.Update(art);
+                                }
+                            }
+                        }                     
+
+                        mySegment.Title = cps.Title;
+
+                        _context.Update(mySegment);
+                        await _context.SaveChangesAsync();
                     }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        if (!CompanySegmentExists(cps.ID))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
+                    return RedirectToAction(nameof(Index));
                 }
-                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                // Article title already exists
+                ModelState.AddModelError(string.Empty, "Magazine Title already exists - please choose something unique");
             }
 
-            DatabaseAccessLayer dla = new DatabaseAccessLayer(_context);
-            cps.Departments = dla.GetDepartments(_user.companyID);
-            return View(cps);
+            return RedirectToAction("Edit", new { id = cps.ID });
         }
 
         // GET: CompanySegments/Delete/5

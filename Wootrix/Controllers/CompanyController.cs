@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -20,6 +21,7 @@ using WootrixV2.Models;
 
 namespace WootrixV2.Controllers
 {
+    [Authorize]
     public class CompanyController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -57,6 +59,7 @@ namespace WootrixV2.Controllers
 
 
         // GET: Comany Home
+        [AllowAnonymous]
         public async Task<IActionResult> Home(string id)
         {
 

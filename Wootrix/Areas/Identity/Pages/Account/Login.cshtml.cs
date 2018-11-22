@@ -85,44 +85,44 @@ namespace WootrixV2.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                // This doesn't count login failures towards account lockout
-                // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: true);
-                if (result.Succeeded)
+                // Need to check if the email is also in the User table
+                var myUser = _context.User.FirstOrDefault(n => n.EmailAddress == Input.Email);
+                if (myUser != null)
                 {
+                    // This doesn't count login failures towards account lockout
+                    // To enable password failures to trigger account lockout, set lockoutOnFailure: true
+                    var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+                    if (result.Succeeded)
+                    {
 
-                    // Set the interface to their language
-                    var myLanguage = _context.User.AsNoTracking().Where(n => n.EmailAddress == Input.Email).SingleAsync().GetAwaiter().GetResult().InterfaceLanguage;
+                        // Set the interface to their language
+                        var myLanguage = _context.User.AsNoTracking().Where(n => n.EmailAddress == Input.Email).SingleAsync().GetAwaiter().GetResult().InterfaceLanguage;
 
-                    // Get the translated version
-                    var lang = _rlo.Value.SupportedUICultures.Where(c => c.DisplayName == myLanguage).FirstOrDefault().Name;
+                        // Get the translated version
+                        var lang = _rlo.Value.SupportedUICultures.Where(c => c.DisplayName == myLanguage).FirstOrDefault().Name;
 
 
-                    // OK now change it
-                    Response.Cookies.Append(
-                        CookieRequestCultureProvider.DefaultCookieName,
-                        CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(lang))
-                                        , new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) });
+                        // OK now change it
+                        Response.Cookies.Append(
+                            CookieRequestCultureProvider.DefaultCookieName,
+                            CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(lang))
+                                            , new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) });
 
-                    _logger.LogInformation("User logged in.");
-                    return LocalRedirect(returnUrl);
-                }
-                if (result.RequiresTwoFactor)
-                {
-                    return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
-                }
-                if (result.IsLockedOut)
-                {
-                    _logger.LogWarning("User account locked out.");
-                    return RedirectToPage("./Lockout");
-                }
-                else
-                {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                    return Page();
+                        _logger.LogInformation("User logged in.");
+                        return LocalRedirect(returnUrl);
+                    }
+                    if (result.RequiresTwoFactor)
+                    {
+                        return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
+                    }
+                    if (result.IsLockedOut)
+                    {
+                        _logger.LogWarning("User account locked out.");
+                        return RedirectToPage("./Lockout");
+                    }
                 }
             }
-
+            ModelState.AddModelError(string.Empty, "Invalid login attempt.");
             // If we got this far, something failed, redisplay form
             return Page();
         }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -13,6 +14,7 @@ using WootrixV2.Models;
 
 namespace WootrixV2.Controllers
 {
+    [Authorize]
     public class CompanyDepartmentsController : Controller
     {
         private readonly ApplicationDbContext _context;

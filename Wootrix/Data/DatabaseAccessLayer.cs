@@ -354,24 +354,34 @@ namespace WootrixV2.Data
                 foreach (var segmentTitle in articleSegments)
                 {
                     var justSegTitle = segmentTitle.Split('/');
-                        // Check if the segment title is in the existing segment list
-                        if (segments.FirstOrDefault(p => p.Title == justSegTitle[0].ToString()) == null)
+                    // Check if the segment title is in the existing segment list
+                    var findSeg = segments.FirstOrDefault(p => p.Title == justSegTitle[0].ToString());
+                    if (findSeg == null)
+                    {
+                        // Not in list so add it
+                        if (string.IsNullOrEmpty(segmentSearchString))
                         {
-                            // Not in list so add it
-                            if (string.IsNullOrEmpty(segmentSearchString))
-                            {
-                                // No search filter
-                                segments.Add(_context.CompanySegment.FirstOrDefault(p => p.Title == justSegTitle[0].ToString()));
+                            // No search filter
 
-                            }
-                            else
+                            // If a magazine title is changed after an article is set to be listed in it the below query will fail. In that case if
+                            // we can't find the segment then skip this step
+                            var segementInContextWithListedTitle = _context.CompanySegment.FirstOrDefault(p => p.Title == justSegTitle[0].ToString());
+
+                            if (segementInContextWithListedTitle != null)
                             {
-                                //Have to filter on search string too
-                                var seg = _context.CompanySegment.FirstOrDefault(p => p.Title == justSegTitle[0].ToString() && (p.Title.Contains(segmentSearchString) || p.Tags.Contains(segmentSearchString)));
-                                if (seg != null) segments.Add(seg);
+                                segments.Add(segementInContextWithListedTitle);
                             }
+
                         }
-                    
+                        else
+                        {
+                            //Have to filter on search string too
+                            var seg = _context.CompanySegment.FirstOrDefault(p => p.Title == justSegTitle[0].ToString() && (p.Title.Contains(segmentSearchString) || p.Tags.Contains(segmentSearchString)));
+                            if (seg != null) segments.Add(seg);
+                        }
+                    }
+
+
                 }
             }
 

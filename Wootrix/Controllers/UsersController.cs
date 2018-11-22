@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using CsvHelper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -23,6 +24,7 @@ using WootrixV2.Models;
 
 namespace WootrixV2.Controllers
 {
+    [Authorize]
     public class UsersController : Controller
     {
         private readonly ApplicationDbContext _context;
