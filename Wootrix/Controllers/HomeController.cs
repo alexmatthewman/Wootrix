@@ -53,13 +53,14 @@ namespace Wootrix.Controllers
                 if (User.Claims.Count() > 0)
                 {
                     var cl = User.Claims.FirstOrDefault(m => m.Value == "Admin" || m.Value == "CompanyAdmin");
-                    if (cl != null) { claim = cl.Value; } else
+                    if (cl != null) { claim = cl.Value; }
+                    else
                     {
                         //This is a user
                         var user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();
 
                         return RedirectToAction("Home", "Company", new { id = user.companyName });
-                    }                   
+                    }
                 }
 
                 if (claim == "Admin")
@@ -87,10 +88,10 @@ namespace Wootrix.Controllers
                     return RedirectToAction("Home", "Company", new { id = user.companyName });
                 }
             }
-          
+
             //If not logged in at all set the session to show the wootrix company so the login pages aren't messed up
-         
-            
+
+
             var company = _context.Company
                 .FirstOrDefaultAsync(m => m.CompanyName == "Wootrix").GetAwaiter().GetResult();
 
@@ -114,12 +115,7 @@ namespace Wootrix.Controllers
             return View();
         }
 
-       
-
-
-
-
-            public IActionResult Privacy()
+        public IActionResult Privacy()
         {
             return View();
         }

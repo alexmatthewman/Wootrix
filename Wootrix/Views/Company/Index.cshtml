@@ -75,23 +75,20 @@
                     </td>
                     <td>
                         @{
-                            var fn = item.CompanyName + "_" + item.CompanyLogoImage;
+                            var fn = ViewBag.UploadsLocation + item.CompanyName + "_" + item.CompanyLogoImage;
                         }
-                        <img src="~/images/Uploads/@fn" class="tableimg" />
-                        @*@Html.DisplayFor(modelItem => item.CompanyLogoImage)*@
+                        <img src="@fn" class="tableimg" />
                     </td>
                     <td style="background:@item.CompanyBackgroundColor">
                         @Html.DisplayFor(modelItem => item.CompanyBackgroundColor)
                     </td>
                     <td>
-                        @{var fnb = item.CompanyName + "_" + item.CompanyBackgroundImage;}
-                        <img src="~/images/Uploads/@fnb" class="tableimg" />
-                        @*@Html.DisplayFor(modelItem => item.CompanyBackgroundImage)*@
+                        @{var fnb = ViewBag.UploadsLocation + item.CompanyName + "_" + item.CompanyBackgroundImage;}
+                        <img src="@fnb" class="tableimg" />
                     </td>
                     <td>
-                        @{var fnf = item.CompanyName + "_" + item.CompanyFocusImage;}
-                        <img src="~/images/Uploads/@fnf" class="tableimg" />
-                        @*@Html.DisplayFor(modelItem => item.CompanyFocusImage)*@
+                        @{var fnf = ViewBag.UploadsLocation + item.CompanyName + "_" + item.CompanyFocusImage;}
+                        <img src="@fnf" class="tableimg" />
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.CompanyTextMain)

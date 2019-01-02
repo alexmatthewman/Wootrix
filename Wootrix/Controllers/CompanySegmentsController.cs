@@ -6,10 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-
-using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Wootrix.Data;
 using WootrixV2.Data;
@@ -34,21 +31,16 @@ namespace WootrixV2.Controllers
             _env = env;
             _rootpath = _env.WebRootPath;
             _userManager = userManager;
-
         }
-
 
         public async Task<IActionResult> ChangeArticleOrder(string id)
         {
-            var orderArray = id.Split("|");
-            var order = orderArray[0].ToString();
-            bool success = Int32.TryParse(orderArray[1].ToString(), out int articleID);
-
+            string[] orderArray = id.Split("|");
+            bool success = int.TryParse(orderArray[1].ToString(), out int articleID);
             var _companyID = HttpContext.Session.GetInt32("CompanyID") ?? 0;
             var article = await _context.SegmentArticle.FindAsync(articleID);
             int whereItCurrentlyIs = article.Order ?? 0;
-            int whereItIsMovingTo;
-            success = int.TryParse(order, out whereItIsMovingTo);
+            success = int.TryParse(orderArray[0].ToString(), out int whereItIsMovingTo);
 
             var segID = HttpContext.Session.GetInt32("SegmentID") ?? 0;
             CompanySegment cs = await _context.CompanySegment.FirstOrDefaultAsync(m => m.ID == segID && m.CompanyID == _companyID);
@@ -61,7 +53,7 @@ namespace WootrixV2.Controllers
             if (whereItCurrentlyIs < whereItIsMovingTo)
             {
                 foreach (var art in segmentArticle.Where(m => m.CompanyID == _companyID && ((m.Order ?? 0) <= whereItIsMovingTo) && (m.Order ?? 0) > whereItCurrentlyIs))
-                {                    
+                {
                     var updatedSegmentsAndOrders = "";
                     //Split the segments into a list, grab their order and increment it then save the change
                     var segments = art.Segments;
@@ -80,7 +72,7 @@ namespace WootrixV2.Controllers
                             bool success2 = int.TryParse(titleAndOrder[1], out ord);
                             ord--;
                             updatedSegmentsAndOrders += titleAndOrder[0] + "/" + ord + ender;
-                           
+
                         }
                         else
                         {
@@ -127,11 +119,11 @@ namespace WootrixV2.Controllers
                     art.Order++;
                     _context.Update(art);
                 }
-            }            
+            }
             // Update the order of the original Article as well
             article.Order = whereItIsMovingTo;
 
-            var uso = "";          
+            var uso = "";
             var segList = article.Segments.Split("|");
             foreach (string sto in segList)
             {
@@ -156,7 +148,7 @@ namespace WootrixV2.Controllers
             _context.Update(article);
             _context.SaveChanges();
 
-            return RedirectToAction("Details", "CompanySegments", new { id = segID }); 
+            return RedirectToAction("Details", "CompanySegments", new { id = segID });
         }
 
 
@@ -166,11 +158,10 @@ namespace WootrixV2.Controllers
             var order = orderArray[0].ToString();
             int segmentID;
             bool success = Int32.TryParse(orderArray[1].ToString(), out segmentID);
-            _companyID = HttpContext.Session.GetInt32("CompanyID") ?? 0;           
+            _companyID = HttpContext.Session.GetInt32("CompanyID") ?? 0;
             var segment = await _context.CompanySegment.FindAsync(segmentID);
             int whereItCurrentlyIs = segment.Order ?? 0;
-            int whereItIsMovingTo;
-            success = Int32.TryParse(order, out whereItIsMovingTo);
+            success = Int32.TryParse(order, out int whereItIsMovingTo);
 
             // So for each segment with an order greater than the order we need to increment the order number
             if (whereItCurrentlyIs < whereItIsMovingTo)
@@ -188,7 +179,7 @@ namespace WootrixV2.Controllers
                     seg.Order++;
                     _context.Update(seg);
                 }
-            }           
+            }
             // Update the order of the segmentID to be as passed
             segment.Order = whereItIsMovingTo;
             _context.Update(segment);
@@ -243,7 +234,7 @@ namespace WootrixV2.Controllers
         {
             _companyID = HttpContext.Session.GetInt32("CompanyID") ?? 0;
 
-            DatabaseAccessLayer dla = new DatabaseAccessLayer(_context);
+            DataAccessLayer dla = new DataAccessLayer(_context);
 
             _user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();
             WootrixV2.Models.User un = _context.User.Where(x => x.EmailAddress == _user.Email).FirstOrDefaultAsync().GetAwaiter().GetResult();
@@ -371,8 +362,7 @@ namespace WootrixV2.Controllers
                     {
                         //Get the order and increment
                         var titleAndOrder = segmentTitleAndOrder.Split("/");
-                        int ord;
-                        bool success = int.TryParse(titleAndOrder[1], out ord);
+                        bool success = int.TryParse(titleAndOrder[1], out int ord);
 
                         // Set the article Order
                         item.Order = ord;
@@ -412,7 +402,7 @@ namespace WootrixV2.Controllers
             //s.ClientLogoImage = _user.photoUrl;
             var cp = _user.companyID;
 
-            DatabaseAccessLayer dla = new DatabaseAccessLayer(_context);
+            DataAccessLayer dla = new DataAccessLayer(_context);
             s.Departments = dla.GetDepartments(cp);
             return View(s);
         }
@@ -444,7 +434,7 @@ namespace WootrixV2.Controllers
                 mySegment.Tags = cps.Tags;
                 mySegment.ClientName = cps.ClientName ?? _user.name;
 
-                
+
 
                 IFormFile coverImage = cps.CoverImage;
                 if (coverImage != null)
@@ -486,7 +476,7 @@ namespace WootrixV2.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            DatabaseAccessLayer dla = new DatabaseAccessLayer(_context);
+            DataAccessLayer dla = new DataAccessLayer(_context);
             cps.Departments = dla.GetDepartments(companyID);
             return View(cps);
         }
@@ -514,12 +504,12 @@ namespace WootrixV2.Controllers
             s.FinishDate = companySegment.FinishDate;
             s.StandardColor = companySegment.StandardColor;
             s.ThemeColor = companySegment.ThemeColor;
-            s.ClientName = (companySegment.ClientName == null ? _user.name : companySegment.ClientName);
+            s.ClientName = (companySegment.ClientName ?? _user.name);
             // s.ClientLogoImage = FormFileHelper.PhysicalToIFormFile(new FileInfo(companySegment.ClientLogoImage));
             s.Department = companySegment.Department;
             s.Tags = companySegment.Tags;
 
-            DatabaseAccessLayer dla = new DatabaseAccessLayer(_context);
+            DataAccessLayer dla = new DataAccessLayer(_context);
             s.Departments = dla.GetDepartments(_user.companyID);
             return View(s);
         }
@@ -539,7 +529,7 @@ namespace WootrixV2.Controllers
             _user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();
             //Initialise a new companysegment
             CompanySegment mySegment = await _context.CompanySegment.FindAsync(id);
-            
+
             //Have to check the Segment title isn't already used - it gets weird otherwise
             var existingSeg = _context.SegmentArticle.FirstOrDefault(n => n.Title == cps.Title && n.CompanyID == cps.CompanyID);
             if (existingSeg == null)
@@ -549,7 +539,7 @@ namespace WootrixV2.Controllers
                     //ID,Order,Title,CoverImage,CoverImageMobileFriendly,PublishDate,FinishDate,ClientName,ClientLogoImage,ThemeColor,StandardColor,Draft,Department,Tags
                     mySegment.CompanyID = _user.companyID;
 
-                   
+
                     mySegment.PublishDate = cps.PublishDate;
                     mySegment.FinishDate = cps.FinishDate;
                     mySegment.ClientName = cps.ClientName;
@@ -611,7 +601,7 @@ namespace WootrixV2.Controllers
                         // If the title changed
                         if (mySegment.Title != cps.Title)
                         {
-                            foreach (var art in _context.SegmentArticle.Where(m=> m.CompanyID == _user.companyID))
+                            foreach (var art in _context.SegmentArticle.Where(m => m.CompanyID == _user.companyID))
                             {
                                 if (art.Segments.Contains(mySegment.Title))
                                 {
@@ -621,7 +611,7 @@ namespace WootrixV2.Controllers
                                     _context.Update(art);
                                 }
                             }
-                        }                     
+                        }
 
                         mySegment.Title = cps.Title;
 

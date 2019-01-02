@@ -59,10 +59,10 @@
                                     <div>
                                         <a asp-controller="SegmentArticles" asp-action="Article" asp-route-id="@item.ID">
                                             @{
-                                                var fn = _companyName + "_" + WebUtility.HtmlEncode(item.Title) + "_" + item.Image;
+                                                var fn = _companyName + "_" + item.ID + "_" + item.Image;
                                             }
 
-                                            <h1>@item.Title</h1>
+                                            <h1>@WebUtility.HtmlDecode(item.Title)</h1>
                                             <div class="imageStuff">
                                                 <img src="~/images/Uploads/Articles/@fn" class="UserArticleImage" />
                                             </div>

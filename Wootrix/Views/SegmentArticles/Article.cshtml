@@ -34,14 +34,14 @@
                             <div>
 
                                 @{
-                                    var fn = _companyName + "_" + WebUtility.HtmlEncode(Model.Title) + "_" + Model.Image;
+                                    var fn = _companyName + "_" + Model.ID + "_" + Model.Image;
                                 }
 
-                                <h1>@Model.Title</h1>
+                                <h1>@WebUtility.HtmlDecode(Model.Title)</h1>
 
                                 @if (!string.IsNullOrEmpty(Model.EmbeddedVideo))
                                 {
-                                    var moviePath = "~/images/Uploads/Articles/" + _companyName + "_" + WebUtility.HtmlEncode(Model.Title) + "_" + Model.EmbeddedVideo;
+                                    var moviePath = "~/images/Uploads/Articles/" + _companyName + "_" + Model.ID + "_" + Model.EmbeddedVideo;
 
                                     <div class="embedded-movie">
                                         <video id="articleMovie" src="@Url.Content(moviePath)" controls="true" max-height="600" -max-width="1024px" autoplay="true"></video>
@@ -53,7 +53,7 @@
                                         <img src="~/images/Uploads/Articles/@fn" class="UserArticleImage" />
                                     </div>
                                 }
-                                @Html.Raw(Model.ArticleContent)
+                                @WebUtility.HtmlDecode(Model.ArticleContent)
                                 <div class="publishStuff">
                                     <span class="glyphicon glyphicon-user"></span>
                                     <div class="author">@Localizer["Posted by"] @Model.Author&nbsp;</div><div class="publishDate">@Model.PublishFrom</div>

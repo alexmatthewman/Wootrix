@@ -135,7 +135,7 @@ namespace WootrixV2.Controllers
                 return NotFound();
             }
 
-            DatabaseAccessLayer dla = new DatabaseAccessLayer(_context);
+            DataAccessLayer dla = new DataAccessLayer(_context);
             ViewBag.CommentCount = dla.GetArticleApprovedCommentCount(id ?? 0);
 
             ViewBag.Comments = dla.GetArticleCommentsList(id ?? 0);
@@ -162,7 +162,7 @@ namespace WootrixV2.Controllers
             s.Author = _user.name;
             s.AllowComments = true;
 
-            DatabaseAccessLayer dla = new DatabaseAccessLayer(_context);
+            DataAccessLayer dla = new DataAccessLayer(_context);
 
             var listOfAllSegements = dla.GetArticleSegments(_user.companyID);
             foreach (var seg in listOfAllSegements)
@@ -334,17 +334,17 @@ namespace WootrixV2.Controllers
                 {
                     //ID,Order,Title,CoverImage,CoverImageMobileFriendly,PublishDate,FinishDate,ClientName,ClientLogoImage,ThemeColor,StandardColor,Draft,Department,Tags
                     myArticle.CompanyID = _user.companyID;
-
-                    myArticle.Title = sa.Title;
-                    myArticle.PublishFrom = sa.PublishFrom;
-                    myArticle.PublishTill = sa.PublishTill;
+                   
+                    myArticle.Title = WebUtility.HtmlEncode(sa.Title);
+                    myArticle.PublishFrom = sa.PublishFrom ?? DateTime.Now.AddDays(-1);
+                    myArticle.PublishTill = sa.PublishTill ?? DateTime.Now.AddYears(10);
                     myArticle.AllowComments = sa.AllowComments;
-                    myArticle.ArticleContent = sa.ArticleContent;
-                    myArticle.Author = (sa.Author == null ? _user.name : sa.Author); //if null set to be user name
+                    myArticle.ArticleContent = WebUtility.HtmlEncode(sa.ArticleContent);
+                    myArticle.Author = (sa.Author ?? _user.name); //if null set to be user name
                     myArticle.CreatedBy = _user.UserName;
-                    myArticle.ArticleUrl = sa.ArticleUrl;
+                    myArticle.ArticleUrl = WebUtility.HtmlEncode(sa.ArticleUrl);
 
-                    myArticle.Tags = sa.Tags;
+                    myArticle.Tags = WebUtility.HtmlEncode(sa.Tags);
 
                     myArticle.Languages = string.Join("|", sa.SelectedLanguages);
                     myArticle.Groups = string.Join("|", sa.SelectedGroups);
@@ -354,10 +354,13 @@ namespace WootrixV2.Controllers
                     if (sa.State != null && sa.State != "") myArticle.State = _context.LocationStates.FirstOrDefault(n => n.country_code == sa.Country && n.state_code == sa.State).state_name;
                     myArticle.City = sa.City;
 
+                    //Now we need to get what the article ID will be as it isn't normally generated till created.
+                    int artID = _context.SegmentArticle.OrderByDescending(u => u.ID).FirstOrDefault().ID + 1;
+
                     IFormFile img = sa.Image;
                     if (img != null)
                     {
-                        var filePath = Path.Combine(_rootpath, "images/Uploads/Articles", _user.companyName + "_" + WebUtility.HtmlEncode(myArticle.Title) + "_" + img.FileName);
+                        var filePath = Path.Combine(_rootpath, "images/Uploads/Articles", _user.companyName + "_" + artID + "_" + img.FileName);
                         using (var stream = new FileStream(filePath, FileMode.Create))
                         {
                             await img.CopyToAsync(stream);
@@ -369,7 +372,7 @@ namespace WootrixV2.Controllers
                     IFormFile vid = sa.EmbeddedVideo;
                     if (vid != null)
                     {
-                        var filePath = Path.Combine(_rootpath, "images/Uploads/Articles", _user.companyName + "_" + WebUtility.HtmlEncode(myArticle.Title) + "_" + vid.FileName);
+                        var filePath = Path.Combine(_rootpath, "images/Uploads/Articles", _user.companyName + "_" + artID + "_" + vid.FileName);
                         using (var stream = new FileStream(filePath, FileMode.Create))
                         {
                             await vid.CopyToAsync(stream);
@@ -395,7 +398,7 @@ namespace WootrixV2.Controllers
                 // Article title already exists
                 ModelState.AddModelError(string.Empty, "Article Title already exists - please choose something unique");
             }
-            DatabaseAccessLayer dla = new DatabaseAccessLayer(_context);
+            DataAccessLayer dla = new DataAccessLayer(_context);
 
             var listOfAllSegements = dla.GetArticleSegments(_user.companyID);
             foreach (var seg in listOfAllSegements)
@@ -452,21 +455,21 @@ namespace WootrixV2.Controllers
                 return NotFound();
             }
 
-            DatabaseAccessLayer dla = new DatabaseAccessLayer(_context);
+            DataAccessLayer dla = new DataAccessLayer(_context);
             _user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();
             SegmentArticleViewModel s = new SegmentArticleViewModel();
             s.Order = segmentArticle.Order;
-            s.ArticleUrl = segmentArticle.ArticleUrl;
-            s.Title = segmentArticle.Title;
+            s.ArticleUrl = WebUtility.HtmlDecode(segmentArticle.ArticleUrl);
+            s.Title = WebUtility.HtmlDecode(segmentArticle.Title);
             //s.Image = segmentArticle.Image; TODO still need to fix this crap
             //s.EmbeddedVideo = segmentArticle.EmbeddedVideo;
-            s.ArticleContent = segmentArticle.ArticleContent;
+            s.ArticleContent = WebUtility.HtmlDecode(segmentArticle.ArticleContent);
             s.PublishFrom = segmentArticle.PublishFrom;
             s.PublishTill = segmentArticle.PublishTill;
             s.CompanyID = segmentArticle.CompanyID;
             s.Author = (segmentArticle.Author == null || segmentArticle.Author == "" ? _user.name : segmentArticle.Author);
             s.AllowComments = segmentArticle.AllowComments;
-            s.Tags = segmentArticle.Tags;
+            s.Tags = WebUtility.HtmlDecode(segmentArticle.Tags);
             s.CreatedBy = _user.UserName;
 
             // Get location dropdown data
@@ -589,16 +592,18 @@ namespace WootrixV2.Controllers
                     myArticle.ID = sa.ID;
                     myArticle.CompanyID = _user.companyID;
                     myArticle.Order = sa.Order ?? 1;
-                    myArticle.Title = sa.Title;
-                    myArticle.PublishFrom = sa.PublishFrom;
-                    myArticle.PublishTill = sa.PublishTill;
+                    myArticle.Title = WebUtility.HtmlEncode(sa.Title);
+
+                    myArticle.PublishFrom = sa.PublishFrom ?? DateTime.Now.AddDays(-1);
+                    myArticle.PublishTill = sa.PublishTill ?? DateTime.Now.AddYears(10);
+                   
                     myArticle.AllowComments = sa.AllowComments;
-                    myArticle.ArticleContent = sa.ArticleContent;
+                    myArticle.ArticleContent = WebUtility.HtmlEncode(sa.ArticleContent);
                     myArticle.Author = sa.Author;
 
 
-                    myArticle.Tags = sa.Tags;
-                    myArticle.ArticleUrl = sa.ArticleUrl;
+                    myArticle.Tags = WebUtility.HtmlEncode(sa.Tags);
+                    myArticle.ArticleUrl = WebUtility.HtmlEncode(sa.ArticleUrl);
 
                     myArticle.Languages = string.Join("|", sa.SelectedLanguages);
                     myArticle.Groups = string.Join("|", sa.SelectedGroups);
@@ -611,7 +616,7 @@ namespace WootrixV2.Controllers
                     IFormFile img = sa.Image;
                     if (img != null)
                     {
-                        var filePath = Path.Combine(_rootpath, "images/Uploads/Articles", _user.companyName + "_" + WebUtility.HtmlEncode(myArticle.Title) + "_" + img.FileName);
+                        var filePath = Path.Combine(_rootpath, "images/Uploads/Articles", _user.companyName + "_" + id + "_" + img.FileName);
                         using (var stream = new FileStream(filePath, FileMode.Create))
                         {
                             await img.CopyToAsync(stream);
@@ -623,7 +628,7 @@ namespace WootrixV2.Controllers
                     IFormFile vid = sa.EmbeddedVideo;
                     if (vid != null)
                     {
-                        var filePath = Path.Combine(_rootpath, "images/Uploads/Articles", _user.companyName + "_" + WebUtility.HtmlEncode(myArticle.Title) + "_" + vid.FileName);
+                        var filePath = Path.Combine(_rootpath, "images/Uploads/Articles", _user.companyName + "_" + id + "_" + vid.FileName);
                         using (var stream = new FileStream(filePath, FileMode.Create))
                         {
                             //async upload for now seems best as they want large files to be uploadable
@@ -633,19 +638,26 @@ namespace WootrixV2.Controllers
                         //The file has been saved to disk - now save the file name to the DB
                         myArticle.EmbeddedVideo = vid.FileName;
                     }
+                    else
+                    {
+                        myArticle.EmbeddedVideo = "";
+                    }
 
                     try
                     {
-                        var oldSegments = myArticle.Segments.Split("|");
-                        //Even though it is an edit we are resetting the order to 1...its waaay to complicated otherwise.
-                        myArticle.Segments = CreateSegmentsStringWithOrder1ButWithCheckToMakeSureNotAt1Already(sa.SelectedSegments, oldSegments);
-
+                        // If the article has some segments set
+                        if (!string.IsNullOrEmpty(myArticle.Segments))
+                        {
+                            var oldSegments = myArticle.Segments.Split("|");
+                            //Even though it is an edit we are resetting the order to 1...its waaay to complicated otherwise.
+                            myArticle.Segments = CreateSegmentsStringWithOrder1ButWithCheckToMakeSureNotAt1Already(sa.SelectedSegments, oldSegments);
+                        }
                         _context.Update(myArticle);
                         await _context.SaveChangesAsync();
 
                         //update the selected article segments
 
-                        //DatabaseAccessLayer dla = new DatabaseAccessLayer(_context, _user.companyID);
+                        //DataAccessLayer dla = new DataAccessLayer(_context, _user.companyID);
                     }
                     catch (DbUpdateConcurrencyException)
                     {
@@ -693,12 +705,23 @@ namespace WootrixV2.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var segmentArticle = await _context.SegmentArticle.FindAsync(id);
-            DatabaseAccessLayer dla = new DatabaseAccessLayer(_context);
+            DataAccessLayer dla = new DataAccessLayer(_context);
 
-            var segID = HttpContext.Session.GetInt32("SegmentID") ?? 0;
-            CompanySegment cs = await _context.CompanySegment.FindAsync(segID);
+            // OK no need to find the segment. They can remove from a segment but delete removes from all segments and deletes article.
+            // We do however need to increment the order of all articles in that segment below the current order.
 
-            dla.DeleteArticleAndUpdateOthersOrder(segmentArticle, cs.Title);
+            var segments = segmentArticle.Segments;
+            if (!string.IsNullOrEmpty(segments))
+            {
+                var segmentsList = segmentArticle.Segments.Split("|");
+                foreach (string segmentArticleIsIn in segmentsList)
+                {
+                    var titleAndOrder = segmentArticleIsIn.Split("/");
+                    var success2 = int.TryParse(titleAndOrder[1], out int ord);
+                    dla.DeleteArticleAndUpdateOthersOrder(segmentArticle, titleAndOrder[0], ord);
+                }
+            }
+               
             _context.SegmentArticle.Remove(segmentArticle);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
@@ -710,7 +733,7 @@ namespace WootrixV2.Controllers
         public async Task<IActionResult> RemoveFromMagazine(int id)
         {
             var segmentArticle = await _context.SegmentArticle.FindAsync(id);
-            DatabaseAccessLayer dla = new DatabaseAccessLayer(_context);
+            DataAccessLayer dla = new DataAccessLayer(_context);
 
             var segID = HttpContext.Session.GetInt32("SegmentID") ?? 0;
             CompanySegment cs = await _context.CompanySegment.FindAsync(segID);
@@ -730,7 +753,7 @@ namespace WootrixV2.Controllers
             if (!string.IsNullOrWhiteSpace(countryCode) && countryCode.Length == 2)
             {
                 HttpContext.Session.SetString("countryCode", countryCode);
-                DatabaseAccessLayer dla = new DatabaseAccessLayer(_context);
+                DataAccessLayer dla = new DataAccessLayer(_context);
                 IEnumerable<SelectListItem> states = dla.GetStates(countryCode);
                 return Json(states);
             }
@@ -743,7 +766,7 @@ namespace WootrixV2.Controllers
             if (!string.IsNullOrWhiteSpace(stateCode))
             {
                 string countryCode = HttpContext.Session.GetString("countryCode");
-                DatabaseAccessLayer dla = new DatabaseAccessLayer(_context);
+                DataAccessLayer dla = new DataAccessLayer(_context);
                 IEnumerable<SelectListItem> cities = dla.GetCities(countryCode, stateCode);
                 return Json(cities);
             }

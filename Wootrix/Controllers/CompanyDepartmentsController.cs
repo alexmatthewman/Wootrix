@@ -19,13 +19,13 @@ namespace WootrixV2.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
-        private DatabaseAccessLayer _dla;
+        private DataAccessLayer _dla;
 
         public CompanyDepartmentsController(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
         {
             _context = context;
             _userManager = userManager;
-            _dla = new DatabaseAccessLayer(_context);
+            _dla = new DataAccessLayer(_context);
         }
 
         // GET: CompanyDepartments

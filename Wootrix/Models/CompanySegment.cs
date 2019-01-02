@@ -12,9 +12,7 @@ namespace WootrixV2.Models
     
 
     public class CompanySegment
-    {
-       
-
+    {      
         [Key]
         public int ID { get; set; }
 
@@ -39,11 +37,13 @@ namespace WootrixV2.Models
         [Display(Name = "Cover Image Mobile Friendly", Prompt = "Please keep the file size small", Description = "Mobile Friendly")]
         public string CoverImageMobileFriendly { get; set; }
 
-        [DisplayFormat(DataFormatString = "{0:dd MMM yyyy}")]
+        [Required]
+        [DisplayFormat(DataFormatString = "{0:yyyy MMM dd}")]
         [Display(Name = "Publish Date", Prompt = "When it goes public", Description = "Publish Date")]
         public DateTime? PublishDate { get; set; }
 
-        [DisplayFormat(DataFormatString = "{0:dd MMM yyyy}")]
+        [Required]
+        [DisplayFormat(DataFormatString = "{0:yyyy MMM dd}")]
         [Display(Name = "Finish Date", Prompt = "When it stops displaying", Description = "Finish Date")]
         public DateTime? FinishDate { get; set; }
 
@@ -100,11 +100,13 @@ namespace WootrixV2.Models
         [Display(Name = "Cover Image Mobile Friendly", Prompt = "Please keep the file size small", Description = "Mobile Friendly")]
         public IFormFile CoverImageMobileFriendly { get; set; }
 
-        [DisplayFormat(DataFormatString = "{0:dd MMM yyyy}")]
+        [Required]
+        [DisplayFormat(DataFormatString = "{0:yyyy MMM dd}")]
         [Display(Name = "Publish Date", Prompt = "When it goes public", Description = "Publish Date")]
         public DateTime? PublishDate { get; set; }
 
-        [DisplayFormat(DataFormatString = "{0:dd MMM yyyy}")]
+        [Required]
+        [DisplayFormat(DataFormatString = "{0:yyyy MMM dd}")]
         [Display(Name = "Finish Date", Prompt = "When it stops displaying", Description = "Finish Date")]
         public DateTime? FinishDate { get; set; }
 
@@ -132,13 +134,5 @@ namespace WootrixV2.Models
         [StringLength(1000)]
         [Display(Name = "Tags", Prompt = "Comma delimit multiple tags", Description = "Tags")]
         public string Tags { get; set; }
-
-
-        //public CompanySegmentViewModel()
-        //{
-        //    Department = new List<string>();
-           
-        //}
-
     }
 }

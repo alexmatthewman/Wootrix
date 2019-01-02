@@ -2,11 +2,36 @@
 @import url(font-awesome.min.css);
 
 
-.identitypages h2, .identitypages h4 {
-    color: #ccc;
+.button, button {
+    color: #000 !important;
 }
 
+.identitypages h2, .identitypages h4 {
+    color: #000;
+    padding-left: 1em;
+    padding-top: 1em !important;
+    margin-bottom: 0 !important;
+    width: 100%;
+    float: left;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding-bottom: 2em;
+}
 
+.identitypages h2 {
+    padding-bottom: 1em;
+}
+
+.identitypages h4 {
+    padding-bottom: 2em;
+}
+
+.identitypages hr {
+    margin: .3em;
+}
+
+.social-login-cont .register-bttn {
+    text-decoration: none !important;
+}
 
 .pulse {
     animation: pulse 2s infinite;
@@ -123,7 +148,7 @@
     }
 
     .body-content .search .search-submit {
-        width: 45%;
+        width: 100%;
         margin-left: .5em;
     }
 
@@ -185,9 +210,10 @@
     #UserView .articleContainerCentred {
         -webkit-box-pack: center;
         justify-content: center;
-        max-width: 1248px;
+        /*max-width: 1248px;*/
         position: relative;
         margin: 0px auto;
+        width: 1248px;
     }
 
     #UserView .articleContainerSub {
@@ -263,7 +289,7 @@
     padding: 1em;
     max-height: 40em;
     margin: 0 auto;
-    min-width: 62em;
+    /*min-width: 62em;*/
 }
 
 #UserView .articleContainer .articleBox section .articleDetails {
@@ -271,7 +297,7 @@
     padding: 1em;
     max-height: unset;
     margin: 0 auto;
-    min-width: 62em;
+    /*min-width: 62em;*/
 }
 
 #UserView .articleContainer .articleBox section .article p {
@@ -643,16 +669,16 @@
     }
 
 .glow {
-    opacity: 0.8;
+    opacity: 1;
     -webkit-transition: all 0.5s ease;
     -moz-transition: all 0.5s ease;
     -o-transition: all 0.5s ease;
-    -webkit-box-reflect: below 0px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(.7, transparent), to(rgba(0,0,0,0.1)));
+    /*-webkit-box-reflect: below 0px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(.7, transparent), to(rgba(0,0,0,0.1)));*/
 }
 
     .glow:hover {
         opacity: 1;
-        -webkit-box-reflect: below 0px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(.7, transparent), to(rgba(0,0,0,0.4)));
+        /*-webkit-box-reflect: below 0px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(.7, transparent), to(rgba(0,0,0,0.4)));*/
         -webkit-box-shadow: 0px 0px 20px rgba(255,255,255,0.8);
         -moz-box-shadow: 0px 0px 20px rgba(255,255,255,0.8);
         box-shadow: 0px 0px 20px rgba(255,255,255,0.8);
@@ -676,7 +702,7 @@
     margin: auto;
 }
 
-.super-admin-cont .admin-profile h4 {
+.body-content .body-stuff .companyHome .super-admin-cont .admin-profile h4 {
     font-size: 24px;
     color: #3b3a3a;
     text-align: center;
@@ -684,9 +710,10 @@
     word-wrap: break-word;
     padding-top: unset;
     padding-left: unset;
+    display: block;
 }
 
-.super-admin-cont .admin-profile h5 {
+.body-content .body-stuff .companyHome .super-admin-cont .admin-profile h5 {
     background: #00a1e5;
     border-radius: 4px;
     color: #fff;
@@ -765,9 +792,33 @@
 
 /* SEGMENT ADMIN STYLING START */
 
+.magazine-table tbody {
+    text-align: center;
+}
+
+.table td {
+    word-break: break-all;
+    /*min-width: 9em;*/
+}
+
+
+.table td {
+    word-break: break-all;
+    /*min-width: 9em;*/
+}
+
+tr td:first-child,
+tr td:last-child {
+    word-break: normal;
+}
+
+.table th {
+    word-break: normal;
+}
+
 .magazine {
     max-width: 5em;
-    height: 30em;
+    height: 37em;
     padding: 1em;
     margin: 1em;
     display: inline-block;
@@ -777,57 +828,77 @@
     border-radius: .5em;
 }
 
-    .magazine .magazine-order {
-        text-align: left;
+.userView {
+    height: 31em;
+}
+
+.companyHome tbody {
+    text-align: center;
+}
+
+.magazine .magazine-order {
+    text-align: left;
+}
+
+    .magazine .magazine-order label {
+        display: inline-flex;
+        width: 20%;
+        margin: unset;
     }
 
-        .magazine .magazine-order label {
-            display: inline-flex;
-            width: 20%;
-            margin: unset;
-        }
-
-        .magazine .magazine-order select {
-            display: inline-flex;
-            width: 30%;
-            height: 2em;
-            margin-bottom: .3em;
-        }
-
-    .magazine .magazine-text {
-        display: unset;
-        overflow: hidden;
-        word-break: break-all;
+    .magazine .magazine-order select {
+        display: inline-flex;
+        width: 20%;
+        height: 1.5em;
+        margin-bottom: .3em;
     }
 
-        .magazine .magazine-text div {
-            display: inline-block;
-        }
+.magazine .magazine-text {
+    display: unset;
+    overflow: hidden;
+    word-break: break-all;
+}
 
-    .magazine .magazine-text-title {
-        font-weight: 900;
-        max-height: 3em;
-        overflow: auto;
-        word-break: normal;
+    .magazine .magazine-text .magazine-text-dates {
+        margin-bottom: 0.1em;
+        width: 100%;
     }
 
-    .magazine .magazine-pic {
-        border: .1em .1em .1em #ccc;
-        border-radius: .5em;
-        /*border: .5em solid #fff;*/
-        height: 20em;
-        vertical-align: middle;
+    .magazine .magazine-text .btn {
+        padding: 5px 10px;
+        margin-left: -3px;
+    }
+
+    .magazine .magazine-text div {
+        display: inline-block;
+    }
+
+.magazine .magazine-text-title {
+    font-weight: 900;
+    max-height: 3em;
+    overflow: auto;
+    word-break: normal;
+}
+
+.magazine .magazine-pic {
+    border: .1em .1em .1em #ccc;
+    border-radius: .5em;
+    /*border: .5em solid #fff;*/
+    height: 27em;
+    vertical-align: middle;
+    margin: 0 auto;
+    opacity: 1;
+}
+
+    .magazine .magazine-pic img {
+        max-height: 27em;
+        display: flex;
         margin: 0 auto;
+        /*max-width: 17em;*/
+        vertical-align: middle;
+        width: unset;
+        opacity: 1;
     }
-
-        .magazine .magazine-pic img {
-            max-height: 20em;
-            display: flex;
-            margin: 0 auto;
-            /*max-width: 17em;*/
-            vertical-align: middle;
-            width: unset;
-        }
 
 
 
@@ -838,12 +909,20 @@
 
 
 .body-content h2 {
-    padding-top: 3em;
+    font-size: 2em;
+    /*padding-top: 3em;*/
 }
 
+
 .body-content h2, .body-content h4 {
-    padding-top: 3em;
-    padding-left: 2em;
+    /*padding-top: 3em;*/
+    /*padding-left: 2em;*/
+    display: inline-block;
+}
+
+.body-content .textNoPad {
+    padding-top: 0;
+    display: inline-block;
 }
 
 
@@ -922,6 +1001,8 @@ input:focus::-webkit-input-placeholder {
 .social-login-cont {
     width: 28em;
     margin: auto;
+    background-color: rgba(255, 255, 255, 0.5);
+    padding: .5em;
 }
 
 .span7, .span5 {
@@ -1284,7 +1365,16 @@ for details on configuring this project to bundle and minify static web assets. 
 #qrCode {
     margin: 15px;
 }
+/* Hide/rearrange for smaller screens */
+@media screen and (max-width: 1024px) {
 
+    #UserView .articleContainerCentred {
+        
+        max-width: 1248px;
+        width: unset !important;
+    }
+
+}
 
 /* Hide/rearrange for smaller screens */
 @media screen and (max-width: 767px) {
@@ -1346,12 +1436,19 @@ for details on configuring this project to bundle and minify static web assets. 
 
     .body-content h2, .body-content h4 {
         padding-top: 0;
+        width: 100%;
+        float: left;
     }
 
     .body-content form {
         margin-left: 1em;
         margin-right: 1em;
     }
+
+        .body-content form hr {
+            margin: 0;
+            padding: 0;
+        }
 
     h1, h2, h3, h4, h5, h6 {
         word-wrap: normal;
@@ -1360,11 +1457,19 @@ for details on configuring this project to bundle and minify static web assets. 
     }
 
     .body-content h2, .body-content h4 {
-        margin-bottom: 0 !important;
+        float: left;
+    }
+
+    .body-content h4 {
+        padding-left: 0;
     }
 
     .body-content h2 {
-        margin-top: 1em !important;
+        padding-left: 0.5em !important;
+    }
+
+    .signin-social h3 {
+        color: #fff;
     }
 
     label {
@@ -1379,7 +1484,10 @@ for details on configuring this project to bundle and minify static web assets. 
         margin-bottom: .5em;
     }
 
-
+    #cookieConsent {
+        display: none;
+        /* I don't think this law applied to Apps (and it's EU only in any case) */
+    }
 
     .super-admin-cont .admin-profile {
         display: none;
@@ -1435,8 +1543,10 @@ for details on configuring this project to bundle and minify static web assets. 
         max-width: 100%;
     }
 
+
+
         .articleBackButtonContainer .articleBackButton {
-            max-width: 27em;
+            max-width: 30em;
         }
 
     .social-login-cont {
@@ -1446,11 +1556,12 @@ for details on configuring this project to bundle and minify static web assets. 
     #UserView .articleContainer {
         padding: unset;
     }
+
         #UserView .articleContainer .articleBox .article .commentsList .comment-box {
-            width:unset;
+            width: unset;
         }
 
         #UserView .articleContainer .articleBox .article .commentsList .reply-box {
-            width:unset;
+            width: unset;
         }
 }

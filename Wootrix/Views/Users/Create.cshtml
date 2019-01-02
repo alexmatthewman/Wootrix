@@ -202,8 +202,8 @@ $("#States").change(function () {
                         @foreach (var item in Model.AvailableLanguages)
                         {
                         <div class="checkbox">
-                            <input type="checkbox" name="SelectedLanguages" value="@item.Value">@Localizer[item.Text]
-                        </div>
+                            <label><input type="checkbox" name="SelectedLanguages" value="@item.Value">@Localizer[item.Text]</label>
+</div>
                         }
                     </div>
 

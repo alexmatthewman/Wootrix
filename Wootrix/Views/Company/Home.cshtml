@@ -15,9 +15,15 @@
     var companyName = Model.CompanyName;
     var bImage = companyName + "_" + Model.CompanyBackgroundImage;
     var fImage = companyName + "_" + Model.CompanyFocusImage;
-    if (!SignInManager.IsSignedIn(User))
+    var avatarImage = "";
+
+    if (SignInManager.IsSignedIn(User))
     {
         var _user = UserManager.GetUserAsync(User).GetAwaiter().GetResult();
+        if (ViewBag.User != null)
+        {
+            avatarImage = companyName + "_" + ViewBag.User.Photo;
+        }
     }
 }
 
@@ -30,7 +36,10 @@
                 <div class="span7 left">
                     <figure class="main-home-image">
                         <!--COMPANY FOCUS IMAGE-->
-                        <img src="~/images/Uploads/@fImage" id="CompanyFocusImage" alt="Company Focus Image" />
+                        @if (!string.IsNullOrEmpty(Model.CompanyFocusImage))
+                        {
+                            <img src="~/images/Uploads/@fImage" id="CompanyFocusImage" alt="Company Focus Image" />
+                        }
                     </figure>
                 </div>
                 <div class="span5 right">
@@ -63,7 +72,7 @@
                 <div class="fix-container clearfix">
                     <div class="super-admin-cont">
                         <div class="admin-profile clearfix glow bump">
-                            <div class="profile-image-cont"><img src="~/images/Uploads/@fImage" id="CompanyFocusImage" alt="Company Focus Image" /></div>
+                            <div class="profile-image-cont"><img src="~/images/Uploads/Users/@avatarImage" id="User Avatar" alt="User Avatar" /></div>
                             <h4 style="color:@Context.Session.GetString("CompanyMainFontColor") !important">@Localizer["Company Admin"]</h4>
                             <h5>@UserManager.GetUserName(User)</h5>
                         </div>
@@ -191,7 +200,7 @@
                 <div class="fix-container clearfix">
                     <div class="super-admin-cont">
                         <div class="admin-profile clearfix glow bump">
-                            <div class="profile-image-cont"><img src="~/images/Uploads/@fImage" id="CompanyFocusImage" alt="Company Focus Image" /></div>
+                            <div class="profile-image-cont"><img src="~/images/Uploads/Users/@avatarImage" id="User Avatar" alt="User Avatar" /></div>
                             <h4 style="color:@Context.Session.GetString("CompanyMainFontColor") !important">@Localizer["Super Admin"]</h4>
                             <h5>@UserManager.GetUserName(User)</h5>
 
@@ -222,7 +231,7 @@
                 </div>
             }
             @if (!User.HasClaim(ClaimTypes.Role, "CompanyAdmin") && !User.HasClaim(ClaimTypes.Role, "Admin"))
-            {                
+            {
                 <table class="table searchHeadTable">
                     <thead>
                         <tr>
@@ -243,7 +252,7 @@
                         <tr class="segmentsRow">
                             @foreach (var item in ViewBag.Segments)
                             {
-                                <td class="magazine glow bump" @*style="border:4px solid @item.ThemeColor;  background:@item.StandardColor;" *@>
+                                <td class="magazine glow bump userView" @*style="border:4px solid @item.ThemeColor;  background:@item.StandardColor;" *@>
                                     <a asp-controller="CompanySegments" asp-action="ArticleList" asp-route-id="@item.Title">
                                         <div class="magazine-pic">
                                             @{

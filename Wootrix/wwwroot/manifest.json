@@ -1,0 +1,19 @@
+{
+  "name": "Wootrix",
+  "short_name": "Wootrix",
+  "background_color": "#135557",
+  "theme_color": "#00569f",
+  "description": "Clever content deliver and managment for enterprises",
+  "icons": [
+    {
+      "src": "/images/icon192x192.png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/images/icon512x512.png",
+      "sizes": "512x512"
+    }
+  ],
+  "display": "fullscreen",
+  "start_url": "/"
+}

@@ -60,7 +60,7 @@ namespace WootrixV2.Controllers
             _companyID = HttpContext.Session.GetInt32("CompanyID") ?? 0;
             var role = (Roles)Enum.Parse(typeof(Roles), id);
             HttpContext.Session.SetString("ManageType", role.ToString());
-            DatabaseAccessLayer dla = new DatabaseAccessLayer(_context);
+            DataAccessLayer dla = new DataAccessLayer(_context);
             List<User> data = new List<User>();
 
             ViewBag.Companies = dla.GetCompanies();
@@ -85,19 +85,19 @@ namespace WootrixV2.Controllers
                 {
                     if (!string.IsNullOrWhiteSpace(item.Categories) && item.Categories != "User")
                     {
-                        DatabaseAccessLayer dla1 = new DatabaseAccessLayer(_context);
+                        DataAccessLayer dla1 = new DataAccessLayer(_context);
 
                         item.Categories = dla1.GetCompanyDepartmentName(item.Categories);
                     }
                     //if (!string.IsNullOrWhiteSpace(item.Country))
                     //{
-                    //    DatabaseAccessLayer dla2 = new DatabaseAccessLayer(_context);
+                    //    DataAccessLayer dla2 = new DataAccessLayer(_context);
 
                     //    item.Country = dla2.GetCountryName(item.Country);
                     //}
                     //if (!string.IsNullOrWhiteSpace(item.State))
                     //{
-                    //    DatabaseAccessLayer dla3 = new DatabaseAccessLayer(_context);
+                    //    DataAccessLayer dla3 = new DataAccessLayer(_context);
 
                     //    item.State = dla3.GetStateName(item.State);
                     //}
@@ -235,14 +235,17 @@ namespace WootrixV2.Controllers
             }
 
             var r = HttpContext.Session.GetString("ManageType");
-            DatabaseAccessLayer dla = new DatabaseAccessLayer(_context);
+            DataAccessLayer dla = new DataAccessLayer(_context);
             _user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();
             UserViewModel s = new UserViewModel();
 
             var cp = HttpContext.Session.GetInt32("CompanyID") ?? 0;
             s.CompanyID = HttpContext.Session.GetInt32("CompanyID") ?? 0;
             s.CompanyName = HttpContext.Session.GetString("CompanyName") ?? "";
-            s.Role = (Roles)Enum.Parse(typeof(Roles), r);
+            if (r != null)
+            {
+                s.Role = (Roles)Enum.Parse(typeof(Roles), r);
+            }
             s.Departments = dla.GetDepartments(cp);
             s.Genders = dla.GetGenders();
             s.InterfaceLanguages = dla.GetInterfaceLanguages(cp, _rlo);
@@ -306,7 +309,7 @@ namespace WootrixV2.Controllers
             if (!string.IsNullOrWhiteSpace(countryCode) && countryCode.Length == 2)
             {
                 HttpContext.Session.SetString("countryCode", countryCode);
-                DatabaseAccessLayer dla = new DatabaseAccessLayer(_context);
+                DataAccessLayer dla = new DataAccessLayer(_context);
                 IEnumerable<SelectListItem> states = dla.GetStates(countryCode);
                 return Json(states);
             }
@@ -319,7 +322,7 @@ namespace WootrixV2.Controllers
             if (!string.IsNullOrWhiteSpace(stateCode))
             {
                 string countryCode = HttpContext.Session.GetString("countryCode");
-                DatabaseAccessLayer dla = new DatabaseAccessLayer(_context);
+                DataAccessLayer dla = new DataAccessLayer(_context);
                 IEnumerable<SelectListItem> cities = dla.GetCities(countryCode, stateCode);
                 return Json(cities);
             }
@@ -408,7 +411,7 @@ namespace WootrixV2.Controllers
                 
                
             }
-            DatabaseAccessLayer dla = new DatabaseAccessLayer(_context);
+            DataAccessLayer dla = new DataAccessLayer(_context);
             user.Departments = dla.GetDepartments(companyID);
             user.Genders = dla.GetGenders();
             user.InterfaceLanguages = dla.GetInterfaceLanguages(companyID, _rlo);
@@ -525,7 +528,7 @@ namespace WootrixV2.Controllers
             }
 
             var user = await _context.User.FindAsync(id);
-            DatabaseAccessLayer dla = new DatabaseAccessLayer(_context);
+            DataAccessLayer dla = new DataAccessLayer(_context);
             _user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();
             UserViewModel s = new UserViewModel();
             var cp = HttpContext.Session.GetInt32("CompanyID") ?? 0;
@@ -705,7 +708,7 @@ namespace WootrixV2.Controllers
                 return RedirectToAction("Index", "Users", new { id = HttpContext.Session.GetString("ManageType") });
             }
           
-            DatabaseAccessLayer dla = new DatabaseAccessLayer(_context);
+            DataAccessLayer dla = new DataAccessLayer(_context);
             user.Departments = dla.GetDepartments(HttpContext.Session.GetInt32("CompanyID") ?? 0);
             user.Genders = dla.GetGenders();
             var cp = HttpContext.Session.GetInt32("CompanyID") ?? 0;           
@@ -798,29 +801,25 @@ namespace WootrixV2.Controllers
         }
 
 
-        public async Task<IActionResult> DeleteDotNetUser(int id)
+        public void DeleteDotNetUser(int id)
         {
             //Get the email address then search for the .net id based on that
             var usr = _context.User.FirstOrDefaultAsync(m => m.ID == id).GetAwaiter().GetResult();
-            var user = await _userManager.FindByEmailAsync(usr.EmailAddress);
+            var user = _userManager.FindByEmailAsync(usr.EmailAddress).GetAwaiter().GetResult();
 
             if (user == null)
             {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                //Fuck lol
+                throw new InvalidOperationException($"Unexpected error occurred deleteing user with ID '{id}'.");
             }
 
-            var result = await _userManager.DeleteAsync(user);
-            var userId = await _userManager.GetUserIdAsync(user);
+            var result = _userManager.DeleteAsync(user).GetAwaiter().GetResult();
+            var userId = _userManager.GetUserIdAsync(user).GetAwaiter().GetResult();
             if (!result.Succeeded)
             {
                 throw new InvalidOperationException($"Unexpected error occurred deleteing user with ID '{userId}'.");
             }
 
-            await _signInManager.SignOutAsync();
-
-            _logger.LogInformation("User with ID '{UserId}' deleted themselves.", userId);
-
-            return Redirect("~/");
         }
 
         // GET: Users/Delete/5
@@ -849,7 +848,7 @@ namespace WootrixV2.Controllers
             var user = await _context.User.FindAsync(id);
 
             var r = HttpContext.Session.GetString("ManageType");
-            await DeleteDotNetUser(id);
+            DeleteDotNetUser(id);
             _context.User.Remove(user);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index", "Users", new { id = r });

@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Wootrix.Data;
@@ -14,11 +13,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WootrixV2.Data;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Http.Features;
-using Microsoft.Extensions.FileProviders;
-using System.IO;
-
-using Amazon.S3;
 using Microsoft.AspNetCore.Mvc.Razor;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
@@ -26,6 +20,11 @@ using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Localization;
 using System.Reflection;
 using WootrixV2.Resources;
+using Microsoft.AspNetCore.Rewrite;
+using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.ResponseCompression;
+using WebEssentials.AspNetCore.Pwa;
+using Microsoft.Net.Http.Headers;
 
 namespace Wootrix
 {
@@ -47,7 +46,7 @@ namespace Wootrix
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
                 options.CheckConsentNeeded = context => true;
-                options.MinimumSameSitePolicy = SameSiteMode.None;
+                options.MinimumSameSitePolicy = Microsoft.AspNetCore.Http.SameSiteMode.None;
 
             });
 
@@ -126,6 +125,7 @@ namespace Wootrix
                });
 
 
+            
 
             services.Configure<RequestLocalizationOptions>(opts =>
             {
@@ -143,8 +143,31 @@ namespace Wootrix
                 opts.SupportedUICultures = supportedCultures;
             });
 
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddProgressiveWebApp();
 
+            services.Configure<GzipCompressionProviderOptions>(options => options.Level = System.IO.Compression.CompressionLevel.Optimal);
 
+            services.AddResponseCompression(options =>
+            {
+                options.EnableForHttps = true;
+
+            });
+
+            services.AddHsts(options =>
+            {
+                options.Preload = true;
+                options.IncludeSubDomains = true;
+                options.MaxAge = System.TimeSpan.FromDays(60);
+                options.ExcludedHosts.Add("fixmymood.com");
+                options.ExcludedHosts.Add("www.fixmymood.com");
+            });
+
+            services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                options.ForwardedHeaders =
+                    ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -158,23 +181,43 @@ namespace Wootrix
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                app.UseHsts();
+                //app.UseHsts();
             }
+            
+            app.UseDeveloperExceptionPage();
+            app.UseHsts();
+            var forwardingOptions = new ForwardedHeadersOptions()
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            };
+            forwardingOptions.KnownNetworks.Clear(); //its loopback by default
+            forwardingOptions.KnownProxies.Clear();
+            app.UseForwardedHeaders(forwardingOptions);
+            app.UseHttpsRedirection();       
+            app.UseResponseCompression();
 
             //So it seems that AWS has a bug or misplaced security setting that stops file locations that aren't above the wwwroot location
-            app.UseStaticFiles();
+            //app.UseStaticFiles();
             //app.UseStaticFiles(new StaticFileOptions
             //{
             //    FileProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath, "Uploads")),
             //    RequestPath = new PathString("/Uploads")
             //});
-            app.UseDeveloperExceptionPage();
+
+            //We need to add http response caching for better performance https://andrewlock.net/adding-cache-control-headers-to-static-files-in-asp-net-core/
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                OnPrepareResponse = ctx =>
+                {
+                    const int durationInSeconds = 60 * 60 * 24;
+                    ctx.Context.Response.Headers[HeaderNames.CacheControl] =
+                        "public,max-age=" + durationInSeconds;
+                }
+            });
 
             //More multi-lingual Support
             var options = app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>();
             app.UseRequestLocalization(options.Value);
-
-            app.UseHttpsRedirection();
             app.UseCookiePolicy();
             app.UseSession();
             app.UseAuthentication();
@@ -187,7 +230,6 @@ namespace Wootrix
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
-
             });
 
             CreateUserRoles(services).Wait();

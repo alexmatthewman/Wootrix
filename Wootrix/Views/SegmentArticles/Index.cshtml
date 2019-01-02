@@ -36,8 +36,6 @@
     <table class="table">
         <thead>
             <tr>
-
-
                 <th>
                     @Html.DisplayNameFor(model => model.Title)
                 </th>
@@ -100,14 +98,12 @@
 
 
                     <td>
-                        @Html.DisplayFor(modelItem => item.Title)
+                        @WebUtility.HtmlDecode(item.Title)
+                        @*@Html.DisplayFor(modelItem => item.Title)*@
                     </td>
                     <td>
                         @{
-                            var fn = _companyName + "_" + WebUtility.HtmlEncode(item.Title) + "_" + item.Image;
-
-
-
+                            var fn = _companyName + "_" + item.ID + "_" + item.Image;
                         }
                         <img src="~/images/Uploads/Articles/@fn" class="tableimg" />
                     </td>
@@ -123,7 +119,8 @@
                     </td>
 
                     <td>
-                        @Html.DisplayFor(modelItem => item.Tags)
+                        @WebUtility.HtmlDecode(item.Tags)
+                        @*@Html.DisplayFor(modelItem => item.Tags)*@
                     </td>
                     <td>
                         @Localizer[item.AllowComments.ToString()]

@@ -33,7 +33,7 @@
                     <ul>
                         <li>
                             <a asp-controller="Users" asp-action="Index" asp-route-id="Admin" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
-                                <span><img src="~/images/icon-3.png" alt="" /></span>
+                                <span><img src="~/images/icon-3.png" alt="admin" /></span>
                                 <strong>@Localizer["Manage Company Admins"]</strong>
                             </a>
                         </li>
@@ -68,24 +68,13 @@ else
         <div class="container clearfix">
             <div class="span7 left">
                 <figure class="main-home-image">
-                    <img src="~/images/website_images/home-screen.png" alt="" />
+                    <img src="~/images/website_images/home-screen.png" alt="homescreenimage" />
                 </figure>
             </div>
             <div class="span5 right">
                 <div class="social-login-cont">
                     <div class="signin-social">
-                        <h3>@Localizer["The smart way to find and distribute knowledge."]</h3>
-                        @*<div class="social-icons clearfix">
-                                <ul>
-                                    <li class="fb"><a href="https://www.facebook.com/v2.12/dialog/oauth?client_id=1627701464153107&amp;state=f00046d081144491894cf1e6024f52b1&amp;response_type=code&amp;sdk=php-sdk-5.6.2&amp;redirect_uri=http%3A%2F%2Fwww.wootrix.com%2Findex.php%2FfbCallback&amp;scope=email">Facebook</a></li>
-                                    <li class="twitter"><a href="http://wootrix.com/index.php/website/login_twitter/index">Twitter</a></li>
-                                    <li class="linkedin"><a href="http://wootrix.com/index.php/website/loginWithLinkedIn">linkedin</a></li>
-                                    <li class="google"><a href="https://accounts.google.com/o/oauth2/auth?response_type=code&redirect_uri=http%3A%2F%2Fwootrix.com%2Findex.php%2FgCallback&client_id=181469443324-j5neoccka33afjuvm4gnu2itnn07oo0n.apps.googleusercontent.com&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email&access_type=offline&approval_prompt=force&state=+-++-++-++-+">google</a></li>
-                                </ul>
-                            </div>
-                            <div class="login-divider">
-                                <span>ou</span>
-                            </div>*@
+                        <h3>@Localizer["The smart way to find and distribute knowledge."]</h3>                       
                     </div>
                     <div class="btn-box clearfix">
                         <a asp-area="Identity" class="register-bttn" asp-page="/Account/Login">@Localizer["Login"]</a>

@@ -39,11 +39,11 @@ namespace WootrixV2.Models
         [Display(Name = "Article Content", Prompt = "Please enter the article content", Description = "Article Content")]
         public string ArticleContent { get; set; }
 
-        [DisplayFormat(DataFormatString = "{0:dd MMM yyyy}")]
+        [DisplayFormat(DataFormatString = "{0:yyyy MMM dd}")]
         [Display(Name = "Publish Date", Prompt = "When it goes public", Description = "Publish Date")]
         public DateTime? PublishFrom { get; set; }
 
-        [DisplayFormat(DataFormatString = "{0:dd MMM yyyy}")]
+        [DisplayFormat(DataFormatString = "{0:yyyy MMM dd}")]
         [Display(Name = "Finish Date", Prompt = "When it stops displaying", Description = "Finish Date")]
         public DateTime? PublishTill { get; set; }
 
@@ -118,11 +118,11 @@ namespace WootrixV2.Models
         [Display(Name = "Article Content", Prompt = "Please enter the article content", Description = "Article Content")]
         public string ArticleContent { get; set; }
 
-        [DisplayFormat(DataFormatString = "{0:dd MMM yyyy}")]
+        [DisplayFormat(DataFormatString = "{0:yyyy MMM dd}")]
         [Display(Name = "Publish Date", Prompt = "When it goes public", Description = "Publish Date")]
         public DateTime? PublishFrom { get; set; }
 
-        [DisplayFormat(DataFormatString = "{0:dd MMM yyyy}")]
+        [DisplayFormat(DataFormatString = "{0:yyyy MMM dd}")]
         [Display(Name = "Finish Date", Prompt = "When it stops displaying", Description = "Finish Date")]
         public DateTime? PublishTill { get; set; }
 

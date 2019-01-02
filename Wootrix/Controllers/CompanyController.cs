@@ -1,23 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
-using Wootrix.Controllers;
 using Wootrix.Data;
 using WootrixV2.Data;
 using WootrixV2.Models;
- 
-
 
 namespace WootrixV2.Controllers
 {
@@ -29,41 +22,33 @@ namespace WootrixV2.Controllers
         private readonly string _rootpath;
         private ApplicationUser _user;
         private readonly UserManager<ApplicationUser> _userManager;
-        private DatabaseAccessLayer _dla;
+        private DataAccessLayer _dla;
         private SignInManager<ApplicationUser> _signInManager;
         private readonly IStringLocalizer<CompanyController> _companyLocalizer;
 
-
-
-
         public CompanyController(IStringLocalizer<CompanyController> companyLocalizer, UserManager<ApplicationUser> userManager, IHostingEnvironment env, ApplicationDbContext context, SignInManager<ApplicationUser> signInManager)
         {
-          
             _context = context;
             _env = env;
             _rootpath = _env.WebRootPath;
             _userManager = userManager;
             _signInManager = signInManager;
-            _dla = new DatabaseAccessLayer(_context);
+            _dla = new DataAccessLayer(_context);
             _companyLocalizer = companyLocalizer;
-
-
         }
 
         // GET: Company
         public async Task<IActionResult> Index()
         {
-            
+            ViewBag.UploadsLocation = "https://s3-us-west-2.amazonaws.com/wootrixv2uploadfiles/images/Uploads/";
             return View(await _context.Company.ToListAsync());
         }
-
 
         // GET: Comany Home
         [AllowAnonymous]
         public async Task<IActionResult> Home(string id)
         {
-
-            
+            ViewBag.UploadsLocation = "https://s3-us-west-2.amazonaws.com/wootrixv2uploadfiles/images/Uploads/";
             if (id == null)
             {
                 return NotFound();
@@ -73,8 +58,7 @@ namespace WootrixV2.Controllers
                 .FirstOrDefaultAsync(m => m.CompanyName == id);
 
             // Saving all this company stuff to the session so the layout isn't dependent on the model
-            // Note that it is all non-sensitive stuff
-            
+            // Note that it is all non-sensitive stuff            
             HttpContext.Session.SetInt32("CompanyID", company.ID);
             HttpContext.Session.SetString("CompanyName", company.CompanyName);
             HttpContext.Session.SetString("CompanyTextMain", company.CompanyTextMain);
@@ -96,16 +80,17 @@ namespace WootrixV2.Controllers
 
             // Now for users we need to show them articles on the home page so get them in the ViewBag for display
             _user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();
-            
+
             if (_signInManager.IsSignedIn(User))
             {
                 User usr = _context.User.FirstOrDefault(p => p.EmailAddress == _user.Email);
+                ViewBag.User = usr;
                 ViewBag.CommentUnderReviewCount = _dla.GetArticleReviewCommentCount(_user.companyID);
                 if (usr.Role == Roles.User)
                 {
                     ViewBag.Segments = _dla.GetSegmentsList(_user.companyID, usr, "", "");
                     ViewBag.Articles = _dla.GetArticlesList(_user.companyID);
-                    
+
                 }
             }
             return View(company);
@@ -136,11 +121,7 @@ namespace WootrixV2.Controllers
                 IFormFile logo = model.CompanyLogoImage;
                 if (logo != null)
                 {
-                    var filePath = Path.Combine(_rootpath, "images/Uploads", model.CompanyName + "_" + logo.FileName);
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await logo.CopyToAsync(stream);
-                    }
+                    await _dla.UploadFileToS3(logo, model.CompanyName + "_" + logo.FileName, "images/Uploads");
                     //The file has been saved to disk - now save the file name to the DB
                     myCompany.CompanyLogoImage = logo.FileName;
                 }
@@ -148,11 +129,7 @@ namespace WootrixV2.Controllers
                 IFormFile background = model.CompanyBackgroundImage;
                 if (background != null)
                 {
-                    var filePath = Path.Combine(_rootpath, "images/Uploads", model.CompanyName + "_" + background.FileName);
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await background.CopyToAsync(stream);
-                    }
+                    await _dla.UploadFileToS3(background, model.CompanyName + "_" + background.FileName, "images/Uploads");
                     //The file has been saved to disk - now save the file name to the DB
                     myCompany.CompanyBackgroundImage = background.FileName;
                 }
@@ -160,11 +137,7 @@ namespace WootrixV2.Controllers
                 IFormFile focus = model.CompanyFocusImage;
                 if (focus != null)
                 {
-                    var filePath = Path.Combine(_rootpath, "images/Uploads", model.CompanyName + "_" + focus.FileName);
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await focus.CopyToAsync(stream);
-                    }
+                    await _dla.UploadFileToS3(focus, model.CompanyName + "_" + focus.FileName, "images/Uploads");
                     //The file has been saved to disk - now save the file name to the DB
                     myCompany.CompanyFocusImage = focus.FileName;
                 }
@@ -248,24 +221,17 @@ namespace WootrixV2.Controllers
                 IFormFile logo = model.CompanyLogoImage;
                 if (logo != null)
                 {
-                    var filePath = Path.Combine(_rootpath, "images/Uploads", model.CompanyName + "_" + logo.FileName);
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await logo.CopyToAsync(stream);
-                    }
-                    //The file has been saved to disk - now save the file name to the DB
+                    await _dla.UploadFileToS3(logo, model.CompanyName + "_" + logo.FileName, "images/Uploads");
+
+                    //The file has been saved to AWS - now save the file name to the DB
                     myCompany.CompanyLogoImage = logo.FileName;
                 }
 
                 IFormFile background = model.CompanyBackgroundImage;
                 if (background != null)
                 {
-                    var s = _env.WebRootPath;
-                    var filePath = Path.Combine(_rootpath, "images/Uploads", model.CompanyName + "_" + background.FileName);
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await background.CopyToAsync(stream);
-                    }
+                    await _dla.UploadFileToS3(background, model.CompanyName + "_" + background.FileName, "images/Uploads");
+
                     //The file has been saved to disk - now save the file name to the DB
                     myCompany.CompanyBackgroundImage = background.FileName;
                 }
@@ -273,11 +239,7 @@ namespace WootrixV2.Controllers
                 IFormFile focus = model.CompanyFocusImage;
                 if (focus != null)
                 {
-                    var filePath = Path.Combine(_rootpath, "images/Uploads", model.CompanyName + "_" + focus.FileName);
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await focus.CopyToAsync(stream);
-                    }
+                    await _dla.UploadFileToS3(focus, model.CompanyName + "_" + focus.FileName, "images/Uploads");
                     //The file has been saved to disk - now save the file name to the DB
                     myCompany.CompanyFocusImage = focus.FileName;
                 }

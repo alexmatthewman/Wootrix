@@ -14,19 +14,58 @@ using WootrixV2.Models;
 using System.Threading;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Options;
+using Amazon.S3;
+using Amazon;
+using Amazon.S3.Transfer;
 
 namespace WootrixV2.Data
 {
-    public class DatabaseAccessLayer
+    public class DataAccessLayer
     {
 
         private readonly ApplicationDbContext _context;
-
-        public DatabaseAccessLayer(ApplicationDbContext context)
+        private string _bucketName = "wootrixv2uploadfiles"; //this is my Amazon Bucket name
+        
+        public DataAccessLayer(ApplicationDbContext context)
         {
             _context = context;
         }
 
+        public async Task UploadFileToS3(IFormFile file, string fileName, string fileFolder)
+        {
+            try
+            {
+                if (file.Length > 0)
+                {
+                    using (var client = new AmazonS3Client("AKIAIK65JJH7PZESEDCQ", "++/ANiW3uF3lPjMFf7knZk7cmmolxJUGaVw6fWxG", RegionEndpoint.USWest2))
+                    {
+                        using (var newMemoryStream = new MemoryStream())
+                        {
+                            file.CopyTo(newMemoryStream);
+
+                            string bucketName = _bucketName + @"/" + (fileFolder ?? "");
+
+                            var uploadRequest = new TransferUtilityUploadRequest
+                            {
+                                InputStream = newMemoryStream,
+                                Key = fileName,
+                                BucketName = bucketName,
+                                CannedACL = S3CannedACL.PublicRead
+                            };
+
+                            var fileTransferUtility = new TransferUtility(client);
+                            await fileTransferUtility.UploadAsync(uploadRequest);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+
+                Console.WriteLine(e.Message, e.InnerException);
+
+            }
+        }
 
         public IEnumerable<SelectListItem> GetCountries()
         {
@@ -535,7 +574,47 @@ namespace WootrixV2.Data
             RemoveSegmentFromArticleSegments(article, segmentTitle);
             _context.SaveChanges();
         }
-        
+
+        // Decrement everything below it
+        public void DeleteArticleAndUpdateOthersOrder(SegmentArticle article, string segmentTitle, int orderDeletedArticleIsAt)
+        {
+
+            List<SegmentArticle> segmentArticle = _context.SegmentArticle.Where(m => m.CompanyID == article.CompanyID && m.Segments.Contains(segmentTitle)).ToList();
+
+            foreach (var art in segmentArticle)
+            {
+                var updatedSegmentsAndOrders = "";
+                //Split the segments into a list, grab their order and increment it then save the change
+                var segments = art.Segments;
+                var segmentsList = art.Segments.Split("|");
+                foreach (string segmentTitleAndOrder in segmentsList)
+                {
+                    var ender = "";
+                    // If this isn't the last title, add a delimited
+                    if (segmentsList.Last() != segmentTitleAndOrder) ender = "|";
+
+                    if (segmentTitleAndOrder.Contains(segmentTitle))
+                    {
+                        //Get the order and increment
+                        var titleAndOrder = segmentTitleAndOrder.Split("/");
+                        int ord;
+                        bool success2 = int.TryParse(titleAndOrder[1], out ord);
+                        if (ord > orderDeletedArticleIsAt)
+                        {
+                            --ord;
+                        }
+                        updatedSegmentsAndOrders += titleAndOrder[0] + "/" + ord + ender;
+                    }
+                    else
+                    {
+                        // just add it unchanged 
+                        updatedSegmentsAndOrders += segmentTitleAndOrder + ender;
+                    }
+                }
+                art.Segments = updatedSegmentsAndOrders;
+                _context.Update(art);
+            }
+        }
 
     }
 }

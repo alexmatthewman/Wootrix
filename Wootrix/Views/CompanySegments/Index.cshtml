@@ -28,12 +28,12 @@
 </div>
 
 <div class="bodyBox">
-    <h2 style="color:@Context.Session.GetString("CompanyMainFontColor") !important">@Localizer["Magazines"]</h2>
+    @*<h2 style="color:@Context.Session.GetString("CompanyMainFontColor") !important">@Localizer["Magazines"]</h2>*@
 
     <p>
         <a asp-action="Create">@Localizer["Create New"]</a>
     </p>
-    <table class="table">
+    <table class="table magazine-table">
         <thead>
             <tr>
                 <th class="magazine-header-text">

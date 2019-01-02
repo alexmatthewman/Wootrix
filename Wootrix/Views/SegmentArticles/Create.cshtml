@@ -106,15 +106,14 @@ $("#States").change(function () {
                 </div>
                 <div class="form-group">
                     <label asp-for="PublishFrom" class="control-label"></label>
-                    <input asp-for="PublishFrom" type="date" class="form-control hasDatepicker" name="Date" />
+                    <input asp-for="PublishFrom" type="date" class="form-control hasDatepicker" />
                     <span asp-validation-for="PublishFrom" class="text-danger"></span>
-                </div>
+                </div>                
                 <div class="form-group">
                     <label asp-for="PublishTill" class="control-label"></label>
-                    <input asp-for="PublishTill" type="date" class="form-control hasDatepicker" name="Date" />
+                    <input asp-for="PublishTill" type="date" class="form-control hasDatepicker"  />
                     <span asp-validation-for="PublishTill" class="text-danger"></span>
                 </div>
-
                 <div class="form-group">
                     <label asp-for="Tags" class="control-label"></label>
                     <input asp-for="Tags" class="form-control" />
@@ -130,10 +129,10 @@ $("#States").change(function () {
                     </select>
                     @*@Html.EditorFor(x => x.AllowComments)*@
                     @*<select class="list-box tri-state" id="AllowComments" name="AllowComments">
-                            <option value="">Not Set</option>
-                            <option selected="selected" value="true">True</option>
-                            <option value="false">False</option>
-                        </select>*@
+                <option value="">Not Set</option>
+                <option selected="selected" value="true">True</option>
+                <option value="false">False</option>
+            </select>*@
                     <span asp-validation-for="AllowComments" class="text-danger"></span>
                 </div>
 
