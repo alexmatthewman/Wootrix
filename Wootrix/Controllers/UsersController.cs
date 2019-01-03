@@ -37,6 +37,7 @@ namespace WootrixV2.Controllers
         private readonly string _rootpath;
         private readonly IHostingEnvironment _env;
         private readonly IOptions<RequestLocalizationOptions> _rlo;
+        private DataAccessLayer _dla;
 
         public UsersController(IOptions<RequestLocalizationOptions> rlo, UserManager<ApplicationUser> userManager, IHostingEnvironment env, ApplicationDbContext context, SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
@@ -50,12 +51,14 @@ namespace WootrixV2.Controllers
             _env = env;
             _rootpath = _env.WebRootPath;
             _rlo = rlo;
+            _dla = new DataAccessLayer(_context);
         }
 
 
         // GET: Users        
         public async Task<IActionResult> Index(string id)
         {
+            ViewBag.UsersLocation = "https://s3-us-west-2.amazonaws.com/wootrixv2uploadfiles/images/Uploads/Users/";
 
             _companyID = HttpContext.Session.GetInt32("CompanyID") ?? 0;
             var role = (Roles)Enum.Parse(typeof(Roles), id);
@@ -388,11 +391,12 @@ namespace WootrixV2.Controllers
                     IFormFile avatar = user.Photo;
                     if (avatar != null)
                     {
-                        var filePath = Path.Combine(_rootpath, "images/Uploads/Users", HttpContext.Session.GetString("CompanyName") + "_" + avatar.FileName);
-                        using (var stream = new FileStream(filePath, FileMode.Create))
-                        {
-                            await avatar.CopyToAsync(stream);
-                        }
+                        await _dla.UploadFileToS3(avatar, HttpContext.Session.GetString("CompanyName") + "_" + avatar.FileName, "images/Uploads/Users");
+                        //var filePath = Path.Combine(_rootpath, "images/Uploads/Users", HttpContext.Session.GetString("CompanyName") + "_" + avatar.FileName);
+                        //using (var stream = new FileStream(filePath, FileMode.Create))
+                        //{
+                        //    await avatar.CopyToAsync(stream);
+                        //}
                         //The file has been saved to disk - now save the file name to the DB
                         un.Photo = avatar.FileName;
                     }
@@ -672,11 +676,12 @@ namespace WootrixV2.Controllers
                     IFormFile avatar = user.Photo;
                     if (avatar != null)
                     {
-                        var filePath = Path.Combine(_rootpath, "images/Uploads/Users", HttpContext.Session.GetString("CompanyName") + "_" + avatar.FileName);
-                        using (var stream = new FileStream(filePath, FileMode.Create))
-                        {
-                            await avatar.CopyToAsync(stream);
-                        }
+                        await _dla.UploadFileToS3(avatar, HttpContext.Session.GetString("CompanyName") + "_" + avatar.FileName, "images/Uploads/Users");
+                        //var filePath = Path.Combine(_rootpath, "images/Uploads/Users", HttpContext.Session.GetString("CompanyName") + "_" + avatar.FileName);
+                        //using (var stream = new FileStream(filePath, FileMode.Create))
+                        //{
+                        //    await avatar.CopyToAsync(stream);
+                        //}
                         //The file has been saved to disk - now save the file name to the DB
                         un.Photo = avatar.FileName;
                     }

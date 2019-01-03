@@ -34,14 +34,14 @@
                             <div>
 
                                 @{
-                                    var fn = _companyName + "_" + Model.ID + "_" + Model.Image;
+                                    var fn = ViewBag.UploadsLocation + "Articles/" + _companyName + "_" + Model.ID + "_" + Model.Image;
                                 }
 
                                 <h1>@WebUtility.HtmlDecode(Model.Title)</h1>
 
                                 @if (!string.IsNullOrEmpty(Model.EmbeddedVideo))
                                 {
-                                    var moviePath = "~/images/Uploads/Articles/" + _companyName + "_" + Model.ID + "_" + Model.EmbeddedVideo;
+                                    var moviePath = ViewBag.UploadsLocation + "Articles/" +_companyName + "_" + Model.ID + "_" + Model.EmbeddedVideo;
 
                                     <div class="embedded-movie">
                                         <video id="articleMovie" src="@Url.Content(moviePath)" controls="true" max-height="600" -max-width="1024px" autoplay="true"></video>
@@ -50,7 +50,7 @@
                                 @if (!string.IsNullOrEmpty(Model.Image))
                                 {
                                     <div class="imageStuff">
-                                        <img src="~/images/Uploads/Articles/@fn" class="UserArticleImage" />
+                                        <img src="@fn" class="UserArticleImage" />
                                     </div>
                                 }
                                 @WebUtility.HtmlDecode(Model.ArticleContent)

@@ -181,9 +181,9 @@
                     <td>
 
                         @{
-                            var fn = item.CompanyName + "_" + item.Photo;
+                            var fn = ViewBag.UsersLocation + item.CompanyName + "_" + item.Photo;
                         }
-                        <img src="~/images/Uploads/Users/@fn" class="tableimg" />
+                        <img src="@fn" class="tableimg" />
                     </td>
 
                     @if (_type == "CompanyAdmin")

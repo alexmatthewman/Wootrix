@@ -103,9 +103,9 @@
                     </td>
                     <td>
                         @{
-                            var fn = _companyName + "_" + item.ID + "_" + item.Image;
+                            var fn = ViewBag.UploadsLocation + "Articles/" + _companyName + "_" + item.ID + "_" + item.Image;
                         }
-                        <img src="~/images/Uploads/Articles/@fn" class="tableimg" />
+                        <img src="@fn" class="tableimg" />
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.EmbeddedVideo)

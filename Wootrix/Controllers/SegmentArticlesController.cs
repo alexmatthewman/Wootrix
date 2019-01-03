@@ -29,6 +29,7 @@ namespace WootrixV2.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private ApplicationUser _user;
         private readonly IOptions<RequestLocalizationOptions> _rlo;
+        private DataAccessLayer _dla;
 
         public SegmentArticlesController(IOptions<RequestLocalizationOptions> rlo, UserManager<ApplicationUser> userManager, IHostingEnvironment env, ApplicationDbContext context)
         {
@@ -37,8 +38,8 @@ namespace WootrixV2.Controllers
             _rootpath = _env.WebRootPath;
             _userManager = userManager;
             _rlo = rlo;
+            _dla = new DataAccessLayer(_context);
         }
-
 
         public async Task<IActionResult> ChangeOrder(string id)
         {
@@ -93,6 +94,8 @@ namespace WootrixV2.Controllers
         // GET: SegmentArticles
         public async Task<IActionResult> Index()
         {
+            ViewBag.UploadsLocation = "https://s3-us-west-2.amazonaws.com/wootrixv2uploadfiles/images/Uploads/";
+
             //Get the company name out the session and use it as a filter for the groups returned
             var id = HttpContext.Session.GetInt32("CompanyID");
             var ctx = await _context.SegmentArticle.Where(m => m.CompanyID == id).ToListAsync();
@@ -130,6 +133,8 @@ namespace WootrixV2.Controllers
         // GET: SegmentArticles/Article/5
         public async Task<IActionResult> Article(int? id)
         {
+            ViewBag.UploadsLocation = "https://s3-us-west-2.amazonaws.com/wootrixv2uploadfiles/images/Uploads/";
+
             if (id == null)
             {
                 return NotFound();
@@ -359,12 +364,8 @@ namespace WootrixV2.Controllers
 
                     IFormFile img = sa.Image;
                     if (img != null)
-                    {
-                        var filePath = Path.Combine(_rootpath, "images/Uploads/Articles", _user.companyName + "_" + artID + "_" + img.FileName);
-                        using (var stream = new FileStream(filePath, FileMode.Create))
-                        {
-                            await img.CopyToAsync(stream);
-                        }
+                    {      
+                        await _dla.UploadFileToS3(img, _user.companyName + "_" + artID + "_" + img.FileName, "images/Uploads/Articles");
                         //The file has been saved to disk - now save the file name to the DB
                         myArticle.Image = img.FileName;
                     }
@@ -372,11 +373,7 @@ namespace WootrixV2.Controllers
                     IFormFile vid = sa.EmbeddedVideo;
                     if (vid != null)
                     {
-                        var filePath = Path.Combine(_rootpath, "images/Uploads/Articles", _user.companyName + "_" + artID + "_" + vid.FileName);
-                        using (var stream = new FileStream(filePath, FileMode.Create))
-                        {
-                            await vid.CopyToAsync(stream);
-                        }
+                        await _dla.UploadFileToS3(vid, _user.companyName + "_" + artID + "_" + vid.FileName, "images/Uploads/Articles");
                         //The file has been saved to disk - now save the file name to the DB
                         myArticle.EmbeddedVideo = vid.FileName;
                     }
@@ -616,11 +613,7 @@ namespace WootrixV2.Controllers
                     IFormFile img = sa.Image;
                     if (img != null)
                     {
-                        var filePath = Path.Combine(_rootpath, "images/Uploads/Articles", _user.companyName + "_" + id + "_" + img.FileName);
-                        using (var stream = new FileStream(filePath, FileMode.Create))
-                        {
-                            await img.CopyToAsync(stream);
-                        }
+                        await _dla.UploadFileToS3(img, _user.companyName + "_" + id + "_" + img.FileName, "images/Uploads/Articles");
                         //The file has been saved to disk - now save the file name to the DB
                         myArticle.Image = img.FileName;
                     }
@@ -628,13 +621,7 @@ namespace WootrixV2.Controllers
                     IFormFile vid = sa.EmbeddedVideo;
                     if (vid != null)
                     {
-                        var filePath = Path.Combine(_rootpath, "images/Uploads/Articles", _user.companyName + "_" + id + "_" + vid.FileName);
-                        using (var stream = new FileStream(filePath, FileMode.Create))
-                        {
-                            //async upload for now seems best as they want large files to be uploadable
-                            //vid.CopyToAsync(stream);
-                            await vid.CopyToAsync(stream);
-                        }
+                        await _dla.UploadFileToS3(vid, _user.companyName + "_" + id + "_" + vid.FileName, "images/Uploads/Articles");                       
                         //The file has been saved to disk - now save the file name to the DB
                         myArticle.EmbeddedVideo = vid.FileName;
                     }

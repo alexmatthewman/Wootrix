@@ -13,6 +13,9 @@
 
     var bImage = companyName + "_" + Context.Session.GetString("CompanyBackgroundImage");
     var fImage = companyName + "_" + Context.Session.GetString("CompanyFocusImage");
+
+    //S3 Images Location
+    var UploadsLocation = "https://s3-us-west-2.amazonaws.com/wootrixv2uploadfiles/images/Uploads/";
 }
 
 <!DOCTYPE html>
@@ -73,10 +76,10 @@
                     <a asp-controller="Company" asp-action="Home" asp-route-id="@companyName">
                         @{
                             var logo = (string.IsNullOrEmpty(Context.Session.GetString("CompanyLogoImage")) ? "Wootrix_logo.png" : companyName + "_" + Context.Session.GetString("CompanyLogoImage"));
-                            var fn = logo;
+                            var fn = UploadsLocation + logo;
 
                         }
-                        <img id="companyLogo" src="~/images/Uploads/@fn" height="35" alt="Company Logo" class="img-responsive" />
+                        <img id="companyLogo" src="@fn" height="35" alt="Company Logo" class="img-responsive" />
                     </a>
                 </figure>
             </div>

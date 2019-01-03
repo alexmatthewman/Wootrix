@@ -46,7 +46,7 @@
                     var magImg = "";
                     if (!string.IsNullOrEmpty(ViewBag.Segment.CoverImage))
                     {
-                        magImg = _companyName + "_" + ViewBag.Segment.CoverImage;
+                        magImg = ViewBag.UploadsLocation + _companyName + "_" + ViewBag.Segment.CoverImage;
                     }
                     var pageTitle = "";
 
@@ -61,7 +61,7 @@
                 <div class="articleBox">
                     <div class="segmentHeader">
                         <h1>@pageTitle</h1>
-                        <img src="~/images/Uploads/@magImg" class="magazineArticleListImage" />
+                        <img src="@magImg" class="magazineArticleListImage" />
                     </div>
                     <section style="display: block">
                         @foreach (var item in Model)
@@ -75,11 +75,11 @@
 
                                             @if (!string.IsNullOrEmpty(item.Image))
                                             {
-                                                var fn = _companyName + "_" + item.ID + "_" + item.Image;
+                                                var fn = ViewBag.UploadsLocation + "Articles/" + _companyName + "_" + item.ID + "_" + item.Image;
                                                 if (!string.IsNullOrEmpty(item.Image))
                                                 {
                                                     <div class="imageStuff">
-                                                        <img src="~/images/Uploads/Articles/@fn" class="UserArticleImage" />
+                                                        <img src="@fn" class="UserArticleImage" />
                                                     </div>
                                                 }
                                             }
@@ -100,9 +100,9 @@
 
                                             @if (!string.IsNullOrEmpty(item.Image))
                                             {
-                                                var fn = _companyName + "_" + item.ID + "_" + item.Image;
+                                                var fn = ViewBag.UploadsLocation + "Articles/" + _companyName + "_" + item.ID + "_" + item.Image;
                                                 <div class="imageStuff">
-                                                    <img src="~/images/Uploads/Articles/@fn" class="UserArticleImage" />
+                                                    <img src="@fn" class="UserArticleImage" />
                                                 </div>
                                             }
                                                                                        

@@ -13,8 +13,8 @@
     Layout = "~/Views/Shared/_LayoutCompany.cshtml";
     ViewData["Title"] = Localizer["Home"];
     var companyName = Model.CompanyName;
-    var bImage = companyName + "_" + Model.CompanyBackgroundImage;
-    var fImage = companyName + "_" + Model.CompanyFocusImage;
+    var bImage = ViewBag.UploadsLocation + companyName + "_" + Model.CompanyBackgroundImage;
+    var fImage = ViewBag.UploadsLocation + companyName + "_" + Model.CompanyFocusImage;
     var avatarImage = "";
 
     if (SignInManager.IsSignedIn(User))
@@ -22,7 +22,7 @@
         var _user = UserManager.GetUserAsync(User).GetAwaiter().GetResult();
         if (ViewBag.User != null)
         {
-            avatarImage = companyName + "_" + ViewBag.User.Photo;
+            avatarImage = ViewBag.UploadsLocation + "Users/" + companyName + "_" + ViewBag.User.Photo;
         }
     }
 }
@@ -31,14 +31,14 @@
     <!-- Banner -->
     @if (!SignInManager.IsSignedIn(User))
     {
-        <section class="background" style="height: 92vh; background-repeat: no-repeat; background-image:  url('../../images/Uploads/@bImage');" alt="Home screen background">
+        <section class="background" style="height: 92vh; background-repeat: no-repeat; background-image:  url('@bImage');" alt="Home screen background">
             <div class="container clearfix">
                 <div class="span7 left">
                     <figure class="main-home-image">
                         <!--COMPANY FOCUS IMAGE-->
                         @if (!string.IsNullOrEmpty(Model.CompanyFocusImage))
                         {
-                            <img src="~/images/Uploads/@fImage" id="CompanyFocusImage" alt="Company Focus Image" />
+                            <img src="@fImage" id="CompanyFocusImage" alt="Company Focus Image" />
                         }
                     </figure>
                 </div>
@@ -72,7 +72,7 @@
                 <div class="fix-container clearfix">
                     <div class="super-admin-cont">
                         <div class="admin-profile clearfix glow bump">
-                            <div class="profile-image-cont"><img src="~/images/Uploads/Users/@avatarImage" id="User Avatar" alt="User Avatar" /></div>
+                            <div class="profile-image-cont"><img src="@avatarImage" id="User Avatar" alt="User Avatar" /></div>
                             <h4 style="color:@Context.Session.GetString("CompanyMainFontColor") !important">@Localizer["Company Admin"]</h4>
                             <h5>@UserManager.GetUserName(User)</h5>
                         </div>
@@ -200,7 +200,7 @@
                 <div class="fix-container clearfix">
                     <div class="super-admin-cont">
                         <div class="admin-profile clearfix glow bump">
-                            <div class="profile-image-cont"><img src="~/images/Uploads/Users/@avatarImage" id="User Avatar" alt="User Avatar" /></div>
+                            <div class="profile-image-cont"><img src="@avatarImage" id="User Avatar" alt="User Avatar" /></div>
                             <h4 style="color:@Context.Session.GetString("CompanyMainFontColor") !important">@Localizer["Super Admin"]</h4>
                             <h5>@UserManager.GetUserName(User)</h5>
 
@@ -256,19 +256,14 @@
                                     <a asp-controller="CompanySegments" asp-action="ArticleList" asp-route-id="@item.Title">
                                         <div class="magazine-pic">
                                             @{
-                                                var fn = companyName + "_" + item.CoverImage;
+                                                var fn = ViewBag.UploadsLocation + companyName + "_" + item.CoverImage;
                                             }
-                                            <img src="~/images/Uploads/@fn" />
+                                            <img src="@fn" />
                                         </div>
                                         <div class="magazine-text">
                                             <div class="magazine-text-title">
                                                 @item.Title
-                                            </div>
-                                            @*<div class="publishStuff">
-                                                    <span class="glyphicon glyphicon-user"></span>
-                                                    <div class="author">Posted&nbsp;by @(item.ClientName == null ? "Anon" : item.ClientName)</div>
-                                                    <div class="publishDate">&nbsp;@item.PublishDate.ToString("dd MMM yyyy")</div>
-                                                </div>*@
+                                            </div>                                           
                                         </div>
                                     </a>
                                 </td>

@@ -24,6 +24,7 @@ namespace WootrixV2.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private ApplicationUser _user;
         private int _companyID;
+        private DataAccessLayer _dla;
 
         public CompanySegmentsController(UserManager<ApplicationUser> userManager, IHostingEnvironment env, ApplicationDbContext context)
         {
@@ -31,6 +32,7 @@ namespace WootrixV2.Controllers
             _env = env;
             _rootpath = _env.WebRootPath;
             _userManager = userManager;
+            _dla = new DataAccessLayer(_context);
         }
 
         public async Task<IActionResult> ChangeArticleOrder(string id)
@@ -232,6 +234,7 @@ namespace WootrixV2.Controllers
         // GET: CompanySegments
         public async Task<IActionResult> UserSegmentSearch(string SearchString)
         {
+            ViewBag.UploadsLocation = "https://s3-us-west-2.amazonaws.com/wootrixv2uploadfiles/images/Uploads/";
             _companyID = HttpContext.Session.GetInt32("CompanyID") ?? 0;
 
             DataAccessLayer dla = new DataAccessLayer(_context);
@@ -248,6 +251,7 @@ namespace WootrixV2.Controllers
         // GET: CompanySegments
         public async Task<IActionResult> Index()
         {
+            ViewBag.UploadsLocation = "https://s3-us-west-2.amazonaws.com/wootrixv2uploadfiles/images/Uploads/";
             //Get the company name out the session and use it as a filter for the groups returned
 
             // We also need to filter on department.
@@ -288,6 +292,7 @@ namespace WootrixV2.Controllers
         // GET: SegmentArticles/Articlelist/id of segment
         public async Task<IActionResult> ArticleList(string id)
         {
+            ViewBag.UploadsLocation = "https://s3-us-west-2.amazonaws.com/wootrixv2uploadfiles/images/Uploads/";
             if (id == null)
             {
                 return NotFound();
@@ -314,6 +319,7 @@ namespace WootrixV2.Controllers
         // GET: SegmentArticles/Articlelist/id of segment
         public async Task<IActionResult> UserArticleSearch(string searchString)
         {
+            ViewBag.UploadsLocation = "https://s3-us-west-2.amazonaws.com/wootrixv2uploadfiles/images/Uploads/";
             if (searchString == null)
             {
                 return NotFound();
@@ -439,23 +445,19 @@ namespace WootrixV2.Controllers
                 IFormFile coverImage = cps.CoverImage;
                 if (coverImage != null)
                 {
-                    var filePath = Path.Combine(_rootpath, "images/Uploads", _user.companyName + "_" + coverImage.FileName);
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await coverImage.CopyToAsync(stream);
-                    }
-                    //The file has been saved to disk - now save the file name to the DB
+                    await _dla.UploadFileToS3(coverImage, _user.companyName + "_" + coverImage.FileName, "images/Uploads");                    
                     mySegment.CoverImage = coverImage.FileName;
                 }
 
                 IFormFile coverImageMB = cps.CoverImageMobileFriendly;
                 if (coverImageMB != null)
                 {
-                    var filePath = Path.Combine(_rootpath, "images/Uploads", _user.companyName + "_" + coverImageMB.FileName);
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await coverImageMB.CopyToAsync(stream);
-                    }
+                    await _dla.UploadFileToS3(coverImageMB, _user.companyName + "_" + coverImageMB.FileName, "images/Uploads");
+                    //var filePath = Path.Combine(_rootpath, "images/Uploads", _user.companyName + "_" + coverImageMB.FileName);
+                    //using (var stream = new FileStream(filePath, FileMode.Create))
+                    //{
+                    //    await coverImageMB.CopyToAsync(stream);
+                    //}
                     //The file has been saved to disk - now save the file name to the DB
                     mySegment.CoverImageMobileFriendly = coverImageMB.FileName;
                 }
@@ -463,11 +465,7 @@ namespace WootrixV2.Controllers
                 IFormFile cli = cps.ClientLogoImage;
                 if (cli != null)
                 {
-                    var filePath = Path.Combine(_rootpath, "images/Uploads", _user.companyName + "_" + cli.FileName);
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await cli.CopyToAsync(stream);
-                    }
+                    await _dla.UploadFileToS3(cli, _user.companyName + "_" + cli.FileName, "images/Uploads");
                     //The file has been saved to disk - now save the file name to the DB
                     mySegment.CoverImageMobileFriendly = cli.FileName;
                 }
@@ -552,23 +550,15 @@ namespace WootrixV2.Controllers
                     IFormFile coverImage = cps.CoverImage;
                     if (coverImage != null)
                     {
-                        var filePath = Path.Combine(_rootpath, "images/Uploads", _user.companyName + "_" + coverImage.FileName);
-                        using (var stream = new FileStream(filePath, FileMode.Create))
-                        {
-                            await coverImage.CopyToAsync(stream);
-                        }
-                        //The file has been saved to disk - now save the file name to the DB
+                        await _dla.UploadFileToS3(coverImage, _user.companyName + "_" + coverImage.FileName, "images/Uploads");
+                        
                         mySegment.CoverImage = coverImage.FileName;
                     }
 
                     IFormFile coverImageMB = cps.CoverImageMobileFriendly;
                     if (coverImageMB != null)
                     {
-                        var filePath = Path.Combine(_rootpath, "images/Uploads", _user.companyName + "_" + coverImageMB.FileName);
-                        using (var stream = new FileStream(filePath, FileMode.Create))
-                        {
-                            await coverImageMB.CopyToAsync(stream);
-                        }
+                        await _dla.UploadFileToS3(coverImageMB, _user.companyName + "_" + coverImageMB.FileName, "images/Uploads");
                         //The file has been saved to disk - now save the file name to the DB
                         mySegment.CoverImageMobileFriendly = coverImageMB.FileName;
                     }
@@ -576,11 +566,7 @@ namespace WootrixV2.Controllers
                     IFormFile cli = cps.ClientLogoImage;
                     if (cli != null)
                     {
-                        var filePath = Path.Combine(_rootpath, "images/Uploads", _user.companyName + "_" + cli.FileName);
-                        using (var stream = new FileStream(filePath, FileMode.Create))
-                        {
-                            await cli.CopyToAsync(stream);
-                        }
+                        await _dla.UploadFileToS3(cli, _user.companyName + "_" + cli.FileName, "images/Uploads");
                         //The file has been saved to disk - now save the file name to the DB
                         mySegment.CoverImageMobileFriendly = cli.FileName;
                     }

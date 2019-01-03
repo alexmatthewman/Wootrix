@@ -71,9 +71,9 @@
                         <a asp-action="Details" asp-route-id="@item.ID">
                             <div class="magazine-pic">
                                 @{
-                                    var fn = _companyName + "_" + item.CoverImage;
+                                    var fn = ViewBag.UploadsLocation + _companyName + "_" + item.CoverImage;
                                 }
-                                <img src="~/images/Uploads/@fn" />
+                                <img src="@fn" />
                             </div>
                         </a>
                         <div class="magazine-text">

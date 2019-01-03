@@ -61,9 +61,7 @@ namespace WootrixV2.Data
             }
             catch (Exception e)
             {
-
                 Console.WriteLine(e.Message, e.InnerException);
-
             }
         }
 

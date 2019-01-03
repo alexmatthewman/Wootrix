@@ -39,7 +39,7 @@
 
                 @* So they want the magazine image to be the first thing displayed *@
                 @{
-                    var magImg = _companyName + "_" + ViewBag.Segment.CoverImage;
+                    var magImg = ViewBag.UploadsLocation + _companyName + "_" + ViewBag.Segment.CoverImage;
                 }
 
 
@@ -47,7 +47,7 @@
                 <div class="articleBox">
                     <div class="segmentHeader">
                         <h1>@ViewBag.Segment.Title</h1>
-                        <img src="~/images/Uploads/@magImg" class="magazineArticleListImage" />
+                        <img src="@magImg" class="magazineArticleListImage" />
                     </div>
                     <section style="display: block">
 
@@ -59,12 +59,12 @@
                                     <div>
                                         <a asp-controller="SegmentArticles" asp-action="Article" asp-route-id="@item.ID">
                                             @{
-                                                var fn = _companyName + "_" + item.ID + "_" + item.Image;
+                                                var fn = ViewBag.UploadsLocation + "Articles/" + _companyName + "_" + item.ID + "_" + item.Image;
                                             }
 
                                             <h1>@WebUtility.HtmlDecode(item.Title)</h1>
                                             <div class="imageStuff">
-                                                <img src="~/images/Uploads/Articles/@fn" class="UserArticleImage" />
+                                                <img src="@fn" class="UserArticleImage" />
                                             </div>
                                             @*@Html.Raw(Model.ArticleContent)*@
                                             <div class="publishStuff">

@@ -8,20 +8,14 @@
     Layout = "~/Views/Shared/_LayoutCompany.cshtml";
 }
 
-
-
 @section Scripts {
-
     <script type="text/javascript">
         $("#CompanySelector").change(function () {
             var companyID = $('option:selected', $(this)).val();
             window.location.href = '/CompanyDepartments/Index/' + companyID;
         });
-
     </script>
-
 }
-
 
 <div class="bodyBox">
     <h2 style="color:@Context.Session.GetString("CompanyMainFontColor") !important">@Localizer["Index"]</h2>

@@ -51,9 +51,9 @@
                     <a asp-controller="CompanySegments" asp-action="ArticleList" asp-route-id="@item.Title">
                         <div class="magazine-pic">
                             @{
-                                var fn = _companyName + "_" + item.CoverImage;
+                                var fn = ViewBag.UploadsLocation + _companyName + "_" + item.CoverImage;
                             }
-                            <img src="~/images/Uploads/@fn" />
+                            <img src="@fn" />
                         </div>
                         <div class="magazine-text">
                             <div class="magazine-text-title">
