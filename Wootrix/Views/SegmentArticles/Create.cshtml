@@ -7,11 +7,12 @@
     ViewData["Title"] = Localizer["Create"];
     Layout = "~/Views/Shared/_LayoutCompany.cshtml";
 }
+<script src="~/ckeditor/ckeditor.js"></script>
 
 @section Scripts {
 
 
-    <script src="~/ckeditor/ckeditor.js"></script>
+
 
     @*https://www.pluralsight.com/guides/asp-net-mvc-populating-dropdown-lists-in-razor-views-using-the-mvvm-design-pattern-entity-framework-and-ajax*@
     <script type="text/javascript">
@@ -108,10 +109,10 @@ $("#States").change(function () {
                     <label asp-for="PublishFrom" class="control-label"></label>
                     <input asp-for="PublishFrom" type="date" class="form-control hasDatepicker" />
                     <span asp-validation-for="PublishFrom" class="text-danger"></span>
-                </div>                
+                </div>
                 <div class="form-group">
                     <label asp-for="PublishTill" class="control-label"></label>
-                    <input asp-for="PublishTill" type="date" class="form-control hasDatepicker"  />
+                    <input asp-for="PublishTill" type="date" class="form-control hasDatepicker" />
                     <span asp-validation-for="PublishTill" class="text-danger"></span>
                 </div>
                 <div class="form-group">
@@ -129,10 +130,10 @@ $("#States").change(function () {
                     </select>
                     @*@Html.EditorFor(x => x.AllowComments)*@
                     @*<select class="list-box tri-state" id="AllowComments" name="AllowComments">
-                <option value="">Not Set</option>
-                <option selected="selected" value="true">True</option>
-                <option value="false">False</option>
-            </select>*@
+                            <option value="">Not Set</option>
+                            <option selected="selected" value="true">True</option>
+                            <option value="false">False</option>
+                        </select>*@
                     <span asp-validation-for="AllowComments" class="text-danger"></span>
                 </div>
 

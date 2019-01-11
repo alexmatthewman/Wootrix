@@ -22,7 +22,8 @@
 
 <div class="articleBackButtonContainer">
     <a asp-controller="CompanySegments" asp-action="ArticleList" asp-route-id="@_SegmentListID">
-    <button class="articleBackButton button glow"><span class="glyphicon glyphicon-menu-left"></span>&nbsp;@Localizer["Back to Article List"]</button></a>
+        <button class="articleBackButton button glow"><span class="glyphicon glyphicon-menu-left"></span>&nbsp;@Localizer["Back to Article List"]</button>
+    </a>
 </div>
 <main id="UserView">
     <div class="articleContainer">
@@ -37,14 +38,23 @@
                                     var fn = ViewBag.UploadsLocation + "Articles/" + _companyName + "_" + Model.ID + "_" + Model.Image;
                                 }
 
+
                                 <h1>@WebUtility.HtmlDecode(Model.Title)</h1>
 
+                                @*@if (!string.IsNullOrEmpty(Model.ArticleUrl))
+                                    {
+                                        //<iframe src="https://www.theguardian.com/international" width="100%" height="600px"></iframe>
+                                        //<iframe src="demo_iframe.htm" ></iframe>
+                                        <div>
+                                            <object type="text/html" data="@Model.ArticleUrl" width="800px" height="600px" style="overflow:auto;border:5px ridge blue"></object>
+                                        </div>
+                                    }*@
                                 @if (!string.IsNullOrEmpty(Model.EmbeddedVideo))
                                 {
-                                    var moviePath = ViewBag.UploadsLocation + "Articles/" +_companyName + "_" + Model.ID + "_" + Model.EmbeddedVideo;
+                                    var moviePath = ViewBag.UploadsLocation + "Articles/" + _companyName + "_" + Model.ID + "_" + Model.EmbeddedVideo;
 
                                     <div class="embedded-movie">
-                                        <video id="articleMovie" src="@Url.Content(moviePath)" controls="true" max-height="600" -max-width="1024px" autoplay="true"></video>
+                                        <video id="articleMovie" src="@Url.Content(moviePath)" controls="true" width="100%" max-height="600" max-width="100%" autoplay="false"></video>
                                     </div>
                                 }
                                 @if (!string.IsNullOrEmpty(Model.Image))
@@ -53,7 +63,9 @@
                                         <img src="@fn" class="UserArticleImage" />
                                     </div>
                                 }
-                                @WebUtility.HtmlDecode(Model.ArticleContent)
+                                <div class="articleContent">
+                                    @WebUtility.HtmlDecode(Model.ArticleContent)
+                                </div>
                                 <div class="publishStuff">
                                     <span class="glyphicon glyphicon-user"></span>
                                     <div class="author">@Localizer["Posted by"] @Model.Author&nbsp;</div><div class="publishDate">@Model.PublishFrom</div>
@@ -104,5 +116,6 @@
 </main>
 <div class="articleBackButtonContainer">
     <a asp-controller="CompanySegments" asp-action="ArticleList" asp-route-id="@_SegmentListID">
-    <button class="articleBackButton button glow"><span class="glyphicon glyphicon-menu-left"></span>&nbsp;@Localizer["Back to Article List"]</button></a>
+        <button class="articleBackButton button glow"><span class="glyphicon glyphicon-menu-left"></span>&nbsp;@Localizer["Back to Article List"]</button>
+    </a>
 </div>

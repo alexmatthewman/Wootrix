@@ -68,51 +68,27 @@
                         {
                             <div class="article articleDetails">
                                 <div>
-                                    @if (!string.IsNullOrEmpty(item.ArticleUrl))
-                                    {
-                                        <a href="@item.ArticleUrl">
-                                            <h1>@WebUtility.HtmlDecode(item.Title)</h1>
 
-                                            @if (!string.IsNullOrEmpty(item.Image))
-                                            {
-                                                var fn = ViewBag.UploadsLocation + "Articles/" + _companyName + "_" + item.ID + "_" + item.Image;
-                                                if (!string.IsNullOrEmpty(item.Image))
-                                                {
-                                                    <div class="imageStuff">
-                                                        <img src="@fn" class="UserArticleImage" />
-                                                    </div>
-                                                }
-                                            }
+                                    <a asp-controller="SegmentArticles" asp-action="Article" asp-route-id="@item.ID">
+                                        <h1>@WebUtility.HtmlDecode(item.Title)</h1>
 
-                                           
-                                            <div class="publishStuff">
-                                                <span class="glyphicon glyphicon-user"></span>
-                                                <div class="author">@Localizer["Posted by"]&nbsp;@item.Author&nbsp;</div><div class="publishDate">@item.PublishFrom</div>
+
+                                        @if (!string.IsNullOrEmpty(item.Image))
+                                        {
+                                            var fn = ViewBag.UploadsLocation + "Articles/" + _companyName + "_" + item.ID + "_" + item.Image;
+                                            <div class="imageStuff">
+                                                <img src="@fn" class="UserArticleImage" />
                                             </div>
-                                        </a>
-                                    }
-                                    else
-                                    {
+                                        }
 
-                                        <a asp-controller="SegmentArticles" asp-action="Article" asp-route-id="@item.ID">
-                                            <h1>@WebUtility.HtmlDecode(item.Title)</h1>
+                                        <div class="publishStuff">
+                                            <span class="glyphicon glyphicon-user"></span>
+                                            <div class="author">@Localizer["Posted by"]&nbsp;@item.Author&nbsp;</div><div class="publishDate">@item.PublishFrom</div>
+                                        </div>
+                                    </a>
 
 
-                                            @if (!string.IsNullOrEmpty(item.Image))
-                                            {
-                                                var fn = ViewBag.UploadsLocation + "Articles/" + _companyName + "_" + item.ID + "_" + item.Image;
-                                                <div class="imageStuff">
-                                                    <img src="@fn" class="UserArticleImage" />
-                                                </div>
-                                            }
-                                                                                       
-                                            <div class="publishStuff">
-                                                <span class="glyphicon glyphicon-user"></span>
-                                                <div class="author">@Localizer["Posted by"]&nbsp;@item.Author&nbsp;</div><div class="publishDate">@item.PublishFrom</div>
-                                            </div>
-                                        </a>
 
-                                    }
                                 </div>
                             </div>
                         }

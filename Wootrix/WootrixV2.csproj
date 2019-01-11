@@ -22,6 +22,7 @@
     <Compile Remove="Controllers\MagazineArticleCommentsController.cs" />
     <Compile Remove="Controllers\MagazineArticlesController.cs" />
     <Compile Remove="Controllers\MagazineController.cs" />
+    <Compile Remove="Data\DatabaseAccessLayer.cs" />
     <Compile Remove="Models\Translations.cs" />
   </ItemGroup>
 

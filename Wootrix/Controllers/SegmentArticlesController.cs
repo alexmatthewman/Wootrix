@@ -151,6 +151,7 @@ namespace WootrixV2.Controllers
             {
                 return NotFound();
             }
+            if (!string.IsNullOrEmpty(segmentArticle.ArticleUrl)) Response.Redirect(segmentArticle.ArticleUrl);
 
             return View(segmentArticle);
         }

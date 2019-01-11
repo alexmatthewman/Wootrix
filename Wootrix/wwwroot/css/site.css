@@ -2,6 +2,10 @@
 @import url(font-awesome.min.css);
 
 
+.container > .navbar-header, .container-fluid > .navbar-header, .container > .navbar-collapse, .container-fluid > .navbar-collapse {
+    margin-right: unset;
+}
+
 .button, button {
     color: #000 !important;
 }
@@ -305,6 +309,9 @@
     text-align: left;
 }
 
+#UserView .articleContainer .articleBox .article articleContent {
+    text-align: left;
+}
 
 #UserView .articleContainer .articleBox .article imageStuff {
     max-height: 512px;
@@ -312,12 +319,13 @@
 }
 
 #UserView .articleContainer .articleBox .article img {
-    background-color: #FFFFFF;
-    max-height: 512px;
+    background-color: #FFFFFF;   
     margin: 0 auto;
     display: block;
-    max-width: 100%;
+    width: 100%;
     position: relative;
+    padding-top: 1em;
+    padding-bottom: 1em;
 }
 
 

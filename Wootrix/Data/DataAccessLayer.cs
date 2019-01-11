@@ -25,7 +25,7 @@ namespace WootrixV2.Data
 
         private readonly ApplicationDbContext _context;
         private string _bucketName = "wootrixv2uploadfiles"; //this is my Amazon Bucket name
-        
+
         public DataAccessLayer(ApplicationDbContext context)
         {
             _context = context;
@@ -345,14 +345,15 @@ namespace WootrixV2.Data
             List<SegmentArticle> articles = new List<SegmentArticle>();
 
             // Our filters are Country, State, City, Language, Topics, Groups, TypeOfUser....also publish date
-            // IF an article has a country set, only show it if the user also has it set
-            // OR IF neither article or user have it set, show it 
+
+
+            //They have now changed to Inclusive Filtering. So if there are x,y,z filters set for a User then show any article that has any combination of x,y or z
+            // In effect the only real difference is between || and && symbols below
 
             //Allow for searches too
             var setOfArticles = _context.SegmentArticle.ToList();
             if (!string.IsNullOrEmpty(articleSearchString))
             {
-
                 setOfArticles = _context.SegmentArticle
                     .Where(n => n.CompanyID == companyID)
                     .Where(m => (m.Title.Contains(articleSearchString) || m.Tags.Contains(articleSearchString))).ToList();
@@ -367,11 +368,11 @@ namespace WootrixV2.Data
                     {
                         // Should work for null == null too I think
                         if (art.Country == usr.Country
-                            && art.State == usr.State
-                            && art.City == usr.City)
+                           || art.State == usr.State
+                            || art.City == usr.City)
                         {
                             // For groups, If both are null or equal it's fine. If not cycle through the user Groups and if the Article groups match one then if it allowed
-                            if (PassesFilter(art.Groups, usr.Groups) && PassesFilter(art.TypeOfUser, usr.TypeOfUser) && PassesFilter(art.Topics, usr.Topics) && PassesFilter(art.Languages, usr.WebsiteLanguage))
+                            if (PassesFilter(art.Groups, usr.Groups) || PassesFilter(art.TypeOfUser, usr.TypeOfUser) || PassesFilter(art.Topics, usr.Topics) || PassesFilter(art.Languages, usr.WebsiteLanguage))
                             {
                                 articles.Add(art);
                             }
@@ -387,38 +388,46 @@ namespace WootrixV2.Data
             // We need to loop through them and for each Segement found, if it is not already in the list, add it
             foreach (SegmentArticle item in articles)
             {
-                var articleSegments = item.Segments.Split('|').ToList();
-                foreach (var segmentTitle in articleSegments)
+                if (item.Segments != null)
                 {
-                    var justSegTitle = segmentTitle.Split('/');
-                    // Check if the segment title is in the existing segment list
-                    var findSeg = segments.FirstOrDefault(p => p.Title == justSegTitle[0].ToString());
-                    if (findSeg == null)
+
+                    var articleSegments = item.Segments.Split('|').ToList();
+                    foreach (var segmentTitle in articleSegments)
                     {
-                        // Not in list so add it
-                        if (string.IsNullOrEmpty(segmentSearchString))
+                        //If the article actually has a segment selected it passes here
+                        if (!string.IsNullOrEmpty(segmentTitle))
                         {
-                            // No search filter
-
-                            // If a magazine title is changed after an article is set to be listed in it the below query will fail. In that case if
-                            // we can't find the segment then skip this step
-                            var segementInContextWithListedTitle = _context.CompanySegment.FirstOrDefault(p => p.Title == justSegTitle[0].ToString());
-
-                            if (segementInContextWithListedTitle != null)
+                            var justSegTitle = segmentTitle.Split('/');
+                            // Check if the segment title is in the existing segment list
+                            var findSeg = segments.FirstOrDefault(p => p.Title == justSegTitle[0].ToString());
+                            if (findSeg == null)
                             {
-                                segments.Add(segementInContextWithListedTitle);
+                                // Not in list so add it
+                                if (string.IsNullOrEmpty(segmentSearchString))
+                                {
+                                    // No search filter
+
+                                    // If a magazine title is changed after an article is set to be listed in it the below query will fail. In that case if
+                                    // we can't find the segment then skip this step
+                                    var segementInContextWithListedTitle = _context.CompanySegment.FirstOrDefault(p => p.Title == justSegTitle[0].ToString());
+
+                                    if (segementInContextWithListedTitle != null)
+                                    {
+                                        segments.Add(segementInContextWithListedTitle);
+                                    }
+
+                                }
+                                else
+                                {
+                                    //Have to filter on search string too
+                                    var seg = _context.CompanySegment.FirstOrDefault(p => p.Title == justSegTitle[0].ToString() && (p.Title.Contains(segmentSearchString) || p.Tags.Contains(segmentSearchString)));
+                                    if (seg != null) segments.Add(seg);
+                                }
                             }
+                        }
 
-                        }
-                        else
-                        {
-                            //Have to filter on search string too
-                            var seg = _context.CompanySegment.FirstOrDefault(p => p.Title == justSegTitle[0].ToString() && (p.Title.Contains(segmentSearchString) || p.Tags.Contains(segmentSearchString)));
-                            if (seg != null) segments.Add(seg);
-                        }
+
                     }
-
-
                 }
             }
 

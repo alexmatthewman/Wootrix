@@ -12,7 +12,6 @@ using Microsoft.Extensions.Logging;
 using Wootrix.Data;
 using WootrixV2.Models;
 
-
 namespace Wootrix
 {
     public class Program
