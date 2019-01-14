@@ -169,8 +169,17 @@ namespace WootrixV2.Controllers
             s.AllowComments = true;
 
             DataAccessLayer dla = new DataAccessLayer(_context);
+            string deptID = _user.categories;
+            List<SelectListItem> listOfAllSegements;
+            if (!string.IsNullOrEmpty(deptID))
+            {
+                listOfAllSegements = dla.GetArticleSegments(_user.companyID, deptID);
+            }
+            else
+            {
+                listOfAllSegements = dla.GetArticleSegments(_user.companyID);
+            }
 
-            var listOfAllSegements = dla.GetArticleSegments(_user.companyID);
             foreach (var seg in listOfAllSegements)
             {
 
@@ -482,7 +491,17 @@ namespace WootrixV2.Controllers
             }
             //Add any options not already in the segmentlist
 
-            var listOfAllSegements = dla.GetArticleSegments(_user.companyID);
+            string deptID = _user.categories;
+            List<SelectListItem> listOfAllSegements;
+            if (!string.IsNullOrEmpty(deptID))
+            {
+                listOfAllSegements = dla.GetArticleSegments(_user.companyID, deptID);
+            }
+            else
+            {
+                listOfAllSegements = dla.GetArticleSegments(_user.companyID);
+            }
+           
             foreach (var seg in listOfAllSegements)
             {
                 var match = s.AvailableSegments.FirstOrDefault(stringToCheck => stringToCheck.Value.Contains(seg.Value));

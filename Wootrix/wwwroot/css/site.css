@@ -1127,7 +1127,9 @@ input[type="file"] {
 
 
 .logo-container img {
-    height: auto !important;
+    width: auto !important;
+    max-height: 80px !important;
+
 }
 
 .logo-container {

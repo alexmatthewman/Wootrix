@@ -83,7 +83,7 @@
                     </div>*@
                 <div class="form-group">
                     @Html.LabelFor(x => Model.Department, htmlAttributes: new { @class = "control-label" })
-                    <select class="form-control" id="Departments" name="Categories">
+                    <select class="form-control" id="Departments" name="Department">
                         @foreach (var i in Model.Departments)
                         {
                             <option value="@i.Value">@Localizer[i.Text]</option>

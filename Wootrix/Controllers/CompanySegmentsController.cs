@@ -35,6 +35,7 @@ namespace WootrixV2.Controllers
             _dla = new DataAccessLayer(_context);
         }
 
+        #region Article Ordering
         public async Task<IActionResult> ChangeArticleOrder(string id)
         {
             string[] orderArray = id.Split("|");
@@ -230,6 +231,7 @@ namespace WootrixV2.Controllers
             _context.SaveChanges();
         }
 
+        #endregion
 
         // GET: CompanySegments
         public async Task<IActionResult> UserSegmentSearch(string SearchString)
@@ -297,23 +299,26 @@ namespace WootrixV2.Controllers
             {
                 return NotFound();
             }
+            DataAccessLayer dla = new DataAccessLayer(_context);
+            // Now for users we need to show them articles on the home page so get them in the ViewBag for display
+            _user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();
 
             HttpContext.Session.SetString("SegmentListID", id);
             _companyID = HttpContext.Session.GetInt32("CompanyID") ?? 0;
-            var segmentArticle = _context.SegmentArticle
-                .Where(n => n.CompanyID == _companyID)
-                .Where(m => m.Segments.Contains(id))
-                .OrderBy(p => p.Order);
+            User usr = _context.User.FirstOrDefault(p => p.EmailAddress == _user.Email);
+            
 
             //Also add the Segment to the Viewbag so we can get the Image
             CompanySegment cs = await _context.CompanySegment.FirstOrDefaultAsync(m => m.Title == id && m.CompanyID == _companyID);
+
+            var segmentArticle = dla.GetArticlesListBasedOnThisUsersFilters(usr, "", cs);
             ViewBag.Segment = cs;
             if (segmentArticle == null)
             {
                 return NotFound();
             }
 
-            return View(await segmentArticle.ToListAsync());
+            return View(segmentArticle);
         }
 
         // GET: SegmentArticles/Articlelist/id of segment
@@ -328,19 +333,26 @@ namespace WootrixV2.Controllers
             var segmentTitle = HttpContext.Session.GetString("SegmentListID");
             _companyID = HttpContext.Session.GetInt32("CompanyID") ?? 0;
 
-            var segmentArticle = _context.SegmentArticle
-                .Where(n => n.CompanyID == _companyID)
-                .Where(m => m.Segments.Contains(segmentTitle) && (m.Title.Contains(searchString) || m.Tags.Contains(searchString)));
+            DataAccessLayer dla = new DataAccessLayer(_context);
+            _user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();
+            User usr = _context.User.FirstOrDefault(p => p.EmailAddress == _user.Email);            
+            
+
+            //var segmentArticle = _context.SegmentArticle
+            //    .Where(n => n.CompanyID == _companyID)
+            //    .Where(m => m.Segments.Contains(segmentTitle) && (m.Title.Contains(searchString) || m.Tags.Contains(searchString)));
 
             //Also add the Segment to the Viewbag so we can get the Image
             CompanySegment cs = await _context.CompanySegment.FirstOrDefaultAsync(m => m.Title == segmentTitle && m.CompanyID == _companyID);
+
+            var segmentArticle = dla.GetArticlesListBasedOnThisUsersFilters(usr, "", cs);
             ViewBag.Segment = cs;
             if (segmentArticle == null)
             {
                 return NotFound();
             }
 
-            return View(await segmentArticle.ToListAsync());
+            return View(segmentArticle);
         }
 
         // GET: CompanySegments/Details/5

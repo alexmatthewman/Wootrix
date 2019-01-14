@@ -63,9 +63,10 @@
                                         <img src="@fn" class="UserArticleImage" />
                                     </div>
                                 }
-                                <div class="articleContent">
-                                    @WebUtility.HtmlDecode(Model.ArticleContent)
-                                </div>
+                                    <div class="articleContent">
+                                        @Html.Raw(WebUtility.HtmlDecode(Model.ArticleContent))
+                                       
+                                    </div>
                                 <div class="publishStuff">
                                     <span class="glyphicon glyphicon-user"></span>
                                     <div class="author">@Localizer["Posted by"] @Model.Author&nbsp;</div><div class="publishDate">@Model.PublishFrom</div>

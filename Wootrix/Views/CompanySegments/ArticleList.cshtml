@@ -14,7 +14,7 @@
 @{
     ViewData["Title"] = Localizer["Article List"];
     Layout = "~/Views/Shared/_LayoutCompany.cshtml";
-
+    var UploadsLocation = "https://s3-us-west-2.amazonaws.com/wootrixv2uploadfiles/images/Uploads/";
     var _companyName = Context.Session.GetString("CompanyName");
 
 }
@@ -46,7 +46,7 @@
                     var magImg = "";
                     if (!string.IsNullOrEmpty(ViewBag.Segment.CoverImage))
                     {
-                        magImg = ViewBag.UploadsLocation + _companyName + "_" + ViewBag.Segment.CoverImage;
+                        magImg = UploadsLocation + _companyName + "_" + ViewBag.Segment.CoverImage;
                     }
                     var pageTitle = "";
 
@@ -75,7 +75,7 @@
 
                                         @if (!string.IsNullOrEmpty(item.Image))
                                         {
-                                            var fn = ViewBag.UploadsLocation + "Articles/" + _companyName + "_" + item.ID + "_" + item.Image;
+                                            var fn = UploadsLocation + "Articles/" + _companyName + "_" + item.ID + "_" + item.Image;
                                             <div class="imageStuff">
                                                 <img src="@fn" class="UserArticleImage" />
                                             </div>

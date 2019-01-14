@@ -325,6 +325,23 @@ namespace WootrixV2.Data
 
         }
 
+        public List<SelectListItem> GetArticleSegments(int companyID, string departmentID)
+        {
+            List<SelectListItem> deps = _context.CompanySegment.AsNoTracking()
+            .Where(n => n.CompanyID == companyID && n.Department == departmentID)
+                .OrderBy(n => n.Title)
+                    .Select(n =>
+                    new SelectListItem
+                    {
+                        //Value = n.ID.ToString(),
+                        Value = n.Title,
+                        Text = n.Title
+                    }).ToList();
+
+            return deps;
+
+        }
+
 
         public List<WootrixV2.Models.SegmentArticle> GetArticlesList(int companyID)
         {
@@ -338,6 +355,32 @@ namespace WootrixV2.Data
 
         }
 
+        public List<WootrixV2.Models.SegmentArticle> GetArticlesListBasedOnThisUsersFilters(User usr, string articleSearchString, CompanySegment seg)
+        {
+            List<SegmentArticle> articles = new List<SegmentArticle>();
+
+            foreach (SegmentArticle art in _context.SegmentArticle.Where(n => n.CompanyID == usr.CompanyID && n.PublishFrom < DateTime.Now && n.Segments.Contains(seg.Title)).AsNoTracking())
+            {
+                if (seg != null && !string.IsNullOrEmpty(seg.Title))
+                {
+                    //If no filters for user all articles will show that have no filters. If filter x on user, all articles with filter x will show. If filters x and y are set for user, any article with either x OR y will show.
+                    if (ArticleMatchesUserFilters(art, usr))
+                    {
+                        articles.Add(art);
+                    }
+                }
+            }
+
+            //Allow for searches too           
+            if (!string.IsNullOrEmpty(articleSearchString))
+            {
+                articles = articles.Where(m => (m.Title.Contains(articleSearchString) || m.Tags.Contains(articleSearchString))).ToList();
+            }
+            return articles.OrderBy(m => m.Order).ToList();
+        }
+
+
+
         public List<WootrixV2.Models.CompanySegment> GetSegmentsList(int companyID, User usr, string segmentSearchString, string articleSearchString)
         {
             // Have to do this backwards - get all the articles the user can see, then get a list of all segments which have articles
@@ -346,42 +389,22 @@ namespace WootrixV2.Data
 
             // Our filters are Country, State, City, Language, Topics, Groups, TypeOfUser....also publish date
 
-
-            //They have now changed to Inclusive Filtering. So if there are x,y,z filters set for a User then show any article that has any combination of x,y or z
-            // In effect the only real difference is between || and && symbols below
-
             //Allow for searches too
             var setOfArticles = _context.SegmentArticle.ToList();
             if (!string.IsNullOrEmpty(articleSearchString))
             {
-                setOfArticles = _context.SegmentArticle
+                setOfArticles = _context.SegmentArticle.AsNoTracking()
                     .Where(n => n.CompanyID == companyID)
                     .Where(m => (m.Title.Contains(articleSearchString) || m.Tags.Contains(articleSearchString))).ToList();
             }
 
-            foreach (SegmentArticle art in _context.SegmentArticle)
+            foreach (SegmentArticle art in _context.SegmentArticle.Where(n => n.CompanyID == usr.CompanyID && n.PublishFrom < DateTime.Now).AsNoTracking())
             {
-                if (art.CompanyID == usr.CompanyID)
+                //If no filters for user all articles will show that have no filters. If filter x on user, all articles with filter x will show. If filters x and y are set for user, any article with either x OR y will show.
+                if (ArticleMatchesUserFilters(art, usr))
                 {
-                    // If the article is published
-                    if (art.PublishFrom < DateTime.Now)
-                    {
-                        // Should work for null == null too I think
-                        if (art.Country == usr.Country
-                           || art.State == usr.State
-                            || art.City == usr.City)
-                        {
-                            // For groups, If both are null or equal it's fine. If not cycle through the user Groups and if the Article groups match one then if it allowed
-                            if (PassesFilter(art.Groups, usr.Groups) || PassesFilter(art.TypeOfUser, usr.TypeOfUser) || PassesFilter(art.Topics, usr.Topics) || PassesFilter(art.Languages, usr.WebsiteLanguage))
-                            {
-                                articles.Add(art);
-                            }
-                        }
-
-
-                    }
+                    articles.Add(art);
                 }
-
             }
 
             // So now we have the articles that are valid for the user
@@ -406,16 +429,13 @@ namespace WootrixV2.Data
                                 if (string.IsNullOrEmpty(segmentSearchString))
                                 {
                                     // No search filter
-
                                     // If a magazine title is changed after an article is set to be listed in it the below query will fail. In that case if
                                     // we can't find the segment then skip this step
                                     var segementInContextWithListedTitle = _context.CompanySegment.FirstOrDefault(p => p.Title == justSegTitle[0].ToString());
-
                                     if (segementInContextWithListedTitle != null)
                                     {
                                         segments.Add(segementInContextWithListedTitle);
                                     }
-
                                 }
                                 else
                                 {
@@ -425,8 +445,6 @@ namespace WootrixV2.Data
                                 }
                             }
                         }
-
-
                     }
                 }
             }
@@ -435,16 +453,40 @@ namespace WootrixV2.Data
             return segments;
         }
 
+        /// <summary>
+        /// The Logic here is: If no filters for user all articles will show that have no filters. If filter x on user, all articles with filter x will show. If filters x and y are set for user, any article with either x OR y will show.
+        /// </summary>
+        /// <param name="art">Article to test</param>
+        /// <param name="usr">User who's filters to compare to the passed article</param>
+        /// <returns></returns>
+        public bool ArticleMatchesUserFilters(SegmentArticle art, User usr)
+        {
+            bool matches = false;
+
+            //If no filters for user all articles will show that have no filters.
+            if (string.IsNullOrEmpty(usr.Groups) && string.IsNullOrEmpty(usr.TypeOfUser) && string.IsNullOrEmpty(usr.Topics) && string.IsNullOrEmpty(usr.WebsiteLanguage) && string.IsNullOrEmpty(usr.Country) && string.IsNullOrEmpty(usr.State) && string.IsNullOrEmpty(usr.City))
+            {
+                //So the user has absolutely no filtering set so we should show all articles
+                matches = true;
+            }
+            //If filter x on user, all articles with filter x will show.If filters x and y are set for user, any article with either x OR y will show.
+            else if ((art.Country == usr.Country && !string.IsNullOrEmpty(usr.Country)) || (art.State == usr.State && !string.IsNullOrEmpty(usr.State)) || (art.City == usr.City && !string.IsNullOrEmpty(usr.City))
+                     || PassesFilter(art.Groups, usr.Groups) || PassesFilter(art.TypeOfUser, usr.TypeOfUser) || PassesFilter(art.Topics, usr.Topics) || PassesFilter(art.Languages, usr.WebsiteLanguage))
+            {
+                matches = true;
+            }
+            return matches;
+        }
+
         public bool PassesFilter(string articleCSVFilter, string userCSVFilter)
         {
             bool isInFilter = false;
-            // For groups, If both are null or equal it's fine. If not cycle through the user Groups and if the Article groups match one then if it allowed
-            if (string.IsNullOrEmpty(articleCSVFilter) && string.IsNullOrEmpty(userCSVFilter)) return true;
 
             var filterList = userCSVFilter.Split('|').ToList();
             foreach (var filter in filterList)
             {
-                if (articleCSVFilter != null)
+                // If the article filter isn't just null or empty (null==null is not a valid pass)
+                if (!string.IsNullOrEmpty(articleCSVFilter) && !string.IsNullOrEmpty(userCSVFilter))
                 {
                     if (articleCSVFilter.Contains(filter))
                     {

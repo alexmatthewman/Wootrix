@@ -88,7 +88,10 @@ namespace WootrixV2.Controllers
                 ViewBag.CommentUnderReviewCount = _dla.GetArticleReviewCommentCount(_user.companyID);
                 if (usr.Role == Roles.User)
                 {
+                    System.Console.WriteLine("***********Getting Segments************");
                     ViewBag.Segments = _dla.GetSegmentsList(_user.companyID, usr, "", "");
+
+                    System.Console.WriteLine("***********Getting Articles************");
                     ViewBag.Articles = _dla.GetArticlesList(_user.companyID);
 
                 }
