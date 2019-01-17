@@ -54,8 +54,36 @@ namespace WootrixV2.Controllers
                 return NotFound();
             }
 
+            _user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();      
+
             var company = await _context.Company
-                .FirstOrDefaultAsync(m => m.CompanyName == id);
+                .FirstOrDefaultAsync(m => m.CompanyName == id);    
+
+            if (company == null)
+            {
+                return NotFound();
+            }
+
+            // Now for users we need to show them articles on the home page so get them in the ViewBag for display
+            
+
+            if (_signInManager.IsSignedIn(User))
+            {
+                User usr = _context.User.FirstOrDefault(p => p.EmailAddress == _user.Email);
+                company = await _context.Company.FirstOrDefaultAsync(m => m.ID == usr.CompanyID);
+                ViewBag.User = usr;
+                ViewBag.CommentUnderReviewCount = _dla.GetArticleReviewCommentCount(_user.companyID);
+                if (usr.Role == Roles.User)
+                {
+                    System.Console.WriteLine("***********Getting Segments************");
+                    ViewBag.Segments = _dla.GetSegmentsList(_user.companyID, usr, "", "");
+
+                    //System.Console.WriteLine("***********Getting Articles************");
+                    //ViewBag.Articles = _dla.GetArticlesList(_user.companyID);
+
+                }
+            }
+
 
             // Saving all this company stuff to the session so the layout isn't dependent on the model
             // Note that it is all non-sensitive stuff            
@@ -72,30 +100,6 @@ namespace WootrixV2.Controllers
             HttpContext.Session.SetString("CompanyHeaderBackgroundColor", company.CompanyHeaderBackgroundColor);
             HttpContext.Session.SetString("CompanyBackgroundColor", company.CompanyBackgroundColor);
             HttpContext.Session.SetInt32("CompanyNumberOfUsers", company.CompanyNumberOfUsers);
-
-            if (company == null)
-            {
-                return NotFound();
-            }
-
-            // Now for users we need to show them articles on the home page so get them in the ViewBag for display
-            _user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();
-
-            if (_signInManager.IsSignedIn(User))
-            {
-                User usr = _context.User.FirstOrDefault(p => p.EmailAddress == _user.Email);
-                ViewBag.User = usr;
-                ViewBag.CommentUnderReviewCount = _dla.GetArticleReviewCommentCount(_user.companyID);
-                if (usr.Role == Roles.User)
-                {
-                    System.Console.WriteLine("***********Getting Segments************");
-                    ViewBag.Segments = _dla.GetSegmentsList(_user.companyID, usr, "", "");
-
-                    System.Console.WriteLine("***********Getting Articles************");
-                    ViewBag.Articles = _dla.GetArticlesList(_user.companyID);
-
-                }
-            }
             return View(company);
         }
 

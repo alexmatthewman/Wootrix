@@ -15,7 +15,15 @@
     ViewData["Title"] = Localizer["Article List"];
     Layout = "~/Views/Shared/_LayoutCompany.cshtml";
     var UploadsLocation = "https://s3-us-west-2.amazonaws.com/wootrixv2uploadfiles/images/Uploads/";
-    var _companyName = Context.Session.GetString("CompanyName");
+    var _companyName = Context.Session.GetString("CompanyName") ?? "";
+    var magCover = ViewBag.SegmentCoverImage;
+    var magTitle = ViewBag.SegmentTitle;
+    var magImg = UploadsLocation + _companyName + "_" + magCover;
+
+    //So they want the magazine image to be the first thing displayed
+
+
+
 
 }
 <div class="top-head">
@@ -39,29 +47,15 @@
     <div class="articleContainer">
         <div class="articleContainerCentred">
             <div class="articleContainerSub">
-
-
-                @{
-                    //So they want the magazine image to be the first thing displayed
-                    var magImg = "";
-                    if (!string.IsNullOrEmpty(ViewBag.Segment.CoverImage))
-                    {
-                        magImg = UploadsLocation + _companyName + "_" + ViewBag.Segment.CoverImage;
-                    }
-                    var pageTitle = "";
-
-                    if (!string.IsNullOrEmpty(ViewBag.Segment.Title))
-                    {
-                        pageTitle = ViewBag.Segment.Title;
-                    }
-                }
-
-
-
                 <div class="articleBox">
                     <div class="segmentHeader">
-                        <h1>@pageTitle</h1>
-                        <img src="@magImg" class="magazineArticleListImage" />
+                        <h1>@magTitle</h1>
+
+                        @if (!string.IsNullOrEmpty(magCover))
+                        {
+                            <img src="@magImg" class="magazineArticleListImage" />
+                        }
+
                     </div>
                     <section style="display: block">
                         @foreach (var item in Model)
@@ -75,16 +69,20 @@
 
                                         @if (!string.IsNullOrEmpty(item.Image))
                                         {
-                                            var fn = UploadsLocation + "Articles/" + _companyName + "_" + item.ID + "_" + item.Image;
+                                            var fn = UploadsLocation + "Articles/" + _companyName + "_" + item.ID + "_" + (item.Image ?? "");
                                             <div class="imageStuff">
                                                 <img src="@fn" class="UserArticleImage" />
                                             </div>
                                         }
 
-                                        <div class="publishStuff">
-                                            <span class="glyphicon glyphicon-user"></span>
-                                            <div class="author">@Localizer["Posted by"]&nbsp;@item.Author&nbsp;</div><div class="publishDate">@item.PublishFrom</div>
-                                        </div>
+                                            <div class="publishStuff">
+                                                <span class="glyphicon glyphicon-user"></span>
+                                                @if (!string.IsNullOrEmpty(item.Author) && !string.IsNullOrEmpty(item.PublishFrom.ToString()))
+                                                {
+                                                    <div class="author">@Localizer["Posted by"]&nbsp;@item.Author&nbsp;</div><div class="publishDate">@item.PublishFrom</div>
+                                                }
+
+                                            </div>
                                     </a>
 
 

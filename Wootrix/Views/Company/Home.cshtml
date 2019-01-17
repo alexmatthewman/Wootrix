@@ -141,7 +141,7 @@
                                 </li>
 
                                 <li class="glow bump">
-                                    <a href="">
+                                    <a asp-area="" asp-controller="Reports" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
                                         <span><img src="~/images/icon-6.png" alt="" /></span>
                                         <strong>@Localizer["Reports"]</strong>
                                     </a>
@@ -253,7 +253,7 @@
                             @foreach (var item in ViewBag.Segments)
                             {
                                 <td class="magazine glow bump userView" @*style="border:4px solid @item.ThemeColor;  background:@item.StandardColor;" *@>
-                                    <a asp-controller="CompanySegments" asp-action="ArticleList" asp-route-id="@item.Title">
+                                    <a asp-controller="CompanySegments" asp-action="ArticleList" asp-route-id="@item.ID">
                                         <div class="magazine-pic">
                                             @{
                                                 var fn = ViewBag.UploadsLocation + companyName + "_" + item.CoverImage;

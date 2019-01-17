@@ -292,31 +292,27 @@ namespace WootrixV2.Controllers
         }
 
         // GET: SegmentArticles/Articlelist/id of segment
-        public async Task<IActionResult> ArticleList(string id)
-        {
-            ViewBag.UploadsLocation = "https://s3-us-west-2.amazonaws.com/wootrixv2uploadfiles/images/Uploads/";
-            if (id == null)
-            {
-                return NotFound();
-            }
+        public async Task<IActionResult> ArticleList(int id)
+        {       
             DataAccessLayer dla = new DataAccessLayer(_context);
             // Now for users we need to show them articles on the home page so get them in the ViewBag for display
             _user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();
 
-            HttpContext.Session.SetString("SegmentListID", id);
-            _companyID = HttpContext.Session.GetInt32("CompanyID") ?? 0;
+            HttpContext.Session.SetInt32("SegmentListID", id);
+            _companyID = _user.companyID;
             User usr = _context.User.FirstOrDefault(p => p.EmailAddress == _user.Email);
-            
 
             //Also add the Segment to the Viewbag so we can get the Image
-            CompanySegment cs = await _context.CompanySegment.FirstOrDefaultAsync(m => m.Title == id && m.CompanyID == _companyID);
-
+            CompanySegment cs = await _context.CompanySegment.FirstOrDefaultAsync(m => m.ID == id && m.CompanyID == _companyID);
             var segmentArticle = dla.GetArticlesListBasedOnThisUsersFilters(usr, "", cs);
-            ViewBag.Segment = cs;
             if (segmentArticle == null)
             {
                 return NotFound();
             }
+            
+            ViewBag.SegmentCoverImage = cs.CoverImage ?? "";
+            ViewBag.SegmentTitle = cs.Title ?? "";
+            ViewBag.CompanyName = usr.CompanyName ?? "";
 
             return View(segmentArticle);
         }
@@ -330,7 +326,7 @@ namespace WootrixV2.Controllers
                 return NotFound();
             }
 
-            var segmentTitle = HttpContext.Session.GetString("SegmentListID");
+            var segmentid = HttpContext.Session.GetInt32("SegmentListID");
             _companyID = HttpContext.Session.GetInt32("CompanyID") ?? 0;
 
             DataAccessLayer dla = new DataAccessLayer(_context);
@@ -343,7 +339,7 @@ namespace WootrixV2.Controllers
             //    .Where(m => m.Segments.Contains(segmentTitle) && (m.Title.Contains(searchString) || m.Tags.Contains(searchString)));
 
             //Also add the Segment to the Viewbag so we can get the Image
-            CompanySegment cs = await _context.CompanySegment.FirstOrDefaultAsync(m => m.Title == segmentTitle && m.CompanyID == _companyID);
+            CompanySegment cs = await _context.CompanySegment.FirstOrDefaultAsync(m => m.ID == segmentid && m.CompanyID == _companyID);
 
             var segmentArticle = dla.GetArticlesListBasedOnThisUsersFilters(usr, "", cs);
             ViewBag.Segment = cs;

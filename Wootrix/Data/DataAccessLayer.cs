@@ -358,25 +358,38 @@ namespace WootrixV2.Data
         public List<WootrixV2.Models.SegmentArticle> GetArticlesListBasedOnThisUsersFilters(User usr, string articleSearchString, CompanySegment seg)
         {
             List<SegmentArticle> articles = new List<SegmentArticle>();
-
-            foreach (SegmentArticle art in _context.SegmentArticle.Where(n => n.CompanyID == usr.CompanyID && n.PublishFrom < DateTime.Now && n.Segments.Contains(seg.Title)).AsNoTracking())
+            try
             {
-                if (seg != null && !string.IsNullOrEmpty(seg.Title))
+                var possibleArticles = _context.SegmentArticle.Where(n => n.CompanyID == usr.CompanyID && n.PublishFrom < DateTime.Now && n.Segments.Contains(seg.Title)).AsNoTracking();
+
+                foreach (SegmentArticle art in possibleArticles)
                 {
-                    //If no filters for user all articles will show that have no filters. If filter x on user, all articles with filter x will show. If filters x and y are set for user, any article with either x OR y will show.
-                    if (ArticleMatchesUserFilters(art, usr))
+                    if (seg != null && !string.IsNullOrEmpty(seg.Title))
                     {
-                        articles.Add(art);
+                        //If no filters for user all articles will show that have no filters. If filter x on user, all articles with filter x will show. If filters x and y are set for user, any article with either x OR y will show.
+                        if (ArticleMatchesUserFilters(art, usr))
+                        {
+                            articles.Add(art);
+                        }
                     }
                 }
+
+                //Allow for searches too           
+                if (!string.IsNullOrEmpty(articleSearchString))
+                {
+                    articles = articles.Where(m => (m.Title.Contains(articleSearchString) || m.Tags.Contains(articleSearchString))).ToList();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Retrieving articles for this user failed with inner exception: " + e);
             }
 
-            //Allow for searches too           
-            if (!string.IsNullOrEmpty(articleSearchString))
-            {
-                articles = articles.Where(m => (m.Title.Contains(articleSearchString) || m.Tags.Contains(articleSearchString))).ToList();
-            }
-            return articles.OrderBy(m => m.Order).ToList();
+            // We need better ordering.
+            if (articles != null) articles.OrderBy(m => m.Order);
+
+
+            return articles.ToList();
         }
 
 
@@ -398,7 +411,7 @@ namespace WootrixV2.Data
                     .Where(m => (m.Title.Contains(articleSearchString) || m.Tags.Contains(articleSearchString))).ToList();
             }
 
-            foreach (SegmentArticle art in _context.SegmentArticle.Where(n => n.CompanyID == usr.CompanyID && n.PublishFrom < DateTime.Now).AsNoTracking())
+            foreach (SegmentArticle art in _context.SegmentArticle.Where(n => n.CompanyID == usr.CompanyID && n.PublishFrom < DateTime.Now))
             {
                 //If no filters for user all articles will show that have no filters. If filter x on user, all articles with filter x will show. If filters x and y are set for user, any article with either x OR y will show.
                 if (ArticleMatchesUserFilters(art, usr))
@@ -423,6 +436,8 @@ namespace WootrixV2.Data
                             var justSegTitle = segmentTitle.Split('/');
                             // Check if the segment title is in the existing segment list
                             var findSeg = segments.FirstOrDefault(p => p.Title == justSegTitle[0].ToString());
+
+                            
                             if (findSeg == null)
                             {
                                 // Not in list so add it

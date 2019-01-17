@@ -41,6 +41,8 @@ namespace WootrixV2.Controllers
             _dla = new DataAccessLayer(_context);
         }
 
+        #region Ordering 
+
         public async Task<IActionResult> ChangeOrder(string id)
         {
             var orderArray = id.Split("|");
@@ -88,137 +90,6 @@ namespace WootrixV2.Controllers
                 _context.Update(art);
             }
             _context.SaveChanges();
-        }
-
-
-        // GET: SegmentArticles
-        public async Task<IActionResult> Index()
-        {
-            ViewBag.UploadsLocation = "https://s3-us-west-2.amazonaws.com/wootrixv2uploadfiles/images/Uploads/";
-
-            //Get the company name out the session and use it as a filter for the groups returned
-            var id = HttpContext.Session.GetInt32("CompanyID");
-            var ctx = await _context.SegmentArticle.Where(m => m.CompanyID == id).ToListAsync();
-            foreach (SegmentArticle item in ctx)
-            {
-                if (!string.IsNullOrWhiteSpace(item.Languages)) item.Languages.Replace("|", ", ");
-                if (!string.IsNullOrWhiteSpace(item.Groups)) item.Groups.Replace("|", ", ");
-                if (!string.IsNullOrWhiteSpace(item.Segments)) item.Segments.Replace("|", ", ");
-                if (!string.IsNullOrWhiteSpace(item.TypeOfUser)) item.TypeOfUser.Replace("|", ", ");
-                if (!string.IsNullOrWhiteSpace(item.Topics)) item.Topics.Replace("|", ", ");
-            }
-            return View(ctx);
-        }
-
-        // GET: SegmentArticles/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var segmentArticle = await _context.SegmentArticle
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (segmentArticle == null)
-            {
-                return NotFound();
-            }
-
-            return View(segmentArticle);
-        }
-
-
-
-        // GET: SegmentArticles/Article/5
-        public async Task<IActionResult> Article(int? id)
-        {
-            ViewBag.UploadsLocation = "https://s3-us-west-2.amazonaws.com/wootrixv2uploadfiles/images/Uploads/";
-
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            DataAccessLayer dla = new DataAccessLayer(_context);
-            ViewBag.CommentCount = dla.GetArticleApprovedCommentCount(id ?? 0);
-
-            ViewBag.Comments = dla.GetArticleCommentsList(id ?? 0);
-
-            var segmentArticle = await _context.SegmentArticle
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (segmentArticle == null)
-            {
-                return NotFound();
-            }
-            if (!string.IsNullOrEmpty(segmentArticle.ArticleUrl)) Response.Redirect(segmentArticle.ArticleUrl);
-
-            return View(segmentArticle);
-        }
-
-        // GET: SegmentArticles/Create
-        public IActionResult Create()
-        {
-            _user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();
-            SegmentArticleViewModel s = new SegmentArticleViewModel();
-            s.Order = 1;
-            s.PublishFrom = DateTime.Now.Date;
-            s.PublishTill = DateTime.Now.AddYears(10).Date;
-            s.CompanyID = _user.companyID;
-            s.Author = _user.name;
-            s.AllowComments = true;
-
-            DataAccessLayer dla = new DataAccessLayer(_context);
-            string deptID = _user.categories;
-            List<SelectListItem> listOfAllSegements;
-            if (!string.IsNullOrEmpty(deptID))
-            {
-                listOfAllSegements = dla.GetArticleSegments(_user.companyID, deptID);
-            }
-            else
-            {
-                listOfAllSegements = dla.GetArticleSegments(_user.companyID);
-            }
-
-            foreach (var seg in listOfAllSegements)
-            {
-
-                s.AvailableSegments.Add(new SelectListItem { Text = seg.Value, Value = seg.Value });
-            }
-
-            // Add group checkboxes
-            var listOfAllGroups = dla.GetListGroups(_user.companyID);
-            foreach (var seg in listOfAllGroups)
-            {
-                s.AvailableGroups.Add(new SelectListItem { Text = seg.Value, Value = seg.Value });
-            }
-
-            // Add topic checkboxes
-            var listOfAllTopics = dla.GetListTopics(_user.companyID);
-            foreach (var seg in listOfAllTopics)
-            {
-                s.AvailableTopics.Add(new SelectListItem { Text = seg.Value, Value = seg.Value });
-            }
-
-            // Add type checkboxes
-            var listOfAllTypeOfUser = dla.GetListTypeOfUser(_user.companyID);
-            foreach (var seg in listOfAllTypeOfUser)
-            {
-                s.AvailableTypeOfUser.Add(new SelectListItem { Text = seg.Value, Value = seg.Value });
-            }
-
-            // Add language checkboxes
-            var listOfAllLanguages = dla.GetListLanguages(_user.companyID, _rlo);
-            foreach (var seg in listOfAllLanguages)
-            {
-                s.AvailableLanguages.Add(new SelectListItem { Text = seg.Value, Value = seg.Value });
-            }
-
-            // Get location dropdown data
-            s.Countries = dla.GetCountries();
-            s.States = dla.GetNullStatesOrCities();
-            s.Cities = dla.GetNullStatesOrCities();
-            return View(s);
         }
 
 
@@ -329,6 +200,140 @@ namespace WootrixV2.Controllers
         }
 
 
+        #endregion
+
+        // GET: SegmentArticles
+        public async Task<IActionResult> Index()
+        {
+            ViewBag.UploadsLocation = "https://s3-us-west-2.amazonaws.com/wootrixv2uploadfiles/images/Uploads/";
+
+            //Get the company name out the session and use it as a filter for the groups returned
+            var id = HttpContext.Session.GetInt32("CompanyID");
+            var ctx = await _context.SegmentArticle.Where(m => m.CompanyID == id).ToListAsync();
+            foreach (SegmentArticle item in ctx)
+            {
+                if (!string.IsNullOrWhiteSpace(item.Languages)) item.Languages.Replace("|", ", ");
+                if (!string.IsNullOrWhiteSpace(item.Groups)) item.Groups.Replace("|", ", ");
+                if (!string.IsNullOrWhiteSpace(item.Segments)) item.Segments.Replace("|", ", ");
+                if (!string.IsNullOrWhiteSpace(item.TypeOfUser)) item.TypeOfUser.Replace("|", ", ");
+                if (!string.IsNullOrWhiteSpace(item.Topics)) item.Topics.Replace("|", ", ");
+            }
+            return View(ctx);
+        }
+
+        // GET: SegmentArticles/Details/5
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var segmentArticle = await _context.SegmentArticle
+                .FirstOrDefaultAsync(m => m.ID == id);
+            if (segmentArticle == null)
+            {
+                return NotFound();
+            }
+
+            return View(segmentArticle);
+        }
+
+
+
+        // GET: SegmentArticles/Article/5
+        public async Task<IActionResult> Article(int? id)
+        {
+            ViewBag.UploadsLocation = "https://s3-us-west-2.amazonaws.com/wootrixv2uploadfiles/images/Uploads/";
+            var segID = HttpContext.Session.GetInt32("SegmentListID");
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            DataAccessLayer dla = new DataAccessLayer(_context);
+            ViewBag.CommentCount = dla.GetArticleApprovedCommentCount(id ?? 0);
+
+            ViewBag.Comments = dla.GetArticleCommentsList(id ?? 0);
+
+
+            var segmentArticle = await _context.SegmentArticle
+                .FirstOrDefaultAsync(m => m.ID == id);
+            if (segmentArticle == null)
+            {
+                return NotFound();
+            }
+            if (!string.IsNullOrEmpty(segmentArticle.ArticleUrl)) Response.Redirect(segmentArticle.ArticleUrl);
+
+            return View(segmentArticle);
+        }
+
+        // GET: SegmentArticles/Create
+        public IActionResult Create()
+        {
+            _user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();
+            SegmentArticleViewModel s = new SegmentArticleViewModel();
+            s.Order = 1;
+            s.PublishFrom = DateTime.Now.Date;
+            s.PublishTill = DateTime.Now.AddYears(10).Date;
+            s.CompanyID = _user.companyID;
+            s.Author = _user.name;
+            s.AllowComments = true;
+
+            DataAccessLayer dla = new DataAccessLayer(_context);
+            string deptID = _user.categories;
+            List<SelectListItem> listOfAllSegements;
+            if (!string.IsNullOrEmpty(deptID))
+            {
+                listOfAllSegements = dla.GetArticleSegments(_user.companyID, deptID);
+            }
+            else
+            {
+                listOfAllSegements = dla.GetArticleSegments(_user.companyID);
+            }
+
+            foreach (var seg in listOfAllSegements)
+            {
+
+                s.AvailableSegments.Add(new SelectListItem { Text = seg.Value, Value = seg.Value });
+            }
+
+            // Add group checkboxes
+            var listOfAllGroups = dla.GetListGroups(_user.companyID);
+            foreach (var seg in listOfAllGroups)
+            {
+                s.AvailableGroups.Add(new SelectListItem { Text = seg.Value, Value = seg.Value });
+            }
+
+            // Add topic checkboxes
+            var listOfAllTopics = dla.GetListTopics(_user.companyID);
+            foreach (var seg in listOfAllTopics)
+            {
+                s.AvailableTopics.Add(new SelectListItem { Text = seg.Value, Value = seg.Value });
+            }
+
+            // Add type checkboxes
+            var listOfAllTypeOfUser = dla.GetListTypeOfUser(_user.companyID);
+            foreach (var seg in listOfAllTypeOfUser)
+            {
+                s.AvailableTypeOfUser.Add(new SelectListItem { Text = seg.Value, Value = seg.Value });
+            }
+
+            // Add language checkboxes
+            var listOfAllLanguages = dla.GetListLanguages(_user.companyID, _rlo);
+            foreach (var seg in listOfAllLanguages)
+            {
+                s.AvailableLanguages.Add(new SelectListItem { Text = seg.Value, Value = seg.Value });
+            }
+
+            // Get location dropdown data
+            s.Countries = dla.GetCountries();
+            s.States = dla.GetNullStatesOrCities();
+            s.Cities = dla.GetNullStatesOrCities();
+            return View(s);
+        }
+
+
         // POST: SegmentArticles/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -358,7 +363,7 @@ namespace WootrixV2.Controllers
                     myArticle.Author = (sa.Author ?? _user.name); //if null set to be user name
                     myArticle.CreatedBy = _user.UserName;
                     myArticle.ArticleUrl = WebUtility.HtmlEncode(sa.ArticleUrl);
-
+                    myArticle.Order = 1;
                     myArticle.Tags = WebUtility.HtmlEncode(sa.Tags);
 
                     myArticle.Languages = string.Join("|", sa.SelectedLanguages);
