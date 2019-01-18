@@ -20,7 +20,8 @@ namespace WootrixV2.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IHostingEnvironment _env;
         private readonly string _rootpath;
-        private ApplicationUser _user;
+        private WootrixV2.Models.User _user;
+        private WootrixV2.Models.Company _cpy;
         private readonly UserManager<ApplicationUser> _userManager;
         private DataAccessLayer _dla;
         private SignInManager<ApplicationUser> _signInManager;
@@ -35,12 +36,13 @@ namespace WootrixV2.Controllers
             _signInManager = signInManager;
             _dla = new DataAccessLayer(_context);
             _companyLocalizer = companyLocalizer;
+                                       
         }
 
         // GET: Company
         public async Task<IActionResult> Index()
         {
-            ViewBag.UploadsLocation = "https://s3-us-west-2.amazonaws.com/wootrixv2uploadfiles/images/Uploads/";
+            
             return View(await _context.Company.ToListAsync());
         }
 
@@ -48,13 +50,14 @@ namespace WootrixV2.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Home(string id)
         {
-            ViewBag.UploadsLocation = "https://s3-us-west-2.amazonaws.com/wootrixv2uploadfiles/images/Uploads/";
+            
             if (id == null)
             {
                 return NotFound();
             }
+            
+            ViewBag.UploadsLocation = "https://s3-us-west-2.amazonaws.com/wootrixv2uploadfiles/images/Uploads/";
 
-            _user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();      
 
             var company = await _context.Company
                 .FirstOrDefaultAsync(m => m.CompanyName == id);    
@@ -69,37 +72,34 @@ namespace WootrixV2.Controllers
 
             if (_signInManager.IsSignedIn(User))
             {
-                User usr = _context.User.FirstOrDefault(p => p.EmailAddress == _user.Email);
-                company = await _context.Company.FirstOrDefaultAsync(m => m.ID == usr.CompanyID);
-                ViewBag.User = usr;
-                ViewBag.CommentUnderReviewCount = _dla.GetArticleReviewCommentCount(_user.companyID);
-                if (usr.Role == Roles.User)
+                _user = _context.User.FirstOrDefault(p => p.EmailAddress == _userManager.GetUserAsync(User).GetAwaiter().GetResult().Email);
+                _cpy = _context.Company.FirstOrDefaultAsync(m => m.ID == _user.CompanyID).GetAwaiter().GetResult();
+                HttpContext.Session.SetInt32("CompanyID", _cpy.ID);
+                HttpContext.Session.SetString("CompanyName", _cpy.CompanyName);
+                HttpContext.Session.SetString("CompanyTextMain", _cpy.CompanyTextMain);
+                HttpContext.Session.SetString("CompanyTextSecondary", _cpy.CompanyTextSecondary);
+                HttpContext.Session.SetString("CompanyMainFontColor", _cpy.CompanyMainFontColor);
+                HttpContext.Session.SetString("CompanyLogoImage", _cpy.CompanyLogoImage);
+                HttpContext.Session.SetString("CompanyFocusImage", _cpy.CompanyFocusImage ?? "");
+                HttpContext.Session.SetString("CompanyBackgroundImage", _cpy.CompanyBackgroundImage ?? "");
+                HttpContext.Session.SetString("CompanyHighlightColor", _cpy.CompanyHighlightColor);
+                HttpContext.Session.SetString("CompanyHeaderFontColor", _cpy.CompanyHeaderFontColor);
+                HttpContext.Session.SetString("CompanyHeaderBackgroundColor", _cpy.CompanyHeaderBackgroundColor);
+                HttpContext.Session.SetString("CompanyBackgroundColor", _cpy.CompanyBackgroundColor);
+                HttpContext.Session.SetInt32("CompanyNumberOfUsers", _cpy.CompanyNumberOfUsers);
+
+                
+                ViewBag.User = _user;
+                ViewBag.CommentUnderReviewCount = _dla.GetArticleReviewCommentCount(_user.CompanyID);
+                if (_user.Role == Roles.User)
                 {
                     System.Console.WriteLine("***********Getting Segments************");
-                    ViewBag.Segments = _dla.GetSegmentsList(_user.companyID, usr, "", "");
-
-                    //System.Console.WriteLine("***********Getting Articles************");
-                    //ViewBag.Articles = _dla.GetArticlesList(_user.companyID);
-
+                    ViewBag.Segments = _dla.GetSegmentsList(_user.CompanyID, _user, "", "");   
                 }
             }
-
-
             // Saving all this company stuff to the session so the layout isn't dependent on the model
             // Note that it is all non-sensitive stuff            
-            HttpContext.Session.SetInt32("CompanyID", company.ID);
-            HttpContext.Session.SetString("CompanyName", company.CompanyName);
-            HttpContext.Session.SetString("CompanyTextMain", company.CompanyTextMain);
-            HttpContext.Session.SetString("CompanyTextSecondary", company.CompanyTextSecondary);
-            HttpContext.Session.SetString("CompanyMainFontColor", company.CompanyMainFontColor);
-            HttpContext.Session.SetString("CompanyLogoImage", company.CompanyLogoImage);
-            HttpContext.Session.SetString("CompanyFocusImage", company.CompanyFocusImage ?? "");
-            HttpContext.Session.SetString("CompanyBackgroundImage", company.CompanyBackgroundImage ?? "");
-            HttpContext.Session.SetString("CompanyHighlightColor", company.CompanyHighlightColor);
-            HttpContext.Session.SetString("CompanyHeaderFontColor", company.CompanyHeaderFontColor);
-            HttpContext.Session.SetString("CompanyHeaderBackgroundColor", company.CompanyHeaderBackgroundColor);
-            HttpContext.Session.SetString("CompanyBackgroundColor", company.CompanyBackgroundColor);
-            HttpContext.Session.SetInt32("CompanyNumberOfUsers", company.CompanyNumberOfUsers);
+           
             return View(company);
         }
 

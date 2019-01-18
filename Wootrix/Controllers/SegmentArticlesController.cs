@@ -27,7 +27,8 @@ namespace WootrixV2.Controllers
         private readonly IHostingEnvironment _env;
         private readonly string _rootpath;
         private readonly UserManager<ApplicationUser> _userManager;
-        private ApplicationUser _user;
+        private WootrixV2.Models.User _user;
+        private WootrixV2.Models.Company _cpy;
         private readonly IOptions<RequestLocalizationOptions> _rlo;
         private DataAccessLayer _dla;
 
@@ -244,7 +245,23 @@ namespace WootrixV2.Controllers
         // GET: SegmentArticles/Article/5
         public async Task<IActionResult> Article(int? id)
         {
+            _user = _context.User.FirstOrDefault(p => p.EmailAddress == _userManager.GetUserAsync(User).GetAwaiter().GetResult().Email);
+            _cpy = _context.Company.FirstOrDefaultAsync(m => m.ID == _user.CompanyID).GetAwaiter().GetResult();
+            HttpContext.Session.SetInt32("CompanyID", _cpy.ID);
+            HttpContext.Session.SetString("CompanyName", _cpy.CompanyName);
+            HttpContext.Session.SetString("CompanyTextMain", _cpy.CompanyTextMain);
+            HttpContext.Session.SetString("CompanyTextSecondary", _cpy.CompanyTextSecondary);
+            HttpContext.Session.SetString("CompanyMainFontColor", _cpy.CompanyMainFontColor);
+            HttpContext.Session.SetString("CompanyLogoImage", _cpy.CompanyLogoImage);
+            HttpContext.Session.SetString("CompanyFocusImage", _cpy.CompanyFocusImage ?? "");
+            HttpContext.Session.SetString("CompanyBackgroundImage", _cpy.CompanyBackgroundImage ?? "");
+            HttpContext.Session.SetString("CompanyHighlightColor", _cpy.CompanyHighlightColor);
+            HttpContext.Session.SetString("CompanyHeaderFontColor", _cpy.CompanyHeaderFontColor);
+            HttpContext.Session.SetString("CompanyHeaderBackgroundColor", _cpy.CompanyHeaderBackgroundColor);
+            HttpContext.Session.SetString("CompanyBackgroundColor", _cpy.CompanyBackgroundColor);
+            HttpContext.Session.SetInt32("CompanyNumberOfUsers", _cpy.CompanyNumberOfUsers);
             ViewBag.UploadsLocation = "https://s3-us-west-2.amazonaws.com/wootrixv2uploadfiles/images/Uploads/";
+
             var segID = HttpContext.Session.GetInt32("SegmentListID");
             if (id == null)
             {
@@ -271,25 +288,24 @@ namespace WootrixV2.Controllers
         // GET: SegmentArticles/Create
         public IActionResult Create()
         {
-            _user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();
             SegmentArticleViewModel s = new SegmentArticleViewModel();
             s.Order = 1;
             s.PublishFrom = DateTime.Now.Date;
             s.PublishTill = DateTime.Now.AddYears(10).Date;
-            s.CompanyID = _user.companyID;
-            s.Author = _user.name;
+            s.CompanyID = _user.CompanyID;
+            s.Author = _user.Name;
             s.AllowComments = true;
 
             DataAccessLayer dla = new DataAccessLayer(_context);
-            string deptID = _user.categories;
+            string deptID = _user.Categories;
             List<SelectListItem> listOfAllSegements;
             if (!string.IsNullOrEmpty(deptID))
             {
-                listOfAllSegements = dla.GetArticleSegments(_user.companyID, deptID);
+                listOfAllSegements = dla.GetArticleSegments(_user.CompanyID, deptID);
             }
             else
             {
-                listOfAllSegements = dla.GetArticleSegments(_user.companyID);
+                listOfAllSegements = dla.GetArticleSegments(_user.CompanyID);
             }
 
             foreach (var seg in listOfAllSegements)
@@ -299,28 +315,28 @@ namespace WootrixV2.Controllers
             }
 
             // Add group checkboxes
-            var listOfAllGroups = dla.GetListGroups(_user.companyID);
+            var listOfAllGroups = dla.GetListGroups(_user.CompanyID);
             foreach (var seg in listOfAllGroups)
             {
                 s.AvailableGroups.Add(new SelectListItem { Text = seg.Value, Value = seg.Value });
             }
 
             // Add topic checkboxes
-            var listOfAllTopics = dla.GetListTopics(_user.companyID);
+            var listOfAllTopics = dla.GetListTopics(_user.CompanyID);
             foreach (var seg in listOfAllTopics)
             {
                 s.AvailableTopics.Add(new SelectListItem { Text = seg.Value, Value = seg.Value });
             }
 
             // Add type checkboxes
-            var listOfAllTypeOfUser = dla.GetListTypeOfUser(_user.companyID);
+            var listOfAllTypeOfUser = dla.GetListTypeOfUser(_user.CompanyID);
             foreach (var seg in listOfAllTypeOfUser)
             {
                 s.AvailableTypeOfUser.Add(new SelectListItem { Text = seg.Value, Value = seg.Value });
             }
 
             // Add language checkboxes
-            var listOfAllLanguages = dla.GetListLanguages(_user.companyID, _rlo);
+            var listOfAllLanguages = dla.GetListLanguages(_user.CompanyID, _rlo);
             foreach (var seg in listOfAllLanguages)
             {
                 s.AvailableLanguages.Add(new SelectListItem { Text = seg.Value, Value = seg.Value });
@@ -342,7 +358,6 @@ namespace WootrixV2.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(SegmentArticleViewModel sa)
         {
-            _user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();
             var myArticle = new SegmentArticle();
 
             //Have to check the article title isn't already used
@@ -353,15 +368,15 @@ namespace WootrixV2.Controllers
                 if (ModelState.IsValid)
                 {
                     //ID,Order,Title,CoverImage,CoverImageMobileFriendly,PublishDate,FinishDate,ClientName,ClientLogoImage,ThemeColor,StandardColor,Draft,Department,Tags
-                    myArticle.CompanyID = _user.companyID;
+                    myArticle.CompanyID = _user.CompanyID;
                    
                     myArticle.Title = WebUtility.HtmlEncode(sa.Title);
                     myArticle.PublishFrom = sa.PublishFrom ?? DateTime.Now.AddDays(-1);
                     myArticle.PublishTill = sa.PublishTill ?? DateTime.Now.AddYears(10);
                     myArticle.AllowComments = sa.AllowComments;
                     myArticle.ArticleContent = WebUtility.HtmlEncode(sa.ArticleContent);
-                    myArticle.Author = (sa.Author ?? _user.name); //if null set to be user name
-                    myArticle.CreatedBy = _user.UserName;
+                    myArticle.Author = (sa.Author ?? _user.Name); //if null set to be user name
+                    myArticle.CreatedBy = _user.Name;
                     myArticle.ArticleUrl = WebUtility.HtmlEncode(sa.ArticleUrl);
                     myArticle.Order = 1;
                     myArticle.Tags = WebUtility.HtmlEncode(sa.Tags);
@@ -380,7 +395,7 @@ namespace WootrixV2.Controllers
                     IFormFile img = sa.Image;
                     if (img != null)
                     {      
-                        await _dla.UploadFileToS3(img, _user.companyName + "_" + artID + "_" + img.FileName, "images/Uploads/Articles");
+                        await _dla.UploadFileToS3(img, _user.CompanyName + "_" + artID + "_" + img.FileName, "images/Uploads/Articles");
                         //The file has been saved to disk - now save the file name to the DB
                         myArticle.Image = img.FileName;
                     }
@@ -388,7 +403,7 @@ namespace WootrixV2.Controllers
                     IFormFile vid = sa.EmbeddedVideo;
                     if (vid != null)
                     {
-                        await _dla.UploadFileToS3(vid, _user.companyName + "_" + artID + "_" + vid.FileName, "images/Uploads/Articles");
+                        await _dla.UploadFileToS3(vid, _user.CompanyName + "_" + artID + "_" + vid.FileName, "images/Uploads/Articles");
                         //The file has been saved to disk - now save the file name to the DB
                         myArticle.EmbeddedVideo = vid.FileName;
                     }
@@ -412,35 +427,35 @@ namespace WootrixV2.Controllers
             }
             DataAccessLayer dla = new DataAccessLayer(_context);
 
-            var listOfAllSegements = dla.GetArticleSegments(_user.companyID);
+            var listOfAllSegements = dla.GetArticleSegments(_user.CompanyID);
             foreach (var seg in listOfAllSegements)
             {
                 sa.AvailableSegments.Add(new SelectListItem { Text = seg.Value, Value = seg.Value });
             }
 
             // Add group checkboxes
-            var listOfAllGroups = dla.GetListGroups(_user.companyID);
+            var listOfAllGroups = dla.GetListGroups(_user.CompanyID);
             foreach (var seg in listOfAllGroups)
             {
                 sa.AvailableGroups.Add(new SelectListItem { Text = seg.Value, Value = seg.Value });
             }
 
             // Add topic checkboxes
-            var listOfAllTopics = dla.GetListTopics(_user.companyID);
+            var listOfAllTopics = dla.GetListTopics(_user.CompanyID);
             foreach (var seg in listOfAllTopics)
             {
                 sa.AvailableTopics.Add(new SelectListItem { Text = seg.Value, Value = seg.Value });
             }
 
             // Add type checkboxes
-            var listOfAllTypeOfUser = dla.GetListTypeOfUser(_user.companyID);
+            var listOfAllTypeOfUser = dla.GetListTypeOfUser(_user.CompanyID);
             foreach (var seg in listOfAllTypeOfUser)
             {
                 sa.AvailableTypeOfUser.Add(new SelectListItem { Text = seg.Value, Value = seg.Value });
             }
 
             // Add language checkboxes
-            var listOfAllLanguages = dla.GetListLanguages(_user.companyID, _rlo);
+            var listOfAllLanguages = dla.GetListLanguages(_user.CompanyID, _rlo);
             foreach (var seg in listOfAllLanguages)
             {
                 sa.AvailableLanguages.Add(new SelectListItem { Text = seg.Value, Value = seg.Value });
@@ -468,7 +483,6 @@ namespace WootrixV2.Controllers
             }
 
             DataAccessLayer dla = new DataAccessLayer(_context);
-            _user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();
             SegmentArticleViewModel s = new SegmentArticleViewModel();
             s.Order = segmentArticle.Order;
             s.ArticleUrl = WebUtility.HtmlDecode(segmentArticle.ArticleUrl);
@@ -479,10 +493,10 @@ namespace WootrixV2.Controllers
             s.PublishFrom = segmentArticle.PublishFrom;
             s.PublishTill = segmentArticle.PublishTill;
             s.CompanyID = segmentArticle.CompanyID;
-            s.Author = (segmentArticle.Author == null || segmentArticle.Author == "" ? _user.name : segmentArticle.Author);
+            s.Author = (segmentArticle.Author == null || segmentArticle.Author == "" ? _user.Name : segmentArticle.Author);
             s.AllowComments = segmentArticle.AllowComments;
             s.Tags = WebUtility.HtmlDecode(segmentArticle.Tags);
-            s.CreatedBy = _user.UserName;
+            s.CreatedBy = _user.Name;
 
             // Get location dropdown data
             s.Countries = dla.GetCountries();
@@ -496,15 +510,15 @@ namespace WootrixV2.Controllers
             }
             //Add any options not already in the segmentlist
 
-            string deptID = _user.categories;
+            string deptID = _user.Categories;
             List<SelectListItem> listOfAllSegements;
             if (!string.IsNullOrEmpty(deptID))
             {
-                listOfAllSegements = dla.GetArticleSegments(_user.companyID, deptID);
+                listOfAllSegements = dla.GetArticleSegments(_user.CompanyID, deptID);
             }
             else
             {
-                listOfAllSegements = dla.GetArticleSegments(_user.companyID);
+                listOfAllSegements = dla.GetArticleSegments(_user.CompanyID);
             }
            
             foreach (var seg in listOfAllSegements)
@@ -523,7 +537,7 @@ namespace WootrixV2.Controllers
                 s.AvailableGroups = segmentArticle.Groups.Split('|').Select(x => new SelectListItem { Text = x, Value = x, Selected = true }).ToList();
             }
             //Add any options not already in the segmentlist
-            var listOfAllGroups = dla.GetListGroups(_user.companyID);
+            var listOfAllGroups = dla.GetListGroups(_user.CompanyID);
             foreach (var seg in listOfAllGroups)
             {
                 if (s.AvailableGroups.FirstOrDefault(stringToCheck => stringToCheck.Value.Contains(seg.Value)) == null)
@@ -539,7 +553,7 @@ namespace WootrixV2.Controllers
                 s.AvailableTopics = segmentArticle.Topics.Split('|').Select(x => new SelectListItem { Text = x, Value = x, Selected = true }).ToList();
             }
             //Add any options not already in the segmentlist
-            var listOfAllTopics = dla.GetListTopics(_user.companyID);
+            var listOfAllTopics = dla.GetListTopics(_user.CompanyID);
             foreach (var seg in listOfAllTopics)
             {
                 if (s.AvailableTopics.FirstOrDefault(stringToCheck => stringToCheck.Value.Contains(seg.Value)) == null)
@@ -554,7 +568,7 @@ namespace WootrixV2.Controllers
                 s.AvailableTypeOfUser = segmentArticle.TypeOfUser.Split('|').Select(x => new SelectListItem { Text = x, Value = x, Selected = true }).ToList();
             }
             //Add any options not already in the segmentlist
-            var listOfAllTypeOfUser = dla.GetListTypeOfUser(_user.companyID);
+            var listOfAllTypeOfUser = dla.GetListTypeOfUser(_user.CompanyID);
             foreach (var seg in listOfAllTypeOfUser)
             {
                 if (s.AvailableTypeOfUser.FirstOrDefault(stringToCheck => stringToCheck.Value.Contains(seg.Value)) == null)
@@ -569,7 +583,7 @@ namespace WootrixV2.Controllers
                 s.AvailableLanguages = segmentArticle.Languages.Split('|').Select(x => new SelectListItem { Text = x, Value = x, Selected = true }).ToList();
             }
             //Add any options not already in the segmentlist
-            var listOfAllLanguages = dla.GetListLanguages(_user.companyID, _rlo);
+            var listOfAllLanguages = dla.GetListLanguages(_user.CompanyID, _rlo);
             foreach (var seg in listOfAllLanguages)
             {
                 if (s.AvailableLanguages.FirstOrDefault(stringToCheck => stringToCheck.Value.Contains(seg.Value)) == null)
@@ -600,8 +614,7 @@ namespace WootrixV2.Controllers
             {
                 return NotFound();
             }
-
-            _user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();
+            
             var myArticle = _context.SegmentArticle.Find(id);
 
             //Have to check the article title isn't already used
@@ -612,7 +625,7 @@ namespace WootrixV2.Controllers
                 if (ModelState.IsValid)
                 {
                     myArticle.ID = sa.ID;
-                    myArticle.CompanyID = _user.companyID;
+                    myArticle.CompanyID = _user.CompanyID;
                     myArticle.Order = sa.Order ?? 1;
                     myArticle.Title = WebUtility.HtmlEncode(sa.Title);
 
@@ -638,7 +651,7 @@ namespace WootrixV2.Controllers
                     IFormFile img = sa.Image;
                     if (img != null)
                     {
-                        await _dla.UploadFileToS3(img, _user.companyName + "_" + id + "_" + img.FileName, "images/Uploads/Articles");
+                        await _dla.UploadFileToS3(img, _user.CompanyName + "_" + id + "_" + img.FileName, "images/Uploads/Articles");
                         //The file has been saved to disk - now save the file name to the DB
                         myArticle.Image = img.FileName;
                     }
@@ -646,7 +659,7 @@ namespace WootrixV2.Controllers
                     IFormFile vid = sa.EmbeddedVideo;
                     if (vid != null)
                     {
-                        await _dla.UploadFileToS3(vid, _user.companyName + "_" + id + "_" + vid.FileName, "images/Uploads/Articles");                       
+                        await _dla.UploadFileToS3(vid, _user.CompanyName + "_" + id + "_" + vid.FileName, "images/Uploads/Articles");                       
                         //The file has been saved to disk - now save the file name to the DB
                         myArticle.EmbeddedVideo = vid.FileName;
                     }

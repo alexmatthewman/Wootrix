@@ -22,7 +22,8 @@ namespace WootrixV2.Controllers
         private readonly IHostingEnvironment _env;
         private readonly string _rootpath;
         private readonly UserManager<ApplicationUser> _userManager;
-        private ApplicationUser _user;
+        private WootrixV2.Models.User _user;
+        private WootrixV2.Models.Company _cpy;
         private int _companyID;
         private DataAccessLayer _dla;
 
@@ -236,15 +237,8 @@ namespace WootrixV2.Controllers
         // GET: CompanySegments
         public async Task<IActionResult> UserSegmentSearch(string SearchString)
         {
-            ViewBag.UploadsLocation = "https://s3-us-west-2.amazonaws.com/wootrixv2uploadfiles/images/Uploads/";
-            _companyID = HttpContext.Session.GetInt32("CompanyID") ?? 0;
-
             DataAccessLayer dla = new DataAccessLayer(_context);
-
-            _user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();
-            WootrixV2.Models.User un = _context.User.Where(x => x.EmailAddress == _user.Email).FirstOrDefaultAsync().GetAwaiter().GetResult();
-            var segments = dla.GetSegmentsList(_companyID, un, SearchString, "");
-
+            var segments = dla.GetSegmentsList(_cpy.ID, _user, SearchString, "");
 
             return View(segments);
         }
@@ -253,7 +247,6 @@ namespace WootrixV2.Controllers
         // GET: CompanySegments
         public async Task<IActionResult> Index()
         {
-            ViewBag.UploadsLocation = "https://s3-us-west-2.amazonaws.com/wootrixv2uploadfiles/images/Uploads/";
             //Get the company name out the session and use it as a filter for the groups returned
 
             // We also need to filter on department.
@@ -262,20 +255,17 @@ namespace WootrixV2.Controllers
             // Note that if the segment doesn't have a department set, everyone sees it
 
 
-            _companyID = HttpContext.Session.GetInt32("CompanyID") ?? 0;
 
             // Get current user department
-            _user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();
-            WootrixV2.Models.User un = _context.User.Where(x => x.EmailAddress == _user.Email).FirstOrDefaultAsync().GetAwaiter().GetResult();
 
-            var department = un.Categories; //bad naming for the old DB i know
+            var department = _user.Categories; //bad naming for the old DB i know
             List<CompanySegment> ctx;
 
             // If the user doesn't have a department don't filter on it
             if (!string.IsNullOrWhiteSpace(department))
             {
                 ctx = await _context.CompanySegment
-                  .Where(m => m.CompanyID == _companyID)
+                  .Where(m => m.CompanyID == _cpy.ID)
                   .Where(m => m.Department == department)
                   .OrderBy(m => m.Order)
                   .ToListAsync();
@@ -283,7 +273,7 @@ namespace WootrixV2.Controllers
             else
             {
                 ctx = await _context.CompanySegment
-                .Where(m => m.CompanyID == _companyID)
+                .Where(m => m.CompanyID == _cpy.ID)
                 .OrderBy(m => m.Order)
                 .ToListAsync();
             }
@@ -293,26 +283,38 @@ namespace WootrixV2.Controllers
 
         // GET: SegmentArticles/Articlelist/id of segment
         public async Task<IActionResult> ArticleList(int id)
-        {       
+        {
+
+            _user = _context.User.FirstOrDefault(p => p.EmailAddress == _userManager.GetUserAsync(User).GetAwaiter().GetResult().Email);
+            _cpy = _context.Company.FirstOrDefaultAsync(m => m.ID == _user.CompanyID).GetAwaiter().GetResult();
+            HttpContext.Session.SetInt32("CompanyID", _cpy.ID);
+            HttpContext.Session.SetString("CompanyName", _cpy.CompanyName);
+            HttpContext.Session.SetString("CompanyTextMain", _cpy.CompanyTextMain);
+            HttpContext.Session.SetString("CompanyTextSecondary", _cpy.CompanyTextSecondary);
+            HttpContext.Session.SetString("CompanyMainFontColor", _cpy.CompanyMainFontColor);
+            HttpContext.Session.SetString("CompanyLogoImage", _cpy.CompanyLogoImage);
+            HttpContext.Session.SetString("CompanyFocusImage", _cpy.CompanyFocusImage ?? "");
+            HttpContext.Session.SetString("CompanyBackgroundImage", _cpy.CompanyBackgroundImage ?? "");
+            HttpContext.Session.SetString("CompanyHighlightColor", _cpy.CompanyHighlightColor);
+            HttpContext.Session.SetString("CompanyHeaderFontColor", _cpy.CompanyHeaderFontColor);
+            HttpContext.Session.SetString("CompanyHeaderBackgroundColor", _cpy.CompanyHeaderBackgroundColor);
+            HttpContext.Session.SetString("CompanyBackgroundColor", _cpy.CompanyBackgroundColor);
+            HttpContext.Session.SetInt32("CompanyNumberOfUsers", _cpy.CompanyNumberOfUsers);
+            ViewBag.UploadsLocation = "https://s3-us-west-2.amazonaws.com/wootrixv2uploadfiles/images/Uploads/";
+
             DataAccessLayer dla = new DataAccessLayer(_context);
-            // Now for users we need to show them articles on the home page so get them in the ViewBag for display
-            _user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();
-
-            HttpContext.Session.SetInt32("SegmentListID", id);
-            _companyID = _user.companyID;
-            User usr = _context.User.FirstOrDefault(p => p.EmailAddress == _user.Email);
-
+            // Now for users we need to show them articles on the home page so get them in the ViewBag for display   
             //Also add the Segment to the Viewbag so we can get the Image
-            CompanySegment cs = await _context.CompanySegment.FirstOrDefaultAsync(m => m.ID == id && m.CompanyID == _companyID);
-            var segmentArticle = dla.GetArticlesListBasedOnThisUsersFilters(usr, "", cs);
+            CompanySegment cs = await _context.CompanySegment.FirstOrDefaultAsync(m => m.ID == id && m.CompanyID == _cpy.ID);
+            var segmentArticle = dla.GetArticlesListBasedOnThisUsersFilters(_user, "", cs);
             if (segmentArticle == null)
             {
                 return NotFound();
             }
-            
+
             ViewBag.SegmentCoverImage = cs.CoverImage ?? "";
             ViewBag.SegmentTitle = cs.Title ?? "";
-            ViewBag.CompanyName = usr.CompanyName ?? "";
+            ViewBag.CompanyName = _user.CompanyName ?? "";
 
             return View(segmentArticle);
         }
@@ -320,28 +322,19 @@ namespace WootrixV2.Controllers
         // GET: SegmentArticles/Articlelist/id of segment
         public async Task<IActionResult> UserArticleSearch(string searchString)
         {
-            ViewBag.UploadsLocation = "https://s3-us-west-2.amazonaws.com/wootrixv2uploadfiles/images/Uploads/";
             if (searchString == null)
             {
                 return NotFound();
             }
 
             var segmentid = HttpContext.Session.GetInt32("SegmentListID");
-            _companyID = HttpContext.Session.GetInt32("CompanyID") ?? 0;
 
             DataAccessLayer dla = new DataAccessLayer(_context);
-            _user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();
-            User usr = _context.User.FirstOrDefault(p => p.EmailAddress == _user.Email);            
-            
-
-            //var segmentArticle = _context.SegmentArticle
-            //    .Where(n => n.CompanyID == _companyID)
-            //    .Where(m => m.Segments.Contains(segmentTitle) && (m.Title.Contains(searchString) || m.Tags.Contains(searchString)));
 
             //Also add the Segment to the Viewbag so we can get the Image
-            CompanySegment cs = await _context.CompanySegment.FirstOrDefaultAsync(m => m.ID == segmentid && m.CompanyID == _companyID);
+            CompanySegment cs = await _context.CompanySegment.FirstOrDefaultAsync(m => m.ID == segmentid && m.CompanyID == _cpy.ID);
 
-            var segmentArticle = dla.GetArticlesListBasedOnThisUsersFilters(usr, "", cs);
+            var segmentArticle = dla.GetArticlesListBasedOnThisUsersFilters(_user, "", cs);
             ViewBag.Segment = cs;
             if (segmentArticle == null)
             {
@@ -355,11 +348,10 @@ namespace WootrixV2.Controllers
         public async Task<IActionResult> Details(int id)
         {
             HttpContext.Session.SetInt32("SegmentID", id);
-            _companyID = HttpContext.Session.GetInt32("CompanyID") ?? 0;
-            CompanySegment cs = await _context.CompanySegment.FirstOrDefaultAsync(m => m.ID == id && m.CompanyID == _companyID);
+            CompanySegment cs = await _context.CompanySegment.FirstOrDefaultAsync(m => m.ID == id && m.CompanyID == _cpy.ID);
 
             var segmentArticle = _context.SegmentArticle
-                .Where(n => n.CompanyID == cs.CompanyID)
+                .Where(n => n.CompanyID == _cpy.ID)
                 .Where(m => m.Segments.Contains(cs.Title));
 
             // OK so now we are going to set the article Order field to be as show in the Segments so its easier to work with. 
@@ -405,16 +397,15 @@ namespace WootrixV2.Controllers
         // GET: CompanySegments/Create
         public IActionResult Create()
         {
-            _user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();
             CompanySegmentViewModel s = new CompanySegmentViewModel();
             s.Order = 1;
             s.PublishDate = DateTime.Now.Date;
             s.FinishDate = DateTime.Now.AddYears(10).Date;
             s.StandardColor = HttpContext.Session.GetString("CompanyHeaderBackgroundColor");
             s.ThemeColor = HttpContext.Session.GetString("CompanyHighlightColor");
-            s.ClientName = _user.name;
+            s.ClientName = _user.Name;
             //s.ClientLogoImage = _user.photoUrl;
-            var cp = _user.companyID;
+            var cp = _user.CompanyID;
 
             DataAccessLayer dla = new DataAccessLayer(_context);
             s.Departments = dla.GetDepartments(cp);
@@ -428,8 +419,7 @@ namespace WootrixV2.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CompanySegmentViewModel cps)
         {
-            _user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();
-            var companyID = HttpContext.Session.GetInt32("CompanyID") ?? 0;
+            var companyID = _cpy.ID;
             //Initialise a new companysegment
             var mySegment = new CompanySegment();
             if (ModelState.IsValid)
@@ -446,21 +436,19 @@ namespace WootrixV2.Controllers
                 mySegment.Draft = DateTime.Now > cps.PublishDate ? false : true;
                 mySegment.Department = cps.Department;
                 mySegment.Tags = cps.Tags;
-                mySegment.ClientName = cps.ClientName ?? _user.name;
-
-
+                mySegment.ClientName = cps.ClientName ?? _user.Name;
 
                 IFormFile coverImage = cps.CoverImage;
                 if (coverImage != null)
                 {
-                    await _dla.UploadFileToS3(coverImage, _user.companyName + "_" + coverImage.FileName, "images/Uploads");                    
+                    await _dla.UploadFileToS3(coverImage, _user.CompanyName + "_" + coverImage.FileName, "images/Uploads");
                     mySegment.CoverImage = coverImage.FileName;
                 }
 
                 IFormFile coverImageMB = cps.CoverImageMobileFriendly;
                 if (coverImageMB != null)
                 {
-                    await _dla.UploadFileToS3(coverImageMB, _user.companyName + "_" + coverImageMB.FileName, "images/Uploads");
+                    await _dla.UploadFileToS3(coverImageMB, _user.CompanyName + "_" + coverImageMB.FileName, "images/Uploads");
                     //var filePath = Path.Combine(_rootpath, "images/Uploads", _user.companyName + "_" + coverImageMB.FileName);
                     //using (var stream = new FileStream(filePath, FileMode.Create))
                     //{
@@ -473,7 +461,7 @@ namespace WootrixV2.Controllers
                 IFormFile cli = cps.ClientLogoImage;
                 if (cli != null)
                 {
-                    await _dla.UploadFileToS3(cli, _user.companyName + "_" + cli.FileName, "images/Uploads");
+                    await _dla.UploadFileToS3(cli, _user.CompanyName + "_" + cli.FileName, "images/Uploads");
                     //The file has been saved to disk - now save the file name to the DB
                     mySegment.CoverImageMobileFriendly = cli.FileName;
                 }
@@ -501,7 +489,6 @@ namespace WootrixV2.Controllers
                 return NotFound();
             }
 
-            _user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();
             CompanySegmentViewModel s = new CompanySegmentViewModel();
 
             s.Order = companySegment.Order;
@@ -510,13 +497,13 @@ namespace WootrixV2.Controllers
             s.FinishDate = companySegment.FinishDate;
             s.StandardColor = companySegment.StandardColor;
             s.ThemeColor = companySegment.ThemeColor;
-            s.ClientName = (companySegment.ClientName ?? _user.name);
+            s.ClientName = (companySegment.ClientName ?? _user.Name);
             // s.ClientLogoImage = FormFileHelper.PhysicalToIFormFile(new FileInfo(companySegment.ClientLogoImage));
             s.Department = companySegment.Department;
             s.Tags = companySegment.Tags;
 
             DataAccessLayer dla = new DataAccessLayer(_context);
-            s.Departments = dla.GetDepartments(_user.companyID);
+            s.Departments = dla.GetDepartments(_user.CompanyID);
             return View(s);
         }
 
@@ -532,7 +519,6 @@ namespace WootrixV2.Controllers
                 return NotFound();
             }
 
-            _user = _userManager.GetUserAsync(User).GetAwaiter().GetResult();
             //Initialise a new companysegment
             CompanySegment mySegment = await _context.CompanySegment.FindAsync(id);
 
@@ -543,7 +529,7 @@ namespace WootrixV2.Controllers
                 if (ModelState.IsValid)
                 {
                     //ID,Order,Title,CoverImage,CoverImageMobileFriendly,PublishDate,FinishDate,ClientName,ClientLogoImage,ThemeColor,StandardColor,Draft,Department,Tags
-                    mySegment.CompanyID = _user.companyID;
+                    mySegment.CompanyID = _user.CompanyID;
 
 
                     mySegment.PublishDate = cps.PublishDate;
@@ -558,15 +544,15 @@ namespace WootrixV2.Controllers
                     IFormFile coverImage = cps.CoverImage;
                     if (coverImage != null)
                     {
-                        await _dla.UploadFileToS3(coverImage, _user.companyName + "_" + coverImage.FileName, "images/Uploads");
-                        
+                        await _dla.UploadFileToS3(coverImage, _user.CompanyName + "_" + coverImage.FileName, "images/Uploads");
+
                         mySegment.CoverImage = coverImage.FileName;
                     }
 
                     IFormFile coverImageMB = cps.CoverImageMobileFriendly;
                     if (coverImageMB != null)
                     {
-                        await _dla.UploadFileToS3(coverImageMB, _user.companyName + "_" + coverImageMB.FileName, "images/Uploads");
+                        await _dla.UploadFileToS3(coverImageMB, _user.CompanyName + "_" + coverImageMB.FileName, "images/Uploads");
                         //The file has been saved to disk - now save the file name to the DB
                         mySegment.CoverImageMobileFriendly = coverImageMB.FileName;
                     }
@@ -574,7 +560,7 @@ namespace WootrixV2.Controllers
                     IFormFile cli = cps.ClientLogoImage;
                     if (cli != null)
                     {
-                        await _dla.UploadFileToS3(cli, _user.companyName + "_" + cli.FileName, "images/Uploads");
+                        await _dla.UploadFileToS3(cli, _user.CompanyName + "_" + cli.FileName, "images/Uploads");
                         //The file has been saved to disk - now save the file name to the DB
                         mySegment.CoverImageMobileFriendly = cli.FileName;
                     }
@@ -595,7 +581,7 @@ namespace WootrixV2.Controllers
                         // If the title changed
                         if (mySegment.Title != cps.Title)
                         {
-                            foreach (var art in _context.SegmentArticle.Where(m => m.CompanyID == _user.companyID))
+                            foreach (var art in _context.SegmentArticle.Where(m => m.CompanyID == _user.CompanyID))
                             {
                                 if (art.Segments.Contains(mySegment.Title))
                                 {

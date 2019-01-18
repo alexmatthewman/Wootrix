@@ -54,6 +54,7 @@ namespace Wootrix
                 options.UseMySql(
                     Configuration.GetConnectionString("IdentityConnection")));
 
+            services.AddDistributedMemoryCache();
             //This allows for custom Identity attributes
             //services.AddDefaultIdentity<ApplicationUser>().AddDefaultUI().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
             //services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
@@ -83,6 +84,12 @@ namespace Wootrix
             });
             services.Configure<SecurityStampValidatorOptions>(options => options.ValidationInterval = TimeSpan.FromSeconds(10));
 
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+                options.CheckConsentNeeded = context => false;
+                options.MinimumSameSitePolicy = Microsoft.AspNetCore.Http.SameSiteMode.None;
+            });
 
             services.ConfigureApplicationCookie(options =>
             {
@@ -93,18 +100,17 @@ namespace Wootrix
                 options.LoginPath = "/Identity/Account/Login";
                 options.AccessDeniedPath = "/Identity/Account/AccessDenied";
                 options.SlidingExpiration = true;
-                options.LogoutPath = "/Identity/Account/Logout";           
+                options.LogoutPath = "/Identity/Account/Logout";
                 options.AccessDeniedPath = "/Identity/Account/Logout";
-                options.ReturnUrlParameter = "";
+                options.ReturnUrlParameter = "";                
             });
 
             
-            services.AddDistributedMemoryCache();
 
             services.AddSession(options =>
             {
                 //// Set a short timeout for easy testing.
-                options.IdleTimeout = TimeSpan.FromMinutes(5);
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
                 options.Cookie.HttpOnly = true;
             });
 
@@ -125,7 +131,7 @@ namespace Wootrix
                });
 
 
-            
+
 
             services.Configure<RequestLocalizationOptions>(opts =>
             {
@@ -183,7 +189,7 @@ namespace Wootrix
                 app.UseExceptionHandler("/Home/Error");
                 //app.UseHsts();
             }
-            
+
             app.UseDeveloperExceptionPage();
             app.UseHsts();
             var forwardingOptions = new ForwardedHeadersOptions()
@@ -193,7 +199,7 @@ namespace Wootrix
             forwardingOptions.KnownNetworks.Clear(); //its loopback by default
             forwardingOptions.KnownProxies.Clear();
             app.UseForwardedHeaders(forwardingOptions);
-            app.UseHttpsRedirection();       
+            app.UseHttpsRedirection();
             app.UseResponseCompression();
 
             //So it seems that AWS has a bug or misplaced security setting that stops file locations that aren't above the wwwroot location

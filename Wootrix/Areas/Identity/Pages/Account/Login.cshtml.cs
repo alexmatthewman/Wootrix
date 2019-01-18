@@ -95,6 +95,22 @@ namespace WootrixV2.Areas.Identity.Pages.Account
                     if (result.Succeeded)
                     {
 
+                        
+                        var _cpy = _context.Company.FirstOrDefaultAsync(m => m.ID == myUser.CompanyID).GetAwaiter().GetResult();
+                        HttpContext.Session.SetInt32("CompanyID", _cpy.ID);
+                        HttpContext.Session.SetString("CompanyName", _cpy.CompanyName);
+                        HttpContext.Session.SetString("CompanyTextMain", _cpy.CompanyTextMain);
+                        HttpContext.Session.SetString("CompanyTextSecondary", _cpy.CompanyTextSecondary);
+                        HttpContext.Session.SetString("CompanyMainFontColor", _cpy.CompanyMainFontColor);
+                        HttpContext.Session.SetString("CompanyLogoImage", _cpy.CompanyLogoImage);
+                        HttpContext.Session.SetString("CompanyFocusImage", _cpy.CompanyFocusImage ?? "");
+                        HttpContext.Session.SetString("CompanyBackgroundImage", _cpy.CompanyBackgroundImage ?? "");
+                        HttpContext.Session.SetString("CompanyHighlightColor", _cpy.CompanyHighlightColor);
+                        HttpContext.Session.SetString("CompanyHeaderFontColor", _cpy.CompanyHeaderFontColor);
+                        HttpContext.Session.SetString("CompanyHeaderBackgroundColor", _cpy.CompanyHeaderBackgroundColor);
+                        HttpContext.Session.SetString("CompanyBackgroundColor", _cpy.CompanyBackgroundColor);
+                        HttpContext.Session.SetInt32("CompanyNumberOfUsers", _cpy.CompanyNumberOfUsers);
+
                         // Set the interface to their language
                         var myLanguage = _context.User.AsNoTracking().Where(n => n.EmailAddress == Input.Email).SingleAsync().GetAwaiter().GetResult().InterfaceLanguage;
 
