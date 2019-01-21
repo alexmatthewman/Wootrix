@@ -8,14 +8,16 @@
 @inject UserManager<ApplicationUser> UserManager
 
 @{
+
+    var UploadsLocation = "https://s3-us-west-2.amazonaws.com/wootrixv2uploadfiles/images/Uploads/";
+
     var companyName = @Context.Session.GetString("CompanyName") ?? "Wootrix";
     var companyID = @Context.Session.GetInt32("CompanyID") ?? 0;
 
-    var bImage = companyName + "_" + Context.Session.GetString("CompanyBackgroundImage");
-    var fImage = companyName + "_" + Context.Session.GetString("CompanyFocusImage");
+    var companyLogo = companyName + "_" + (Context.Session.GetString("CompanyLogoImage") ?? "Wootrix_logo.png");
+    var fn = UploadsLocation + companyLogo;
 
-    //S3 Images Location
-    var UploadsLocation = "https://s3-us-west-2.amazonaws.com/wootrixv2uploadfiles/images/Uploads/";
+    
 }
 
 <!DOCTYPE html>
@@ -36,10 +38,6 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link href="~/css/CleanedOldWootrix.css" rel="stylesheet" />
 
-    <!-- jQUERY -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-83374924-3"></script>
@@ -74,11 +72,7 @@
             <div class="logo-bar">
                 <figure class="logo-container">
                     <a asp-controller="Company" asp-action="Home" asp-route-id="@companyName">
-                        @{
-                            var logo = (string.IsNullOrEmpty(Context.Session.GetString("CompanyLogoImage")) ? "Wootrix_logo.png" : companyName + "_" + Context.Session.GetString("CompanyLogoImage"));
-                            var fn = UploadsLocation + logo;
 
-                        }
                         <img id="companyLogo" src="@fn" height="35" alt="Company Logo" class="img-responsive" />
                     </a>
                 </figure>
@@ -158,7 +152,12 @@
             </div>
         </footer>
     </div>
+    <script src="~/lib/jquery/dist/jquery.js"></script>
 
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.16.0/jquery.validate.min.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery.validation.unobtrusive/3.2.6/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>

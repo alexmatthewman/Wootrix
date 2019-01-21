@@ -288,6 +288,8 @@ namespace WootrixV2.Controllers
         // GET: SegmentArticles/Create
         public IActionResult Create()
         {
+            _user = _context.User.FirstOrDefault(p => p.EmailAddress == _userManager.GetUserAsync(User).GetAwaiter().GetResult().Email);
+            _cpy = _context.Company.FirstOrDefaultAsync(m => m.ID == _user.CompanyID).GetAwaiter().GetResult();
             SegmentArticleViewModel s = new SegmentArticleViewModel();
             s.Order = 1;
             s.PublishFrom = DateTime.Now.Date;
@@ -359,7 +361,8 @@ namespace WootrixV2.Controllers
         public async Task<IActionResult> Create(SegmentArticleViewModel sa)
         {
             var myArticle = new SegmentArticle();
-
+            _user = _context.User.FirstOrDefault(p => p.EmailAddress == _userManager.GetUserAsync(User).GetAwaiter().GetResult().Email);
+            _cpy = _context.Company.FirstOrDefaultAsync(m => m.ID == _user.CompanyID).GetAwaiter().GetResult();
             //Have to check the article title isn't already used
             var existingArticle = _context.SegmentArticle.FirstOrDefault(n => n.Title == sa.Title && n.CompanyID == sa.CompanyID);
             if (existingArticle == null)
@@ -475,7 +478,8 @@ namespace WootrixV2.Controllers
             {
                 return NotFound();
             }
-
+            _user = _context.User.FirstOrDefault(p => p.EmailAddress == _userManager.GetUserAsync(User).GetAwaiter().GetResult().Email);
+            _cpy = _context.Company.FirstOrDefaultAsync(m => m.ID == _user.CompanyID).GetAwaiter().GetResult();
             var segmentArticle = await _context.SegmentArticle.FindAsync(id);
             if (segmentArticle == null)
             {
@@ -614,7 +618,8 @@ namespace WootrixV2.Controllers
             {
                 return NotFound();
             }
-            
+            _user = _context.User.FirstOrDefault(p => p.EmailAddress == _userManager.GetUserAsync(User).GetAwaiter().GetResult().Email);
+            _cpy = _context.Company.FirstOrDefaultAsync(m => m.ID == _user.CompanyID).GetAwaiter().GetResult();
             var myArticle = _context.SegmentArticle.Find(id);
 
             //Have to check the article title isn't already used

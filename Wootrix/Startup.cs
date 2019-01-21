@@ -150,7 +150,7 @@ namespace Wootrix
             });
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddProgressiveWebApp();
+            //services.AddProgressiveWebApp();
 
             services.Configure<GzipCompressionProviderOptions>(options => options.Level = System.IO.Compression.CompressionLevel.Optimal);
 

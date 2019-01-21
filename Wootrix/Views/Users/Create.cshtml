@@ -95,20 +95,20 @@ $("#States").change(function () {
                 </div>
                 @if (_type != "User")
                 {
-                <div class="form-group">
-                    @Html.LabelFor(x => Model.Categories, htmlAttributes: new { @class = "control-label" })
+                    <div class="form-group">
+                        @Html.LabelFor(x => Model.Categories, htmlAttributes: new { @class = "control-label" })
 
 
-                    <select class="form-control" id="Departments" name="Categories">
-                        @foreach (var i in Model.Departments)
-                        {
-                            <option value="@i.Value">@Localizer[i.Text]</option>
-                        }
-                    </select>
-                    @*@Html.DropDownListFor(x => Model.Categories, new SelectList(Model.Departments, "Value", "Text"), htmlAttributes: new { @class = "form-control", id = "Departments" })*@
-                    @Html.ValidationMessageFor(x => x.Categories, "", new { @class = "text-danger" })
+                        <select class="form-control" id="Departments" name="Categories">
+                            @foreach (var i in Model.Departments)
+                            {
+                                <option value="@i.Value">@Localizer[i.Text]</option>
+                            }
+                        </select>
+                        @*@Html.DropDownListFor(x => Model.Categories, new SelectList(Model.Departments, "Value", "Text"), htmlAttributes: new { @class = "form-control", id = "Departments" })*@
+                        @Html.ValidationMessageFor(x => x.Categories, "", new { @class = "text-danger" })
 
-                </div>
+                    </div>
                 }
                 <div class="form-group">
                     <label asp-for="PhoneNumber" class="control-label"></label>
@@ -201,9 +201,9 @@ $("#States").change(function () {
 
                         @foreach (var item in Model.AvailableLanguages)
                         {
-                        <div class="checkbox">
-                            <label><input type="checkbox" name="SelectedLanguages" value="@item.Value">@Localizer[item.Text]</label>
-</div>
+                            <div class="checkbox">
+                                <label><input type="checkbox" name="SelectedLanguages" value="@item.Value">@Localizer[item.Text]</label>
+                            </div>
                         }
                     </div>
 

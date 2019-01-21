@@ -680,5 +680,47 @@ namespace WootrixV2.Data
             }
         }
 
+        public int GetCompanyNumberOfCurrentTotalUsers(int CompanyID)
+        {
+            var userCount = _context.User.AsNoTracking().Where(p => p.CompanyID == CompanyID).Count();
+            return userCount;
+        }
+
+        public int GetCompanyNumberOfCurrentOnlyUsers(int CompanyID)
+        {
+            //Role 1 = admin
+            //Role 2 = user
+            //Role 3 = superadmin
+            var userCount = _context.User.AsNoTracking().Where(p => p.CompanyID == CompanyID && p.Role.ToString() == "2").Count();
+            return userCount;
+        }
+
+        public int GetCompanyNumberOfCurrentAdminUsers(int CompanyID)
+        {
+            //Role 1 = admin
+            //Role 2 = user
+            //Role 3 = superadmin
+            var userCount = _context.User.AsNoTracking().Where(p => p.CompanyID == CompanyID && p.Role.ToString() == "1").Count();
+            return userCount;
+        }
+
+        public int GetCompanyNumberOfUsedPushNotifications(int CompanyID)
+        {            
+            var pnCount = _context.Company.AsNoTracking().FirstOrDefault(p => p.ID == CompanyID).CompanyUsedPushNotifications;
+            return pnCount;
+        }
+
+
+        public void UpdateCompanyUserCounts()
+        {
+            var companies = _context.Company.ToList();
+            foreach (Company cp in companies)
+            {
+                var userCount = GetCompanyNumberOfCurrentOnlyUsers(cp.ID);
+                cp.CompanyNumberOfCurrentUsers = userCount;
+                
+            }
+            _context.SaveChanges();           
+        }
     }
 }

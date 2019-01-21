@@ -26,13 +26,13 @@ namespace WootrixV2.Models
         [StringLength(1000)]
         [Display(Name = "Title", Prompt = "Please enter the title", Description = "Title")]
         public string Title { get; set; }
-            
-        [Required]
+
+        [Required(ErrorMessage = "Please select the cover image")]
         [StringLength(1000)]
         [Display(Name = "Cover Image", Prompt = "Please select the cover image", Description = "Cover Image")]
         public string CoverImage { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Please select a lower resolution cover image for mobiles")]
         [StringLength(1000)]
         [Display(Name = "Cover Image Mobile Friendly", Prompt = "Please keep the file size small", Description = "Mobile Friendly")]
         public string CoverImageMobileFriendly { get; set; }
@@ -92,11 +92,12 @@ namespace WootrixV2.Models
         [Display(Name = "Title", Prompt = "Please enter the title", Description = "Title")]
         public string Title { get; set; }
 
-        [Required]
+        
+        [Required(ErrorMessage = "Please select the cover image")]
         [Display(Name = "Cover Image", Prompt = "Please select the cover image", Description = "Cover Image")]
         public IFormFile CoverImage { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Please select a lower resolution cover image for mobiles")]
         [Display(Name = "Cover Image Mobile Friendly", Prompt = "Please keep the file size small", Description = "Mobile Friendly")]
         public IFormFile CoverImageMobileFriendly { get; set; }
 

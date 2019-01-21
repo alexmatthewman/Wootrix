@@ -72,6 +72,13 @@ namespace WootrixV2.Models
         [Display(Name = "Number of Push Notifications", Prompt = "-1 for infinite or specify", Description = "Number of Push Notifications")]
         public int CompanyNumberOfPushNotifications { get; set; }
 
+        
+        [Display(Name = "Number of Used Push Notifications", Description = "Number of Used Push Notifications")]
+        public int CompanyUsedPushNotifications { get; set; }
+
+        [Display(Name = "Number of Current Total Users", Description = "Number of Current Total Users")]
+        public int CompanyNumberOfCurrentUsers { get; set; }
+
         public List<CompanyGroups> CompanyGroups { get; set; }
 
         public List<CompanyLanguages> CompanyLanguages { get; set; }
@@ -147,9 +154,15 @@ namespace WootrixV2.Models
         [Display(Name = "Number of Allowed Users", Prompt = "-1 for infinite or specify", Description = "Number of Allowed Users")]
         public int CompanyNumberOfUsers { get; set; }
 
+        [Display(Name = "Number of Current Total Users", Description = "Number of Current Total Users")]
+        public int CompanyNumberOfCurrentUsers { get; set; }
+
         [Required]
         [Display(Name = "Number of Push Notifications", Prompt = "-1 for infinite or specify", Description = "Number of Push Notifications")]
         public int CompanyNumberOfPushNotifications { get; set; }
+
+        [Display(Name = "Number of Used Push Notifications", Description = "Number of Used Push Notifications")]
+        public int CompanyUsedPushNotifications { get; set; }
 
     }
 

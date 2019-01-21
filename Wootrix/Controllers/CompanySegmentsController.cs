@@ -34,6 +34,9 @@ namespace WootrixV2.Controllers
             _rootpath = _env.WebRootPath;
             _userManager = userManager;
             _dla = new DataAccessLayer(_context);
+
+
+            
         }
 
         #region Article Ordering
@@ -238,8 +241,10 @@ namespace WootrixV2.Controllers
         public async Task<IActionResult> UserSegmentSearch(string SearchString)
         {
             DataAccessLayer dla = new DataAccessLayer(_context);
+            _user = _context.User.FirstOrDefault(p => p.EmailAddress == _userManager.GetUserAsync(User).GetAwaiter().GetResult().Email);
+            _cpy = _context.Company.FirstOrDefaultAsync(m => m.ID == _user.CompanyID).GetAwaiter().GetResult();
             var segments = dla.GetSegmentsList(_cpy.ID, _user, SearchString, "");
-
+            ViewBag.UploadsLocation = "https://s3-us-west-2.amazonaws.com/wootrixv2uploadfiles/images/Uploads/";
             return View(segments);
         }
 
@@ -257,6 +262,8 @@ namespace WootrixV2.Controllers
 
 
             // Get current user department
+            _user = _context.User.FirstOrDefault(p => p.EmailAddress == _userManager.GetUserAsync(User).GetAwaiter().GetResult().Email);
+            _cpy = _context.Company.FirstOrDefaultAsync(m => m.ID == _user.CompanyID).GetAwaiter().GetResult();
 
             var department = _user.Categories; //bad naming for the old DB i know
             List<CompanySegment> ctx;
@@ -277,7 +284,7 @@ namespace WootrixV2.Controllers
                 .OrderBy(m => m.Order)
                 .ToListAsync();
             }
-
+            ViewBag.UploadsLocation = "https://s3-us-west-2.amazonaws.com/wootrixv2uploadfiles/images/Uploads/";
             return View(ctx);
         }
 
@@ -287,6 +294,9 @@ namespace WootrixV2.Controllers
 
             _user = _context.User.FirstOrDefault(p => p.EmailAddress == _userManager.GetUserAsync(User).GetAwaiter().GetResult().Email);
             _cpy = _context.Company.FirstOrDefaultAsync(m => m.ID == _user.CompanyID).GetAwaiter().GetResult();
+            HttpContext.Session.SetInt32("SegmentListID", id);
+            
+
             HttpContext.Session.SetInt32("CompanyID", _cpy.ID);
             HttpContext.Session.SetString("CompanyName", _cpy.CompanyName);
             HttpContext.Session.SetString("CompanyTextMain", _cpy.CompanyTextMain);
@@ -306,7 +316,7 @@ namespace WootrixV2.Controllers
             // Now for users we need to show them articles on the home page so get them in the ViewBag for display   
             //Also add the Segment to the Viewbag so we can get the Image
             CompanySegment cs = await _context.CompanySegment.FirstOrDefaultAsync(m => m.ID == id && m.CompanyID == _cpy.ID);
-            var segmentArticle = dla.GetArticlesListBasedOnThisUsersFilters(_user, "", cs);
+            var segmentArticle = dla.GetArticlesListBasedOnThisUsersFilters(_user, "", cs).OrderBy(m =>m.Order);
             if (segmentArticle == null)
             {
                 return NotFound();
@@ -326,7 +336,8 @@ namespace WootrixV2.Controllers
             {
                 return NotFound();
             }
-
+            _user = _context.User.FirstOrDefault(p => p.EmailAddress == _userManager.GetUserAsync(User).GetAwaiter().GetResult().Email);
+            _cpy = _context.Company.FirstOrDefaultAsync(m => m.ID == _user.CompanyID).GetAwaiter().GetResult();
             var segmentid = HttpContext.Session.GetInt32("SegmentListID");
 
             DataAccessLayer dla = new DataAccessLayer(_context);
@@ -340,13 +351,16 @@ namespace WootrixV2.Controllers
             {
                 return NotFound();
             }
-
+            ViewBag.UploadsLocation = "https://s3-us-west-2.amazonaws.com/wootrixv2uploadfiles/images/Uploads/";
             return View(segmentArticle);
         }
 
         // GET: CompanySegments/Details/5
         public async Task<IActionResult> Details(int id)
         {
+            _user = _context.User.FirstOrDefault(p => p.EmailAddress == _userManager.GetUserAsync(User).GetAwaiter().GetResult().Email);
+            _cpy = _context.Company.FirstOrDefaultAsync(m => m.ID == _user.CompanyID).GetAwaiter().GetResult();
+
             HttpContext.Session.SetInt32("SegmentID", id);
             CompanySegment cs = await _context.CompanySegment.FirstOrDefaultAsync(m => m.ID == id && m.CompanyID == _cpy.ID);
 
@@ -397,6 +411,8 @@ namespace WootrixV2.Controllers
         // GET: CompanySegments/Create
         public IActionResult Create()
         {
+            _user = _context.User.FirstOrDefault(p => p.EmailAddress == _userManager.GetUserAsync(User).GetAwaiter().GetResult().Email);
+            _cpy = _context.Company.FirstOrDefaultAsync(m => m.ID == _user.CompanyID).GetAwaiter().GetResult();
             CompanySegmentViewModel s = new CompanySegmentViewModel();
             s.Order = 1;
             s.PublishDate = DateTime.Now.Date;
@@ -419,6 +435,9 @@ namespace WootrixV2.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CompanySegmentViewModel cps)
         {
+            _user = _context.User.FirstOrDefault(p => p.EmailAddress == _userManager.GetUserAsync(User).GetAwaiter().GetResult().Email);
+            _cpy = _context.Company.FirstOrDefaultAsync(m => m.ID == _user.CompanyID).GetAwaiter().GetResult();
+
             var companyID = _cpy.ID;
             //Initialise a new companysegment
             var mySegment = new CompanySegment();
@@ -482,6 +501,8 @@ namespace WootrixV2.Controllers
             {
                 return NotFound();
             }
+            _user = _context.User.FirstOrDefault(p => p.EmailAddress == _userManager.GetUserAsync(User).GetAwaiter().GetResult().Email);
+            _cpy = _context.Company.FirstOrDefaultAsync(m => m.ID == _user.CompanyID).GetAwaiter().GetResult();
 
             var companySegment = await _context.CompanySegment.FindAsync(id);
             if (companySegment == null)
@@ -518,6 +539,8 @@ namespace WootrixV2.Controllers
             {
                 return NotFound();
             }
+            _user = _context.User.FirstOrDefault(p => p.EmailAddress == _userManager.GetUserAsync(User).GetAwaiter().GetResult().Email);
+            _cpy = _context.Company.FirstOrDefaultAsync(m => m.ID == _user.CompanyID).GetAwaiter().GetResult();
 
             //Initialise a new companysegment
             CompanySegment mySegment = await _context.CompanySegment.FindAsync(id);
@@ -628,7 +651,8 @@ namespace WootrixV2.Controllers
             {
                 return NotFound();
             }
-
+            _user = _context.User.FirstOrDefault(p => p.EmailAddress == _userManager.GetUserAsync(User).GetAwaiter().GetResult().Email);
+            _cpy = _context.Company.FirstOrDefaultAsync(m => m.ID == _user.CompanyID).GetAwaiter().GetResult();
             var companySegment = await _context.CompanySegment
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (companySegment == null)
@@ -644,6 +668,7 @@ namespace WootrixV2.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+
             var companySegment = await _context.CompanySegment.FindAsync(id);
             //Update order of other segments
             DeleteSegmentAndUpdateOthersOrder(companySegment.Order ?? 1);

@@ -28,7 +28,6 @@
 <div class="bodyBox">
     <h2 style="color:@Context.Session.GetString("CompanyMainFontColor") !important">@Localizer["Edit"]</h2>
 
-    <h4 style="color:@Context.Session.GetString("CompanyMainFontColor") !important">@Localizer["Edit Magazine"]</h4>
     <hr />
     <div class="row">
         <div class="col-md-4">
@@ -44,8 +43,8 @@
                 </div>
                 <div class="form-group">
                     <label asp-for="CoverImage" class="control-label"></label>
-                    @Html.EditorFor(x => x.CoverImage)
-                    @*<input asp-for="CoverImage" type="file" class="form-control" />*@
+                    @*@Html.EditorFor(x => x.CoverImage)*@
+                    <input asp-for="CoverImage" type="file" class="form-control" />
                     <span asp-validation-for="CoverImage" class="text-danger"></span>
                     <p>@Localizer["Images with ratio 5 wide x 8 high work best"]</p>
                 </div>

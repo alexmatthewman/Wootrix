@@ -61,7 +61,14 @@
                     @Html.DisplayNameFor(model => model.CompanyNumberOfUsers)
                 </th>
                 <th>
+                    @Html.DisplayNameFor(model => model.CompanyNumberOfCurrentUsers)
+                </th>
+                
+                <th>
                     @Html.DisplayNameFor(model => model.CompanyNumberOfPushNotifications)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CompanyUsedPushNotifications)
                 </th>
                 <th></th>
             </tr>
@@ -69,57 +76,64 @@
         <tbody>
             @foreach (var item in Model)
             {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.CompanyName)
-                    </td>
-                    <td>
-                        @{
-                            var fn = ViewBag.UploadsLocation + item.CompanyName + "_" + item.CompanyLogoImage;
-                        }
-                        <img src="@fn" class="tableimg" />
-                    </td>
-                    <td style="background:@item.CompanyBackgroundColor">
-                        @Html.DisplayFor(modelItem => item.CompanyBackgroundColor)
-                    </td>
-                    <td>
-                        @{var fnb = ViewBag.UploadsLocation + item.CompanyName + "_" + item.CompanyBackgroundImage;}
-                        <img src="@fnb" class="tableimg" />
-                    </td>
-                    <td>
-                        @{var fnf = ViewBag.UploadsLocation + item.CompanyName + "_" + item.CompanyFocusImage;}
-                        <img src="@fnf" class="tableimg" />
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.CompanyTextMain)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.CompanyTextSecondary)
-                    </td>
-                    <td style="background:@item.CompanyHighlightColor">
-                        @Html.DisplayFor(modelItem => item.CompanyHighlightColor)
-                    </td>
-                    <td style="background:@item.CompanyHeaderBackgroundColor">
-                        @Html.DisplayFor(modelItem => item.CompanyHeaderBackgroundColor)
-                    </td>
-                    <td style="background:@item.CompanyMainFontColor">
-                        @Html.DisplayFor(modelItem => item.CompanyMainFontColor)
-                    </td>
-                    <td style="background:@item.CompanyHeaderFontColor">
-                        @Html.DisplayFor(modelItem => item.CompanyHeaderFontColor)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.CompanyNumberOfUsers)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.CompanyNumberOfPushNotifications)
-                    </td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.ID">@Localizer["Edit"]</a> |
-                        <a asp-action="Details" asp-route-id="@item.ID">@Localizer["Details"]</a> |
-                        <a asp-action="Delete" asp-route-id="@item.ID">@Localizer["Delete"]</a>
-                    </td>
-                </tr>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CompanyName)
+                </td>
+                <td>
+                    @{
+                        var fn = ViewBag.UploadsLocation + item.CompanyName + "_" + item.CompanyLogoImage;
+                    }
+                    <img src="@fn" class="tableimg" />
+                </td>
+                <td style="background:@item.CompanyBackgroundColor">
+                    @Html.DisplayFor(modelItem => item.CompanyBackgroundColor)
+                </td>
+                <td>
+                    @{var fnb = ViewBag.UploadsLocation + item.CompanyName + "_" + item.CompanyBackgroundImage;}
+                    <img src="@fnb" class="tableimg" />
+                </td>
+                <td>
+                    @{var fnf = ViewBag.UploadsLocation + item.CompanyName + "_" + item.CompanyFocusImage;}
+                    <img src="@fnf" class="tableimg" />
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CompanyTextMain)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CompanyTextSecondary)
+                </td>
+                <td style="background:@item.CompanyHighlightColor">
+                    @Html.DisplayFor(modelItem => item.CompanyHighlightColor)
+                </td>
+                <td style="background:@item.CompanyHeaderBackgroundColor">
+                    @Html.DisplayFor(modelItem => item.CompanyHeaderBackgroundColor)
+                </td>
+                <td style="background:@item.CompanyMainFontColor">
+                    @Html.DisplayFor(modelItem => item.CompanyMainFontColor)
+                </td>
+                <td style="background:@item.CompanyHeaderFontColor">
+                    @Html.DisplayFor(modelItem => item.CompanyHeaderFontColor)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CompanyNumberOfUsers)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CompanyNumberOfCurrentUsers)
+                </td>
+                
+                <td>
+                    @Html.DisplayFor(modelItem => item.CompanyNumberOfPushNotifications)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CompanyUsedPushNotifications)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.ID">@Localizer["Edit"]</a> |
+                    <a asp-action="Details" asp-route-id="@item.ID">@Localizer["Details"]</a> |
+                    <a asp-action="Delete" asp-route-id="@item.ID">@Localizer["Delete"]</a>
+                </td>
+            </tr>
             }
         </tbody>
     </table>

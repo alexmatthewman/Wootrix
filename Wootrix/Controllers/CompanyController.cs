@@ -42,7 +42,7 @@ namespace WootrixV2.Controllers
         // GET: Company
         public async Task<IActionResult> Index()
         {
-            
+            _dla.UpdateCompanyUserCounts();
             return View(await _context.Company.ToListAsync());
         }
 
@@ -68,35 +68,35 @@ namespace WootrixV2.Controllers
             }
 
             // Now for users we need to show them articles on the home page so get them in the ViewBag for display
-            
+            HttpContext.Session.SetInt32("CompanyID", company.ID);
+            HttpContext.Session.SetString("CompanyName", company.CompanyName);
+            HttpContext.Session.SetString("CompanyTextMain", company.CompanyTextMain);
+            HttpContext.Session.SetString("CompanyTextSecondary", company.CompanyTextSecondary);
+            HttpContext.Session.SetString("CompanyMainFontColor", company.CompanyMainFontColor);
+            HttpContext.Session.SetString("CompanyLogoImage", company.CompanyLogoImage);
+            HttpContext.Session.SetString("CompanyFocusImage", company.CompanyFocusImage ?? "");
+            HttpContext.Session.SetString("CompanyBackgroundImage", company.CompanyBackgroundImage ?? "");
+            HttpContext.Session.SetString("CompanyHighlightColor", company.CompanyHighlightColor);
+            HttpContext.Session.SetString("CompanyHeaderFontColor", company.CompanyHeaderFontColor);
+            HttpContext.Session.SetString("CompanyHeaderBackgroundColor", company.CompanyHeaderBackgroundColor);
+            HttpContext.Session.SetString("CompanyBackgroundColor", company.CompanyBackgroundColor);
+            HttpContext.Session.SetInt32("CompanyNumberOfUsers", company.CompanyNumberOfUsers);
 
             if (_signInManager.IsSignedIn(User))
             {
                 _user = _context.User.FirstOrDefault(p => p.EmailAddress == _userManager.GetUserAsync(User).GetAwaiter().GetResult().Email);
-                _cpy = _context.Company.FirstOrDefaultAsync(m => m.ID == _user.CompanyID).GetAwaiter().GetResult();
-                HttpContext.Session.SetInt32("CompanyID", _cpy.ID);
-                HttpContext.Session.SetString("CompanyName", _cpy.CompanyName);
-                HttpContext.Session.SetString("CompanyTextMain", _cpy.CompanyTextMain);
-                HttpContext.Session.SetString("CompanyTextSecondary", _cpy.CompanyTextSecondary);
-                HttpContext.Session.SetString("CompanyMainFontColor", _cpy.CompanyMainFontColor);
-                HttpContext.Session.SetString("CompanyLogoImage", _cpy.CompanyLogoImage);
-                HttpContext.Session.SetString("CompanyFocusImage", _cpy.CompanyFocusImage ?? "");
-                HttpContext.Session.SetString("CompanyBackgroundImage", _cpy.CompanyBackgroundImage ?? "");
-                HttpContext.Session.SetString("CompanyHighlightColor", _cpy.CompanyHighlightColor);
-                HttpContext.Session.SetString("CompanyHeaderFontColor", _cpy.CompanyHeaderFontColor);
-                HttpContext.Session.SetString("CompanyHeaderBackgroundColor", _cpy.CompanyHeaderBackgroundColor);
-                HttpContext.Session.SetString("CompanyBackgroundColor", _cpy.CompanyBackgroundColor);
-                HttpContext.Session.SetInt32("CompanyNumberOfUsers", _cpy.CompanyNumberOfUsers);
-
+                //_cpy = _context.Company.FirstOrDefaultAsync(m => m.ID == _user.CompanyID).GetAwaiter().GetResult();
                 
+                                
                 ViewBag.User = _user;
                 ViewBag.CommentUnderReviewCount = _dla.GetArticleReviewCommentCount(_user.CompanyID);
                 if (_user.Role == Roles.User)
                 {
                     System.Console.WriteLine("***********Getting Segments************");
-                    ViewBag.Segments = _dla.GetSegmentsList(_user.CompanyID, _user, "", "");   
+                    ViewBag.Segments = _dla.GetSegmentsList(_user.CompanyID, _user, "", "").OrderBy(m => m.Order);   
                 }
             }
+           
             // Saving all this company stuff to the session so the layout isn't dependent on the model
             // Note that it is all non-sensitive stuff            
            

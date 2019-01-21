@@ -35,9 +35,9 @@
     <table class="table">
         <thead>
             <tr>
-                <th>
+                @*<th>
                     @Html.DisplayNameFor(model => model.UserName)
-                </th>
+                </th>*@
 
                 <th>
                     @Html.DisplayNameFor(model => model.Comment)
@@ -45,12 +45,12 @@
                 <th>
                     @Html.DisplayNameFor(model => model.Status)
                 </th>
-                <th>
+                @*<th>
                     @Html.DisplayNameFor(model => model.CreatedDate)
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.EditDate)
-                </th>
+                </th>*@
                 <th></th>
             </tr>
         </thead>
@@ -61,9 +61,9 @@
                 @if (item.Status == "Approved" || _user.UserName == item.UserName)
                 {
                     <tr>
-                        <td>
+                        @*<td>
                             @Html.DisplayFor(modelItem => item.UserName)
-                        </td>
+                        </td>*@
 
                         <td>
                             @Html.DisplayFor(modelItem => item.Comment)
@@ -71,12 +71,12 @@
                         <td>
                             @Localizer[item.Status]
                         </td>
-                        <td>
+                        @*<td>
                             @Html.DisplayFor(modelItem => item.CreatedDate)
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.EditDate)
-                        </td>
+                        </td>*@
                         <td>
                             @if (_user.UserName == item.UserName)
                             {
