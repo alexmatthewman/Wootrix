@@ -485,8 +485,8 @@ namespace WootrixV2.Data
                 matches = true;
             }
             //If filter x on user, all articles with filter x will show.If filters x and y are set for user, any article with either x OR y will show.
-            else if ((art.Country == usr.Country && !string.IsNullOrEmpty(usr.Country)) || (art.State == usr.State && !string.IsNullOrEmpty(usr.State)) || (art.City == usr.City && !string.IsNullOrEmpty(usr.City))
-                     || PassesFilter(art.Groups, usr.Groups) || PassesFilter(art.TypeOfUser, usr.TypeOfUser) || PassesFilter(art.Topics, usr.Topics) || PassesFilter(art.Languages, usr.WebsiteLanguage))
+            else if ((art.Country == usr.Country) && (art.State == usr.State) && (art.City == usr.City)
+                     && PassesFilter(art.Groups, usr.Groups) && PassesFilter(art.TypeOfUser, usr.TypeOfUser) && PassesFilter(art.Topics, usr.Topics) && PassesFilter(art.Languages, usr.WebsiteLanguage))
             {
                 matches = true;
             }
@@ -500,12 +500,18 @@ namespace WootrixV2.Data
             var filterList = userCSVFilter.Split('|').ToList();
             foreach (var filter in filterList)
             {
-                // If the article filter isn't just null or empty (null==null is not a valid pass)
-                if (!string.IsNullOrEmpty(articleCSVFilter) && !string.IsNullOrEmpty(userCSVFilter))
+                //If the filter is "" or null and the articleFilters are the same that is a valid pass
+                if (string.IsNullOrEmpty(filter) && string.IsNullOrEmpty(articleCSVFilter))
+                {
+                    return true;
+                }
+                //Otherwise a filter is set so we need to compare them
+                if (!string.IsNullOrEmpty(filter))
                 {
                     if (articleCSVFilter.Contains(filter))
                     {
                         // Crap have to do this stupid loop for each type of filter - at least it should be fast
+                       
                         return true;
                     }
                 }

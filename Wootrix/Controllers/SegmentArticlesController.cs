@@ -131,17 +131,19 @@ namespace WootrixV2.Controllers
                 {
                     segString += segTitle + "/1|";
                 }
-
-                foreach (string segOldTitle in oldSegments)
+                if (oldSegments != null)
                 {
-                    if (segOldTitle.Contains(segTitle))
+                    foreach (string segOldTitle in oldSegments)
                     {
-                        isNewSegement = false;
-                        var titleAndOrder = segOldTitle.Split("/");
-                        //If the new segment is at order 1 don't update anything
-                        if (titleAndOrder[1] != "1")
+                        if (segOldTitle.Contains(segTitle))
                         {
-                            UpdateSegmentsAsThereWasAnInsertAt1(segTitle);
+                            isNewSegement = false;
+                            var titleAndOrder = segOldTitle.Split("/");
+                            //If the new segment is at order 1 don't update anything
+                            if (titleAndOrder[1] != "1")
+                            {
+                                UpdateSegmentsAsThereWasAnInsertAt1(segTitle);
+                            }
                         }
                     }
                 }
@@ -642,6 +644,7 @@ namespace WootrixV2.Controllers
                     myArticle.Author = sa.Author;
 
 
+
                     myArticle.Tags = WebUtility.HtmlEncode(sa.Tags);
                     myArticle.ArticleUrl = WebUtility.HtmlEncode(sa.ArticleUrl);
 
@@ -681,6 +684,10 @@ namespace WootrixV2.Controllers
                             var oldSegments = myArticle.Segments.Split("|");
                             //Even though it is an edit we are resetting the order to 1...its waaay to complicated otherwise.
                             myArticle.Segments = CreateSegmentsStringWithOrder1ButWithCheckToMakeSureNotAt1Already(sa.SelectedSegments, oldSegments);
+                        }
+                        else //no existing segments
+                        {
+                            myArticle.Segments = CreateSegmentsStringWithOrder1ButWithCheckToMakeSureNotAt1Already(sa.SelectedSegments, null);
                         }
                         _context.Update(myArticle);
                         await _context.SaveChangesAsync();
