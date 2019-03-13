@@ -1,0 +1,534 @@
+﻿@model IEnumerable<WootrixV2.Models.ArticleReporting>
+
+@using Microsoft.AspNetCore.Http;
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Newtonsoft.Json;
+
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = Localizer["Usage Reports"];
+    Layout = "~/Views/Shared/_LayoutCompany.cshtml";
+
+    var _companyName = Context.Session.GetString("CompanyName");
+}
+
+@section Scripts {
+    @*https://www.pluralsight.com/guides/asp-net-mvc-populating-dropdown-lists-in-razor-views-using-the-mvvm-design-pattern-entity-framework-and-ajax*@
+    <script type="text/javascript">
+
+
+$("#Countries").change(function () {
+    var selectedCountry = $("#Countries").val();
+    var regionsSelect = $("#States");
+    regionsSelect.empty();
+    var citySelect = $("#Cities");
+    citySelect.empty();
+    if (selectedCountry != null && selectedCountry != "") {
+        $.getJSON('@Url.Action("GetStates")', { countryCode: selectedCountry }, function (states) {
+
+            if (states != null && !jQuery.isEmptyObject(states))
+            {
+                regionsSelect.append($('<option/>', {
+                    value: null,
+                    text: ""
+                }));
+                $.each(states, function (index, state) {
+
+                    regionsSelect.append($("<option />").val(this.value).text(this.text));
+                });
+            }
+        });
+    }
+});
+
+
+$("#States").change(function () {
+    var selectedState = $("#States").val();
+    var citySelect = $("#Cities");
+    citySelect.empty();
+    if (selectedState != null && selectedState != "") {
+        $.getJSON('@Url.Action("GetCities")', { stateCode: selectedState }, function (cities) {
+            if (cities != null && !jQuery.isEmptyObject(cities)) {
+                citySelect.append($("<option />", {
+                    value: null,
+                    text: ""
+                }));
+                $.each(cities, function (index, city) {
+                    citySelect.append($("<option />").val(this.value).text(this.text));
+                });
+            }
+        });
+    }
+});
+    </script>
+
+}
+
+
+@*The graph library https://www.chartjs.org/*@
+@*<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.bundle.min.js"></script>*@
+<script src="~/js/chart.min.js" asp-append-version="true"></script>
+
+<script src="~/js/utils.js" asp-append-version="true"></script>
+
+<div class="articleBackButtonContainer">
+    <a asp-controller="Company" asp-action="Home" asp-route-id="@_companyName">
+        <button class="articleBackButton button glow"><span class="glyphicon glyphicon-menu-left"></span>&nbsp;@Localizer["Back to Admin Menu"]</button>
+    </a>
+</div>
+
+<div class="bodyBox">
+    <h2 style="color:@Context.Session.GetString("CompanyMainFontColor") !important">@Localizer["Usage Reports"]</h2>
+
+
+    <div class="Article Filters">
+            <h4>Filter Article View Types</h4>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label">@Localizer["Segments"]</label>
+            <select class="form-control" id="Segments" name="Segment">
+                @foreach (var i in ViewBag.Segments)
+                {
+                    <option value="@i">@Localizer[i]</option>
+                }
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="control-label">@Localizer["Articles"]</label>
+            <select class="form-control" id="Articles" name="Article">
+                @foreach (var i in ViewBag.Articles)
+                {
+                    <option value="@i">@Localizer[i]</option>
+                }
+            </select>
+        </div>
+
+        @*<label class="control-label">Languages</label>
+        <div class="form-group checkbox-box">
+
+            @foreach (var item in ViewBag.Languages)
+            {
+                <div class="checkbox">
+                    <label><input type="checkbox" name="Languages" value="@item" /> @Localizer[item]</label>
+                </div>
+            }
+        </div>
+
+        <label class="control-label">Type Of User</label>
+        <div class="form-group checkbox-box">
+
+            @foreach (var item in ViewBag.TypeOfUser)
+            {
+                <div class="checkbox">
+                    <label><input type="checkbox" name="TypeOfUser" value="@item" /> @Localizer[item]</label>
+                </div>
+            }
+        </div>
+
+        <label class="control-label">Topics</label>
+        <div class="form-group checkbox-box">
+
+            @foreach (var item in ViewBag.Topics)
+            {
+                <div class="checkbox">
+                    <label><input type="checkbox" name="Topics" value="@item" /> @Localizer[item]</label>
+                </div>
+            }
+        </div>
+
+        <label class="control-label">Groups</label>
+        <div class="form-group checkbox-box">
+
+            @foreach (var item in ViewBag.Groups)
+            {
+                <div class="checkbox">
+                    <label><input type="checkbox" name="Groups" value="@item" /> @Localizer[item]</label>
+                </div>
+            }
+        </div>
+
+
+        <div class="form-group">
+            <label class="control-label">Countries</label>
+            <select class="form-control" id="Countries" name="Country">
+                @foreach (var i in ViewBag.Countries)
+                {
+                    <option value="@i">@Localizer[i]</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label">States</label>
+            <select class="form-control" id="States" name="State">
+                @foreach (var i in ViewBag.States)
+                {
+                    <option value="@i">@Localizer[i]</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label">Cities</label>
+            <select class="form-control" id="Cities" name="City">
+                @foreach (var i in ViewBag.Cities)
+                {
+                    <option value="@i">@Localizer[i]</option>
+                }
+            </select>
+        </div>*@
+        <div class="articleBackButtonContainer">
+            @*<a asp-controller="Company" asp-action="Home" asp-route-id="@_companyName">*@
+                <button class="articleBackButton button glow"><span class="glyphicon glyphicon-menu-left"></span>&nbsp;@Localizer["Update Graphs"]</button>
+            @*</a>*@
+        </div>
+
+
+
+    <div class="GraphBox">
+        <div class="GraphRow">
+            @* ***************** OS Types Graph START ************************@
+            <div class="GraphContainer" id="OSchartcanvas-holder">
+                <canvas id="OSchart-area"></canvas>
+            </div>
+            @*<button id="randomizeData">Randomize Data</button>
+                <button id="addDataset">Add Dataset</button>
+                <button id="removeDataset">Remove Dataset</button>*@
+            <script>
+        //var randomScalingFactor = function () {
+        //    return Math.round(Math.random() * 100);
+        //};
+
+        function getRandomColor() {
+            var letters = '0123456789ABCDEF'.split('');
+            var color = '#';
+            for (var i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+        var myOSTypesArray = [];
+        var myOSTypeCountArray = [];
+        var myOSTypeColorArray = [];
+
+        @*var array = @Html.Raw(Json.Encode(@ViewBag.osTypes));
+        var array = @Html.Raw(Json.Encode(@ViewBag.osTypeCountArray));
+        var array = @Html.Raw(Json.Encode(@ViewBag.osTypeColorArray));*@
+
+
+
+        @for (int i = 0; i < ViewBag.osTypes.Length; i++)
+        {
+            @:myOSTypesArray.push("@ViewBag.osTypes[i]");
+            @:myOSTypeCountArray.push("@ViewBag.osTypeCountArray[i]");
+            @:myOSTypeColorArray.push("@ViewBag.osTypeColorArray[i]");
+        }
+
+
+        var config = {
+            type: 'pie',
+            data: {
+                datasets: [{
+                    data: myOSTypeCountArray,
+                    backgroundColor: myOSTypeColorArray,
+                    label: 'OS Types'
+                }],
+                labels: myOSTypesArray
+            },
+            options: {
+                responsive: true,
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: 'OS Types'
+                }
+            }
+        };
+
+
+
+        //document.getElementById('randomizeData').addEventListener('click', function () {
+        //    config.data.datasets.forEach(function (dataset) {
+        //        dataset.data = dataset.data.map(function () {
+        //            return randomScalingFactor();
+        //        });
+        //    });
+
+        //    window.myPie.update();
+        //});
+
+        //var colorNames = Object.keys(window.chartColors);
+        //document.getElementById('addDataset').addEventListener('click', function () {
+        //    var newDataset = {
+        //        backgroundColor: [],
+        //        data: [],
+        //        label: 'New dataset ' + config.data.datasets.length,
+        //    };
+
+        //    for (var index = 0; index < config.data.labels.length; ++index) {
+        //        newDataset.data.push(randomScalingFactor());
+
+        //        var colorName = colorNames[index % colorNames.length];
+        //        var newColor = window.chartColors[colorName];
+        //        newDataset.backgroundColor.push(newColor);
+        //    }
+
+        //    config.data.datasets.push(newDataset);
+        //    window.myPie.update();
+        //});
+
+        //document.getElementById('removeDataset').addEventListener('click', function () {
+        //    config.data.datasets.splice(0, 1);
+        //    window.myPie.update();
+        //});
+            </script>
+            @* ***************** OS Types Graph END ************************@
+
+
+
+
+
+
+            @* ***************** Platform Types Graph START ************************@
+            <div class="GraphContainer" id="Platformchartcanvas-holder">
+                <canvas id="Platformchart-area"></canvas>
+            </div>
+
+            <script>
+        var myPlatformTypes = [];
+        var myPlatformTypesCountArray = [];
+        var myPlatformTypesColorArray = [];
+
+        @for (int i = 0; i < ViewBag.platformTypes.Length; i++)
+        {
+            @:myPlatformTypes.push("@ViewBag.platformTypes[i]");
+            @:myPlatformTypesCountArray.push("@ViewBag.platformTypesCountArray[i]");
+            @:myPlatformTypesColorArray.push("@ViewBag.platformTypesColorArray[i]");
+        }
+
+        var config2 = {
+            type: 'pie',
+            data: {
+                datasets: [{
+                    data: myPlatformTypesCountArray,
+                    backgroundColor: myPlatformTypesColorArray,
+                    label: 'Platform Types'
+                }],
+                labels: myPlatformTypes
+            },
+            options: {
+                responsive: true,
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: 'Platform Types'
+                }
+            }
+        };
+
+            </script>
+            @* ***************** Platform Types Graph END ************************@
+
+
+            @* ***************** Locations Graph START ************************@
+            <div class="GraphContainer" id="Locationschartcanvas-holder" style="width:45%">
+                <canvas id="Locationschart-area"></canvas>
+            </div>
+
+            <script>
+        var myLocations = [];
+        var myLocationsCountArray = [];
+        var myLocationsColorArray = [];
+        var myDataSets = [];
+
+        @for (int i = 0; i < ViewBag.locations.Length; i++)
+        {
+            //if (@ViewBag.locations[i] != "No Location Data") {
+            @:myLocations.push("@ViewBag.locations[i]");
+            @:myLocationsCountArray.push("@ViewBag.locationsCountArray[i]");
+            @:myLocationsColorArray.push("@ViewBag.locationsColorArray[i]");
+            //}
+        }
+
+            var config3 = {
+                type: "bar",
+                data: {
+                    labels: myLocations,
+                    datasets: [
+                        {
+                            label: "Article Views",
+                            data: myLocationsCountArray,
+                            fill: false,
+                            backgroundColor: myLocationsColorArray,
+                            borderColor: myLocationsColorArray,
+                            borderWidth: 1
+                        }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [
+                            { ticks: { beginAtZero: true } }]
+                    },
+                    responsive: true,
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Article Views by Location'
+                    }
+                }
+            };
+            </script>
+            @* ***************** Locations Types Graph END ************************@
+
+
+            @* ***************** Article Views Graph START ************************@
+            <div class="GraphContainer" id="Articlechartcanvas-holder" style="width:45%">
+                <canvas id="Articlechart-area"></canvas>
+            </div>
+
+            <script>
+        var myArticleViews = [];
+        var myArticleViewsCountArray = [];
+        var myArticleViewsColorArray = [];
+
+        @for (int i = 0; i < ViewBag.articles.Length; i++)
+        {
+            @:myArticleViews.push("@ViewBag.articles[i]");
+            @:myArticleViewsCountArray.push("@ViewBag.articlesCountArray[i]");
+            @:myArticleViewsColorArray.push("@ViewBag.articlesColorArray[i]");
+        }
+
+            var config4 = {
+                type: "horizontalBar",
+                data: {
+                    labels: myArticleViews,
+                datasets: [
+                        {
+                            label: "Article Views",
+                            data: myArticleViewsCountArray,
+                            fill: false,
+                            backgroundColor: myArticleViewsColorArray,
+                            borderColor: myArticleViewsColorArray,
+                            borderWidth: 1
+                        }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [
+                            { ticks: { beginAtZero: true } }]
+                    },
+                    responsive: true,
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Article Views'
+                    }
+                }
+            };
+            </script>
+            @* ***************** Article Views Graph END ************************@
+            <script>
+
+                window.onload = function () {
+
+                    var ctx = document.getElementById('OSchart-area').getContext('2d');
+                    window.myPie = new Chart(ctx, config);
+
+
+                    var ctx2 = document.getElementById('Platformchart-area').getContext('2d');
+                    window.myPie = new Chart(ctx2, config2);
+
+                    var ctx3 = document.getElementById('Locationschart-area').getContext('2d');
+                    window.myPie = new Chart(ctx3, config3);
+
+                    var ctx4 = document.getElementById('Articlechart-area').getContext('2d');
+                    window.myPie = new Chart(ctx4, config4);
+                };
+
+            </script>
+
+
+        </div>
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.UserName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.SegmentName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ArticleName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DeviceType)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.OSType)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ArticleReadTime)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Country)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.State)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.City)
+                </th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.UserName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.SegmentName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ArticleName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DeviceType)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.OSType)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ArticleReadTime)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Country)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.State)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.City)
+                    </td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

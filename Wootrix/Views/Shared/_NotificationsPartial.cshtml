@@ -1,0 +1,26 @@
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Http;
+@using WootrixV2.Data;
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+
+@{
+    var companyName = @Context.Session.GetString("CompanyName") ?? "Wootrix";
+    var numNotifications = @Context.Session.GetInt32("NumberOfNotifications") ?? 0;
+}
+
+@if (SignInManager.IsSignedIn(User))
+{
+
+<a asp-area="" asp-controller="CompanyPushNotifications" asp-action="Notifications" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important" class="push-notification-alert">
+
+    <img src="~/images/website_images/mail.png" />
+
+    <div class="notification-alert" style="background-color: @Context.Session.GetString("CompanyHighlightColor")">@numNotifications</div>
+</a>
+
+}
+

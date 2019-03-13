@@ -31,6 +31,11 @@ namespace WootrixV2.Data
             _context = context;
         }
 
+       
+
+        
+
+
         public async Task UploadFileToS3(IFormFile file, string fileName, string fileFolder)
         {
             try
@@ -355,6 +360,17 @@ namespace WootrixV2.Data
 
         }
 
+        /// <summary>
+        /// So pass 4 of the filtering rules:
+        /// If user has no filters show all articles
+        /// If user has filter x, any article shown must contain x in that group but it will show if it has other filters in that group also
+        /// If user has filters x1 and x2, any article shown will have either x1 or x2
+        /// If user has filters x and y set from different groups, any article shown must contain those filters in their respective groups
+        /// </summary>
+        /// <param name="usr"></param>
+        /// <param name="articleSearchString"></param>
+        /// <param name="seg"></param>
+        /// <returns></returns>
         public List<WootrixV2.Models.SegmentArticle> GetArticlesListBasedOnThisUsersFilters(User usr, string articleSearchString, CompanySegment seg)
         {
             List<SegmentArticle> articles = new List<SegmentArticle>();
@@ -366,7 +382,7 @@ namespace WootrixV2.Data
                 {
                     if (seg != null && !string.IsNullOrEmpty(seg.Title))
                     {
-                        //If no filters for user all articles will show that have no filters. If filter x on user, all articles with filter x will show. If filters x and y are set for user, any article with either x OR y will show.
+                        //If no filters for user all articles will show that have no filters. 
                         if (ArticleMatchesUserFilters(art, usr))
                         {
                             articles.Add(art);
@@ -469,8 +485,11 @@ namespace WootrixV2.Data
         }
 
         /// <summary>
-        /// The Logic here is: If no filters for user all articles will show that have no filters. If filter x on user, all articles with filter x will show. If filters x and y are set for user, any article with either x OR y will show.
-        /// </summary>
+        /// So pass 4 of the filtering rules:
+        /// If user has no filters show all articles
+        /// If user has filter x, any article shown must contain x in that group but it will show if it has other filters in that group also
+        /// If user has filters x1 and x2, any article shown will have either x1 or x2
+        /// If user has filters x and y set from different groups, any article shown must contain those filters in their respective groups
         /// <param name="art">Article to test</param>
         /// <param name="usr">User who's filters to compare to the passed article</param>
         /// <returns></returns>
@@ -484,8 +503,8 @@ namespace WootrixV2.Data
                 //So the user has absolutely no filtering set so we should show all articles
                 matches = true;
             }
-            //If filter x on user, all articles with filter x will show.If filters x and y are set for user, any article with either x OR y will show.
-            else if ((art.Country == usr.Country) && (art.State == usr.State) && (art.City == usr.City)
+            
+            else if (PassesFilter(art.Country, usr.Country) && PassesFilter(art.State, usr.State) && PassesFilter(art.City, usr.City)
                      && PassesFilter(art.Groups, usr.Groups) && PassesFilter(art.TypeOfUser, usr.TypeOfUser) && PassesFilter(art.Topics, usr.Topics) && PassesFilter(art.Languages, usr.WebsiteLanguage))
             {
                 matches = true;
@@ -493,25 +512,42 @@ namespace WootrixV2.Data
             return matches;
         }
 
-        public bool PassesFilter(string articleCSVFilter, string userCSVFilter)
+        /// <summary>
+        /// So pass 4 of the filtering rules:
+        /// 1 -If user has no filters show all articles 
+        /// 2- If user has filter x, any article shown must contain x in that group but it will show if it has other filters in that group also
+        /// 3- If user has filters x1 and x2, any article shown will have either x1 or x2
+        /// 4- If user has filters x and y set from different groups, any article shown must contain those filters in their respective groups
+        /// </summary>
+        /// <param name="articleGroupFilters"></param>
+        /// <param name="userGroupFilters"></param>
+        /// <returns></returns>
+        public bool PassesFilter(string articleGroupFilters, string userGroupFilters)
         {
             bool isInFilter = false;
-
-            var filterList = userCSVFilter.Split('|').ToList();
-            foreach (var filter in filterList)
+            if (articleGroupFilters == null)
             {
-                //If the filter is "" or null and the articleFilters are the same that is a valid pass
-                if (string.IsNullOrEmpty(filter) && string.IsNullOrEmpty(articleCSVFilter))
+                //can't split a null
+                //no filter show all articles
+                return true;
+            }
+            
+
+            var articleGroupFilterList = articleGroupFilters.Split('|').ToList();
+            foreach (var articleGroupFilterX in articleGroupFilterList)
+            {
+                // 1 - If the filter is "" or null for this User group then the article should not be blocked (If user has no filters show all articles)
+                if (string.IsNullOrEmpty(articleGroupFilterX) || string.IsNullOrEmpty(userGroupFilters))
                 {
                     return true;
                 }
+
                 //Otherwise a filter is set so we need to compare them
-                if (!string.IsNullOrEmpty(filter))
+                if (!string.IsNullOrEmpty(articleGroupFilterX))
                 {
-                    if (articleCSVFilter.Contains(filter))
-                    {
-                        // Crap have to do this stupid loop for each type of filter - at least it should be fast
-                       
+
+                    if (userGroupFilters.Contains(articleGroupFilterX))
+                    {                       
                         return true;
                     }
                 }
@@ -727,6 +763,37 @@ namespace WootrixV2.Data
                 
             }
             _context.SaveChanges();           
+        }
+
+
+        public List<CompanyPushNotification> GetNotificationsMatchingUserFilters(User usr)
+        {
+            var listOfCompanyNotifications = _context.CompanyPushNotification.Where(m => m.CompanyID == usr.CompanyID && m.SentAt > usr.LastViewedNotificationsOn).OrderByDescending(m => m.SentAt);
+            List<CompanyPushNotification> listOfMatchingNotifications = new List<CompanyPushNotification>();
+
+            foreach (CompanyPushNotification cpn in listOfCompanyNotifications)
+            {
+
+                bool matches = false;
+
+                //If no filters for user all Notifications will show it
+                if (string.IsNullOrEmpty(usr.Groups) && string.IsNullOrEmpty(usr.TypeOfUser) && string.IsNullOrEmpty(usr.Topics) && string.IsNullOrEmpty(usr.InterfaceLanguage) && string.IsNullOrEmpty(usr.Country) && string.IsNullOrEmpty(usr.State) && string.IsNullOrEmpty(usr.City))
+                {
+                    //So the user has absolutely no filtering set so we should show all Notification
+                    matches = true;
+                }
+
+                else if (PassesFilter(cpn.Country, usr.Country) && PassesFilter(cpn.State, usr.State) && PassesFilter(cpn.City, usr.City)
+                         && PassesFilter(cpn.Groups, usr.Groups) && PassesFilter(cpn.TypeOfUser, usr.TypeOfUser) && PassesFilter(cpn.Topics, usr.Topics) && PassesFilter(cpn.Languages, usr.InterfaceLanguage))
+                {
+                    matches = true;
+                }
+
+
+                if (matches) listOfMatchingNotifications.Add(cpn);
+
+            }
+            return listOfMatchingNotifications;
         }
     }
 }

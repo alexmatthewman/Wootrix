@@ -11,7 +11,7 @@
 @inject UserManager<ApplicationUser> UserManager
 @{
     ViewData["Title"] = Localizer["Notifications"];
-    
+
     Layout = "~/Views/Shared/_LayoutCompany.cshtml";
     var _companyName = UserManager.GetUserAsync(User).GetAwaiter().GetResult().companyName;
 }
@@ -20,7 +20,7 @@
     <a asp-controller="Company" asp-action="Home" asp-route-id="@_companyName">
         <button class="articleBackButton button glow">
             <span class="glyphicon glyphicon-menu-left"></span>
-            @Localizer["Back to Admin Menu"]
+            @Localizer["Back to Home"]
         </button>
     </a>
 </div>
@@ -28,9 +28,7 @@
 <div class="bodyBox">
     <h2>@Localizer["Notifications"]</h2>
 
-    <p>
-        <a asp-action="Create">@Localizer["Create New"]</a>
-    </p>
+
     <table class="table">
         <thead>
             <tr>
@@ -43,13 +41,13 @@
                 @*<th>
                     @Html.DisplayNameFor(model => model.MessageType)
                 </th>*@
-                <th>
+                @*<th>
                     @Html.DisplayNameFor(model => model.SentAt)
-                </th>
-                <th>
+                </th>*@
+                @*<th>
                     @Html.DisplayNameFor(model => model.SenderName)
-                </th>
-                <th>
+                </th>*@
+                @*<th>
                     @Html.DisplayNameFor(model => model.Languages)
                 </th>
                 <th>
@@ -69,56 +67,56 @@
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.City)
-                </th>
+                </th>*@
                 @*<th></th>*@
             </tr>
         </thead>
         <tbody>
             @foreach (var item in Model)
             {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.MessageTitle)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.MessageBody)
-                    </td>
-                    @*<td>
-                        @Html.DisplayFor(modelItem => item.MessageType)
-                    </td>*@
-                    <td>
-                        @Html.DisplayFor(modelItem => item.SentAt)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.SenderName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Languages)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Groups)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Topics)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.TypeOfUser)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Country)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.State)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.City)
-                    </td>
-                    @*<td>
+            <tr>
+                <td class="notification-title">
+                    @Html.DisplayFor(modelItem => item.MessageTitle)
+                </td>
+                <td class="notification-body">
+                    @Html.DisplayFor(modelItem => item.MessageBody)
+                </td>
+                @*<td>
+                    @Html.DisplayFor(modelItem => item.MessageType)
+                </td>*@
+                @*<td>
+                    @Html.DisplayFor(modelItem => item.SentAt)
+                </td>*@
+                @*<td>
+                    @Html.DisplayFor(modelItem => item.SenderName)
+                </td>*@
+                @*<td>
+                    @Html.DisplayFor(modelItem => item.Languages)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Groups)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Topics)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TypeOfUser)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Country)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.State)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.City)
+                </td>*@
+                @*<td>
                         <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
                         <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
                         <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
                     </td>*@
-                </tr>
+            </tr>
             }
         </tbody>
     </table>

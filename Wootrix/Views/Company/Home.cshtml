@@ -118,30 +118,15 @@
                                     }
 
                                 </li>
-
-                                @*<li>
-                                        <a class="language" href="">
-                                            <span><img src="~/images/icon-7.png" alt="" /></span>
-                                            <strong>@Localizer["Logout"]Change Language</strong>
-                                        </a>
-                                    </li>*@
-
-                                @*<li>
-                                        <a href="">
-                                            <span><img src="~/images/icon-8.png" alt="" /></span>
-                                            <strong>History</strong>
-                                        </a>
-                                    </li>*@
-
                                 <li class="glow bump">
-                                    <a href="">
-                                        <span><img src="~/images/icon-9.png" alt="" /></span>
+                                    <a asp-area="" asp-controller="CompanyPushNotifications" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
+                                        <span><img src="~/images/icon-9.png" alt="Push Notifications" /></span>
                                         <strong>@Localizer["Push Notifications"]</strong>
                                     </a>
                                 </li>
 
                                 <li class="glow bump">
-                                    <a asp-area="" asp-controller="Reports" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
+                                    <a asp-area="" asp-controller="ArticleReporting" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
                                         <span><img src="~/images/icon-6.png" alt="" /></span>
                                         <strong>@Localizer["Reports"]</strong>
                                     </a>
@@ -171,28 +156,11 @@
                                         <strong>@Localizer["User Type Filters"]</strong>
                                     </a>
                                 </li>
-                                @*<li>
-                                        <a asp-controller="CompanyLanguages" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
-                                            <span><img src="~/images/icon-1.png" alt="Company Languages" /></span>
-                                            <strong>@Localizer["Company Languages"]</strong>
-                                        </a>
-                                    </li>*@
-                                @*<li>
-                                        <a asp-area="" asp-controller="Fruit" asp-action="Index" style="color:@Context.Session.GetString("CompanyHeaderFontColor") !important">
-                                            <span><img src="~/images/icon-2.png" alt="Department Filters" /></span>
-                                            <strong>Fruit</strong>
-                                        </a>
-                                    </li>*@
                             </ul>
-
-
                         </div>
                     </div>
                 </div>
             }
-
-
-
 
             @if (User.HasClaim(ClaimTypes.Role, "Admin"))
             {

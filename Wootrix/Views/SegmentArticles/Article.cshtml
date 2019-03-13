@@ -20,6 +20,16 @@
 
 }
 
+<script>
+        
+        _gaq.push(['_setCustomVar',
+            3,                // This custom var is set to slot #1.  Required parameter.
+            'ArticleName',    // The name of the custom variable.  Required parameter.
+            '@WebUtility.HtmlDecode(Model.Title)',        // The value of the custom variable.  Required parameter.
+            3                 // Sets the scope to visitor-level.  Optional parameter.
+        ]);
+</script>
+
 <div class="articleBackButtonContainer">
     <a asp-controller="CompanySegments" asp-action="ArticleList" asp-route-id="@_SegmentListID">
         <button class="articleBackButton button glow"><span class="glyphicon glyphicon-menu-left"></span>&nbsp;@Localizer["Back to Article List"]</button>

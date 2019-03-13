@@ -36,5 +36,6 @@ namespace Wootrix.Data
         public DbSet<WootrixV2.Models.CompanyLocCountries> CompanyLocCountries { get; set; }
         public DbSet<WootrixV2.Models.CompanyLocStates> CompanyLocStates { get; set; }
         public DbSet<WootrixV2.Models.CompanyLocCities> CompanyLocCities { get; set; }
+        public DbSet<WootrixV2.Models.ArticleReporting> ArticleReporting { get; set; }
     }
 }

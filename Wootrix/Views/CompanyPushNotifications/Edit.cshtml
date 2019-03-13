@@ -1,16 +1,13 @@
 ﻿@model WootrixV2.Models.CompanyPushNotification
-@using Microsoft.AspNetCore.Http;
-@using Microsoft.AspNetCore.Mvc.Localization
-@inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = Localizer["Edit"];
+    ViewData["Title"] = "Edit";
     Layout = "~/Views/Shared/_LayoutCompany.cshtml";
 }
 
-<h2 style="color:@Context.Session.GetString("CompanyMainFontColor") !important">@Localizer["Edit"]</h2>
+<h2>Edit</h2>
 
-<h4 style="color:@Context.Session.GetString("CompanyMainFontColor") !important">CompanyPushNotification</h4>
+<h4>CompanyPushNotification</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -18,24 +15,19 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="ID" />
             <div class="form-group">
-                <label asp-for="CompanyID" class="control-label"></label>
-                <input asp-for="CompanyID" class="form-control" />
-                <span asp-validation-for="CompanyID" class="text-danger"></span>
+                <label asp-for="MessageTitle" class="control-label"></label>
+                <input asp-for="MessageTitle" class="form-control" />
+                <span asp-validation-for="MessageTitle" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="UserID" class="control-label"></label>
-                <input asp-for="UserID" class="form-control" />
-                <span asp-validation-for="UserID" class="text-danger"></span>
+                <label asp-for="MessageBody" class="control-label"></label>
+                <input asp-for="MessageBody" class="form-control" />
+                <span asp-validation-for="MessageBody" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Message" class="control-label"></label>
-                <input asp-for="Message" class="form-control" />
-                <span asp-validation-for="Message" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Options" class="control-label"></label>
-                <input asp-for="Options" class="form-control" />
-                <span asp-validation-for="Options" class="text-danger"></span>
+                <label asp-for="MessageType" class="control-label"></label>
+                <input asp-for="MessageType" class="form-control" />
+                <span asp-validation-for="MessageType" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="SentAt" class="control-label"></label>
@@ -43,13 +35,53 @@
                 <span asp-validation-for="SentAt" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="@Localizer["Save"]" class="btn btn-default" />
+                <label asp-for="SenderName" class="control-label"></label>
+                <input asp-for="SenderName" class="form-control" />
+                <span asp-validation-for="SenderName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Languages" class="control-label"></label>
+                <input asp-for="Languages" class="form-control" />
+                <span asp-validation-for="Languages" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Groups" class="control-label"></label>
+                <input asp-for="Groups" class="form-control" />
+                <span asp-validation-for="Groups" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Topics" class="control-label"></label>
+                <input asp-for="Topics" class="form-control" />
+                <span asp-validation-for="Topics" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TypeOfUser" class="control-label"></label>
+                <input asp-for="TypeOfUser" class="form-control" />
+                <span asp-validation-for="TypeOfUser" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Country" class="control-label"></label>
+                <input asp-for="Country" class="form-control" />
+                <span asp-validation-for="Country" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="State" class="control-label"></label>
+                <input asp-for="State" class="form-control" />
+                <span asp-validation-for="State" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="City" class="control-label"></label>
+                <input asp-for="City" class="form-control" />
+                <span asp-validation-for="City" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-default" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">@Localizer["Back to List"]</a>
+    <a asp-action="Index">Back to List</a>
 </div>
 

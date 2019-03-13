@@ -26,6 +26,17 @@
 
 
 }
+
+<script>
+
+        _gaq.push(['_setCustomVar',
+            2,                // This custom var is set to slot #1.  Required parameter.
+            'MagazineName',    // The name of the custom variable.  Required parameter.
+            '@magTitle',        // The value of the custom variable.  Required parameter.
+            3                 // Sets the scope to visitor-level.  Optional parameter.
+        ]);
+</script>
+
 <div class="top-head">
     <div class="articleBackButtonContainer">
         <a asp-controller="Company" asp-action="Home" asp-route-id="@_companyName">

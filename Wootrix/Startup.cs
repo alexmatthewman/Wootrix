@@ -34,9 +34,7 @@ namespace Wootrix
         {
             Configuration = configuration;
         }
-
-
-
+               
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -103,9 +101,7 @@ namespace Wootrix
                 options.LogoutPath = "/Identity/Account/Logout";
                 options.AccessDeniedPath = "/Identity/Account/Logout";
                 options.ReturnUrlParameter = "";                
-            });
-
-            
+            });            
 
             services.AddSession(options =>
             {
@@ -113,8 +109,6 @@ namespace Wootrix
                 options.IdleTimeout = TimeSpan.FromMinutes(30);
                 options.Cookie.HttpOnly = true;
             });
-
-
 
             //Multi-lingual support
             services.AddLocalization(opts => { opts.ResourcesPath = "Resources"; });
@@ -129,9 +123,6 @@ namespace Wootrix
                    var localizer = factory.Create("ViewResource", assemblyName.Name);
                    o.DataAnnotationLocalizerProvider = (t, f) => localizer;
                });
-
-
-
 
             services.Configure<RequestLocalizationOptions>(opts =>
             {
@@ -200,15 +191,7 @@ namespace Wootrix
             forwardingOptions.KnownProxies.Clear();
             app.UseForwardedHeaders(forwardingOptions);
             app.UseHttpsRedirection();
-            app.UseResponseCompression();
-
-            //So it seems that AWS has a bug or misplaced security setting that stops file locations that aren't above the wwwroot location
-            //app.UseStaticFiles();
-            //app.UseStaticFiles(new StaticFileOptions
-            //{
-            //    FileProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath, "Uploads")),
-            //    RequestPath = new PathString("/Uploads")
-            //});
+            app.UseResponseCompression();            
 
             //We need to add http response caching for better performance https://andrewlock.net/adding-cache-control-headers-to-static-files-in-asp-net-core/
             app.UseStaticFiles(new StaticFileOptions

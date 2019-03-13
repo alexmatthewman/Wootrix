@@ -86,8 +86,7 @@ namespace WootrixV2.Controllers
             {
                 _user = _context.User.FirstOrDefault(p => p.EmailAddress == _userManager.GetUserAsync(User).GetAwaiter().GetResult().Email);
                 //_cpy = _context.Company.FirstOrDefaultAsync(m => m.ID == _user.CompanyID).GetAwaiter().GetResult();
-                
-                                
+                                                
                 ViewBag.User = _user;
                 ViewBag.CommentUnderReviewCount = _dla.GetArticleReviewCommentCount(_user.CompanyID);
                 if (_user.Role == Roles.User)
@@ -95,11 +94,18 @@ namespace WootrixV2.Controllers
                     System.Console.WriteLine("***********Getting Segments************");
                     ViewBag.Segments = _dla.GetSegmentsList(_user.CompanyID, _user, "", "").OrderBy(m => m.Order);   
                 }
+
+                //So everytime a user comes to the home page it will update their notification status into the session
+                var usrNotifications = _dla.GetNotificationsMatchingUserFilters(_user);
+                int numberOfNotifications = usrNotifications.Count;
+                HttpContext.Session.SetInt32("NumberOfNotifications", numberOfNotifications);
             }
-           
+
+            
+
             // Saving all this company stuff to the session so the layout isn't dependent on the model
             // Note that it is all non-sensitive stuff            
-           
+
             return View(company);
         }
 

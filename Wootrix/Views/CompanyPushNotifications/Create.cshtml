@@ -1,54 +1,191 @@
-﻿@model WootrixV2.Models.CompanyPushNotification
+﻿@model WootrixV2.Models.CompanyPushNotificationViewModel
+
+@using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.Http;
+@using System.Security.Claims
+@using WootrixV2.Data;
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
 
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
 @{
     ViewData["Title"] = Localizer["Create"];
     Layout = "~/Views/Shared/_LayoutCompany.cshtml";
+    var _companyName = UserManager.GetUserAsync(User).GetAwaiter().GetResult().companyName;
+
 }
 
-<h2 style="color:@Context.Session.GetString("CompanyMainFontColor") !important">@Localizer["Create"]</h2>
 
-<h4 style="color:@Context.Session.GetString("CompanyMainFontColor") !important">CompanyPushNotification</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="CompanyID" class="control-label"></label>
-                <input asp-for="CompanyID" class="form-control" />
-                <span asp-validation-for="CompanyID" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UserID" class="control-label"></label>
-                <input asp-for="UserID" class="form-control" />
-                <span asp-validation-for="UserID" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Message" class="control-label"></label>
-                <input asp-for="Message" class="form-control" />
-                <span asp-validation-for="Message" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Options" class="control-label"></label>
-                <input asp-for="Options" class="form-control" />
-                <span asp-validation-for="Options" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="SentAt" class="control-label"></label>
-                <input asp-for="SentAt" class="form-control" />
-                <span asp-validation-for="SentAt" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="@Localizer["Create"]" class="btn btn-default" />
-            </div>
-        </form>
+@section Scripts {
+    @*https://www.pluralsight.com/guides/asp-net-mvc-populating-dropdown-lists-in-razor-views-using-the-mvvm-design-pattern-entity-framework-and-ajax*@
+    <script type="text/javascript">
+
+
+$("#Countries").change(function () {
+    var selectedCountry = $("#Countries").val();
+    var regionsSelect = $("#States");
+    regionsSelect.empty();
+    var citySelect = $("#Cities");
+    citySelect.empty();
+    if (selectedCountry != null && selectedCountry != "") {
+        $.getJSON('@Url.Action("GetStates")', { countryCode: selectedCountry }, function (states) {
+
+            if (states != null && !jQuery.isEmptyObject(states))
+            {
+                regionsSelect.append($('<option/>', {
+                    value: null,
+                    text: ""
+                }));
+                $.each(states, function (index, state) {
+
+                    regionsSelect.append($("<option />").val(this.value).text(this.text));
+                });
+            }
+        });
+    }
+});
+
+
+$("#States").change(function () {
+    var selectedState = $("#States").val();
+    var citySelect = $("#Cities");
+    citySelect.empty();
+    if (selectedState != null && selectedState != "") {
+        $.getJSON('@Url.Action("GetCities")', { stateCode: selectedState }, function (cities) {
+            if (cities != null && !jQuery.isEmptyObject(cities)) {
+                citySelect.append($("<option />", {
+                    value: null,
+                    text: ""
+                }));
+                $.each(cities, function (index, city) {
+                    citySelect.append($("<option />").val(this.value).text(this.text));
+                });
+            }
+        });
+    }
+});
+    </script>
+
+}
+
+<div class="articleBackButtonContainer">
+    <a asp-controller="Company" asp-action="Home" asp-route-id="@_companyName">
+        <button class="articleBackButton button glow">
+            <span class="glyphicon glyphicon-menu-left"></span>
+            @Localizer["Back to Admin Menu"]
+        </button>
+    </a>
+</div>
+
+<div class="bodyBox reporting-page">
+    <h2>Create</h2>
+
+    <h4>Notifications</h4>
+    <hr />
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="MessageTitle" class="control-label"></label>
+                    <input asp-for="MessageTitle" class="form-control" />
+                    <span asp-validation-for="MessageTitle" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="MessageBody" class="control-label"></label>
+                    <input asp-for="MessageBody" class="form-control" />
+                    <span asp-validation-for="MessageBody" class="text-danger"></span>
+                </div>
+                @*<div class="form-group">
+                    <label asp-for="MessageType" class="control-label"></label>
+                    <input asp-for="MessageType" class="form-control" />
+                    <span asp-validation-for="MessageType" class="text-danger"></span>
+                </div>*@
+
+                @Html.LabelFor(x => Model.Languages, htmlAttributes: new { @class = "control-label" })
+                <div class="form-group checkbox-box">
+
+                    @foreach (var item in Model.AvailableLanguages)
+                    {
+                        <div class="checkbox">
+                            <label><input type="checkbox" name="SelectedLanguages" checked="@item.Selected" value="@item.Value" /> @Localizer[item.Text]</label>
+                        </div>
+                    }
+                </div>
+
+                @Html.LabelFor(x => Model.Groups, htmlAttributes: new { @class = "control-label" })
+                <div class="form-group checkbox-box">
+
+                    @foreach (var item in Model.AvailableGroups)
+                    {
+                        <div class="checkbox">
+                            <label><input type="checkbox" name="SelectedGroups" value="@item.Value">@item.Text</label>
+                        </div>
+                    }
+                </div>
+                @Html.LabelFor(x => Model.Topics, htmlAttributes: new { @class = "control-label" })
+                <div class="form-group checkbox-box">
+
+                    @foreach (var item in Model.AvailableTopics)
+                    {
+                        <div class="checkbox">
+                            <label><input type="checkbox" name="SelectedTopics" value="@item.Value">@item.Text</label>
+                        </div>
+                    }
+                </div>
+                @Html.LabelFor(x => Model.TypeOfUser, htmlAttributes: new { @class = "control-label" })
+                <div class="form-group checkbox-box">
+
+                    @foreach (var item in Model.AvailableTypeOfUser)
+                    {
+                        <div class="checkbox">
+                            <label><input type="checkbox" name="SelectedTypeOfUser" value="@item.Value">@item.Text</label>
+                        </div>
+                    }
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(x => Model.Country, htmlAttributes: new { @class = "control-label" })
+                    <select class="form-control" id="Countries" name="Country">
+                        @foreach (var i in Model.Countries)
+                        {
+                            <option value="@i.Value">@Localizer[i.Text]</option>
+                        }
+                    </select>
+                    @Html.ValidationMessageFor(x => x.Country, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(x => Model.State, htmlAttributes: new { @class = "control-label" })
+                    <select class="form-control" id="States" name="State">
+                        @foreach (var i in Model.States)
+                        {
+                            <option value="@i.Value">@Localizer[i.Text]</option>
+                        }
+                    </select>
+                    @Html.ValidationMessageFor(x => x.State, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(x => Model.City, htmlAttributes: new { @class = "control-label" })
+                    <select class="form-control" id="Cities" name="City">
+                        @foreach (var i in Model.Cities)
+                        {
+                            <option value="@i.Value">@Localizer[i.Text]</option>
+                        }
+                    </select>
+                    @Html.ValidationMessageFor(x => x.City, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group">
+                    <input type="submit" value="@Localizer["Create"]" class="btn btn-default" />
+                </div>
+            </form>
+        </div>
     </div>
-</div>
 
-<div>
-    <a asp-action="Index">@Localizer["Back to List"]</a>
-</div>
+    <div>
+        <a asp-action="Index"> @Localizer["Back to List"]</a>
+    </div>
 
+</div>

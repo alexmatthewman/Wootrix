@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using CSDetermineOSAndBrowserASPNETCore.UserAgent;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -32,6 +33,7 @@ namespace WootrixV2.Controllers
         private readonly IOptions<RequestLocalizationOptions> _rlo;
         private DataAccessLayer _dla;
 
+
         public SegmentArticlesController(IOptions<RequestLocalizationOptions> rlo, UserManager<ApplicationUser> userManager, IHostingEnvironment env, ApplicationDbContext context)
         {
             _context = context;
@@ -40,6 +42,7 @@ namespace WootrixV2.Controllers
             _userManager = userManager;
             _rlo = rlo;
             _dla = new DataAccessLayer(_context);
+
         }
 
         #region Ordering 
@@ -272,7 +275,6 @@ namespace WootrixV2.Controllers
 
             DataAccessLayer dla = new DataAccessLayer(_context);
             ViewBag.CommentCount = dla.GetArticleApprovedCommentCount(id ?? 0);
-
             ViewBag.Comments = dla.GetArticleCommentsList(id ?? 0);
 
 
@@ -283,6 +285,32 @@ namespace WootrixV2.Controllers
                 return NotFound();
             }
             if (!string.IsNullOrEmpty(segmentArticle.ArticleUrl)) Response.Redirect(segmentArticle.ArticleUrl);
+
+            //OK for reporting we need to get some data about the user and save it to the ArticleReporting Table
+            ArticleReporting ar = new ArticleReporting();
+
+            ar.CompanyID = _user.CompanyID;
+            ar.UserID = _user.ID;
+            ar.UserName = _user.Name;
+            ar.SegmentID = segID ?? 0;
+            ar.SegmentName = _context.CompanySegment.FirstOrDefault(m => m.ID == segID).Title;
+            ar.ArticleID = segmentArticle.ID;
+            ar.ArticleName = segmentArticle.Title;
+            ar.ArticleReadTime = System.DateTime.Now;
+
+
+            ar.Country = _user.Country;
+            ar.State = _user.State;
+            ar.City = _user.City;
+
+            var userAgent = Request.Headers["User-Agent"];
+            UserAgent ua = new UserAgent(userAgent);
+            ar.DeviceType = ua.Browser.Name + " " + ua.Browser.Version;
+            ar.OSType = ua.OS.Name + " " + ua.OS.Version;
+
+            _context.Add(ar);
+            await _context.SaveChangesAsync();
+
 
             return View(segmentArticle);
         }
@@ -374,7 +402,7 @@ namespace WootrixV2.Controllers
                 {
                     //ID,Order,Title,CoverImage,CoverImageMobileFriendly,PublishDate,FinishDate,ClientName,ClientLogoImage,ThemeColor,StandardColor,Draft,Department,Tags
                     myArticle.CompanyID = _user.CompanyID;
-                   
+
                     myArticle.Title = WebUtility.HtmlEncode(sa.Title);
                     myArticle.PublishFrom = sa.PublishFrom ?? DateTime.Now.AddDays(-1);
                     myArticle.PublishTill = sa.PublishTill ?? DateTime.Now.AddYears(10);
@@ -399,7 +427,7 @@ namespace WootrixV2.Controllers
 
                     IFormFile img = sa.Image;
                     if (img != null)
-                    {      
+                    {
                         await _dla.UploadFileToS3(img, _user.CompanyName + "_" + artID + "_" + img.FileName, "images/Uploads/Articles");
                         //The file has been saved to disk - now save the file name to the DB
                         myArticle.Image = img.FileName;
@@ -423,7 +451,7 @@ namespace WootrixV2.Controllers
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
                 }
-                
+
             }
             else
             {
@@ -526,7 +554,7 @@ namespace WootrixV2.Controllers
             {
                 listOfAllSegements = dla.GetArticleSegments(_user.CompanyID);
             }
-           
+
             foreach (var seg in listOfAllSegements)
             {
                 var match = s.AvailableSegments.FirstOrDefault(stringToCheck => stringToCheck.Value.Contains(seg.Value));
@@ -604,7 +632,8 @@ namespace WootrixV2.Controllers
 
         public string RemoveDigitsAndSlashes(string input)
         {
-            var output = Regex.Replace(input, @"[\d-]", string.Empty).Replace("/", "");
+
+            var output = Regex.Replace(input, @"\/([0-9]+)(?=[^\\]*$)", string.Empty).Replace("/", "");
             return output;
         }
 
@@ -638,7 +667,7 @@ namespace WootrixV2.Controllers
 
                     myArticle.PublishFrom = sa.PublishFrom ?? DateTime.Now.AddDays(-1);
                     myArticle.PublishTill = sa.PublishTill ?? DateTime.Now.AddYears(10);
-                   
+
                     myArticle.AllowComments = sa.AllowComments;
                     myArticle.ArticleContent = WebUtility.HtmlEncode(sa.ArticleContent);
                     myArticle.Author = sa.Author;
@@ -667,7 +696,7 @@ namespace WootrixV2.Controllers
                     IFormFile vid = sa.EmbeddedVideo;
                     if (vid != null)
                     {
-                        await _dla.UploadFileToS3(vid, _user.CompanyName + "_" + id + "_" + vid.FileName, "images/Uploads/Articles");                       
+                        await _dla.UploadFileToS3(vid, _user.CompanyName + "_" + id + "_" + vid.FileName, "images/Uploads/Articles");
                         //The file has been saved to disk - now save the file name to the DB
                         myArticle.EmbeddedVideo = vid.FileName;
                     }
@@ -715,7 +744,7 @@ namespace WootrixV2.Controllers
                     ModelState.AddModelError(string.Empty, "Article Title already exists - please choose something unique");
                 }
             }
-             return RedirectToAction("Edit", new { id = myArticle.ID });
+            return RedirectToAction("Edit", new { id = myArticle.ID });
         }
 
         // GET: SegmentArticles/Delete/5
@@ -758,7 +787,7 @@ namespace WootrixV2.Controllers
                     dla.DeleteArticleAndUpdateOthersOrder(segmentArticle, titleAndOrder[0], ord);
                 }
             }
-               
+
             _context.SegmentArticle.Remove(segmentArticle);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

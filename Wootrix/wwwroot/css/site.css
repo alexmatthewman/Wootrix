@@ -1,6 +1,42 @@
 ﻿@import url("https://fonts.googleapis.com/css?family=Open+Sans:300,400,400italic,600,600italic,700,800,800italic");
 @import url(font-awesome.min.css);
 
+/* Graphing START */
+
+.GraphBox {
+    width: 100%;
+    display:block;
+}
+    .GraphBox .GraphRow {
+        display: block;
+    }
+
+    .GraphBox .GraphContainer {
+        width: 45% !important;
+        display: flex;
+        float: left;
+        margin-top: 1em;
+        margin-bottom: 2em;
+        /*border: 1px solid #ccc;*/
+    }
+/* Graphing END */
+/* NOTIFICATIONS START */
+.push-notification-alert {
+    float: right;
+}
+    .push-notification-alert img {
+        max-width: 25px;
+        margin-top: 1.5em;
+    }
+    .push-notification-alert .notification-alert {
+        float: right;
+        margin-left: 1em;
+        margin-top: -3em;
+        border-radius: 0.5em;
+        padding: 0.5em;
+    }
+
+/* NOTIFICATIONS END */
 
 .container > .navbar-header, .container-fluid > .navbar-header, .container > .navbar-collapse, .container-fluid > .navbar-collapse {
     margin-right: unset;
@@ -926,6 +962,7 @@ tr td:last-child {
     /*padding-top: 3em;*/
     /*padding-left: 2em;*/
     display: inline-block;
+    color: #000;
 }
 
 .body-content .textNoPad {
@@ -1383,11 +1420,44 @@ for details on configuring this project to bundle and minify static web assets. 
         max-width: 1248px;
         width: unset !important;
     }
+    
 
 }
 
+@media screen and (max-width: 1200px)  {
+    .main-home-image {
+        padding: 0px !important;
+    }
+}
+
+
 /* Hide/rearrange for smaller screens */
 @media screen and (max-width: 767px) {
+
+
+    .GraphBox .GraphRow {
+        display: inline-grid;
+        width: 100%;
+        float: left;
+    }
+
+        .GraphBox .GraphRow .GraphContainer {
+            display: block;
+            width: 100%;
+            float:none;
+        }
+
+    /* NOTIFICATIONS START */
+
+    .push-notification-alert {
+        float: right;
+        margin-right: 2em;
+        margin-top: .5em;
+    }
+
+        
+
+    /* NOTIFICATIONS END */
 
     .navbar {
         height: 4em;
@@ -1466,6 +1536,7 @@ for details on configuring this project to bundle and minify static web assets. 
         word-wrap: normal;
         word-break: normal;
         color: unset;
+        color: #000 !important
     }
 
     .body-content h2, .body-content h4 {
@@ -1576,4 +1647,8 @@ for details on configuring this project to bundle and minify static web assets. 
         #UserView .articleContainer .articleBox .article .commentsList .reply-box {
             width: unset;
         }
+
+    .identitypages .login-page-h4 {
+        display: none;
+    }
 }

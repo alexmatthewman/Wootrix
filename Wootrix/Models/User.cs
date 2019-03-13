@@ -125,6 +125,9 @@ namespace WootrixV2.Models
 
         [ScaffoldColumn(false)]
         public DateTime CreatedOn { get; set; }
+
+        [ScaffoldColumn(false)]
+        public DateTime LastViewedNotificationsOn { get; set; }
     }
 
 

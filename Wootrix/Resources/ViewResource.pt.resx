@@ -413,4 +413,32 @@
     <value>Envio vídeo</value>
     <comment>SegmentArticle</comment>
   </data>
+  <data name="Back to Admin Menu" xml:space="preserve">
+    <value>Voltar ao menu do administrador</value>
+    <comment>CompanyPushNotifications</comment>
+  </data>
+  <data name="Message Body" xml:space="preserve">
+    <value>Corpo da mensagem</value>
+    <comment>CompanyPushNotifications</comment>
+  </data>
+  <data name="Message Title" xml:space="preserve">
+    <value>Título da mensagem</value>
+    <comment>CompanyPushNotifications</comment>
+  </data>
+  <data name="Message Type" xml:space="preserve">
+    <value>Tipo de mensagem</value>
+    <comment>CompanyPushNotifications</comment>
+  </data>
+  <data name="Sender Name" xml:space="preserve">
+    <value>Nome do remetente</value>
+    <comment>CompanyPushNotifications</comment>
+  </data>
+  <data name="Sent At" xml:space="preserve">
+    <value>Enviado em</value>
+    <comment>CompanyPushNotifications</comment>
+  </data>
+  <data name="Notifications" xml:space="preserve">
+    <value>Notificações</value>
+    <comment>CompanyPushNotifications</comment>
+  </data>
 </root>
