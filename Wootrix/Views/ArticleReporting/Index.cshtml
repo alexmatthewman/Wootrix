@@ -11,9 +11,12 @@
     Layout = "~/Views/Shared/_LayoutCompany.cshtml";
 
     var _companyName = Context.Session.GetString("CompanyName");
-}
 
+}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 @section Scripts {
+
+
     @*https://www.pluralsight.com/guides/asp-net-mvc-populating-dropdown-lists-in-razor-views-using-the-mvvm-design-pattern-entity-framework-and-ajax*@
     <script type="text/javascript">
 
@@ -83,19 +86,31 @@ $("#States").change(function () {
 
 
     <div class="Article Filters">
-            <h4>Filter Article View Types</h4>
-        </div>
+        <h4>Filter Article View Types</h4>
+    </div>
 
-        <div class="form-group">
-            <label class="control-label">@Localizer["Segments"]</label>
-            <select class="form-control" id="Segments" name="Segment">
-                @foreach (var i in ViewBag.Segments)
-                {
-                    <option value="@i">@Localizer[i]</option>
-                }
-            </select>
-        </div>
-        <div class="form-group">
+
+
+    <div class="form-group">
+        <label class="control-label">@Localizer["Segments"]</label>
+        <select class="form-control" id="Segments" name="Segment">
+            @foreach (var i in ViewBag.Segments)
+            {
+                <option value="@i">@Localizer[i]</option>
+            }
+        </select>
+    </div>
+
+    <div class="articleBackButtonContainer" id="UpdateGraphs">
+        @*<a asp-controller="Company" asp-action="Home" asp-route-id="@_companyName">*@
+        <button class="articleBackButton button glow">@Localizer["Update Graphs"]</button>
+        @*</a>*@
+    </div>
+
+
+
+
+    @*<div class="form-group">
             <label class="control-label">@Localizer["Articles"]</label>
             <select class="form-control" id="Articles" name="Article">
                 @foreach (var i in ViewBag.Articles)
@@ -103,9 +118,9 @@ $("#States").change(function () {
                     <option value="@i">@Localizer[i]</option>
                 }
             </select>
-        </div>
+        </div>*@
 
-        @*<label class="control-label">Languages</label>
+    @*<label class="control-label">Languages</label>
         <div class="form-group checkbox-box">
 
             @foreach (var item in ViewBag.Languages)
@@ -179,27 +194,30 @@ $("#States").change(function () {
                 }
             </select>
         </div>*@
-        <div class="articleBackButtonContainer">
-            @*<a asp-controller="Company" asp-action="Home" asp-route-id="@_companyName">*@
-                <button class="articleBackButton button glow"><span class="glyphicon glyphicon-menu-left"></span>&nbsp;@Localizer["Update Graphs"]</button>
-            @*</a>*@
-        </div>
+
 
 
 
     <div class="GraphBox">
         <div class="GraphRow">
-            @* ***************** OS Types Graph START ************************@
+
             <div class="GraphContainer" id="OSchartcanvas-holder">
                 <canvas id="OSchart-area"></canvas>
             </div>
-            @*<button id="randomizeData">Randomize Data</button>
-                <button id="addDataset">Add Dataset</button>
-                <button id="removeDataset">Remove Dataset</button>*@
-            <script>
-        //var randomScalingFactor = function () {
-        //    return Math.round(Math.random() * 100);
-        //};
+            <div class="GraphContainer" id="Platformchartcanvas-holder">
+                <canvas id="Platformchart-area"></canvas>
+            </div>
+            <div class="GraphContainer" id="Locationschartcanvas-holder" style="width:45%">
+                <canvas id="Locationschart-area"></canvas>
+            </div>
+            <div class="GraphContainer" id="Articlechartcanvas-holder" style="width:45%">
+                <canvas id="Articlechart-area"></canvas>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
 
         function getRandomColor() {
             var letters = '0123456789ABCDEF'.split('');
@@ -214,19 +232,17 @@ $("#States").change(function () {
         var myOSTypeCountArray = [];
         var myOSTypeColorArray = [];
 
-        @*var array = @Html.Raw(Json.Encode(@ViewBag.osTypes));
-        var array = @Html.Raw(Json.Encode(@ViewBag.osTypeCountArray));
-        var array = @Html.Raw(Json.Encode(@ViewBag.osTypeColorArray));*@
+        var myPlatformTypes = [];
+        var myPlatformTypesCountArray = [];
+        var myPlatformTypesColorArray = [];
 
+        var myLocations = [];
+        var myLocationsCountArray = [];
+        var myLocationsColorArray = [];
 
-
-        @for (int i = 0; i < ViewBag.osTypes.Length; i++)
-        {
-            @:myOSTypesArray.push("@ViewBag.osTypes[i]");
-            @:myOSTypeCountArray.push("@ViewBag.osTypeCountArray[i]");
-            @:myOSTypeColorArray.push("@ViewBag.osTypeColorArray[i]");
-        }
-
+        var myArticleViews = [];
+        var myArticleViewsCountArray = [];
+        var myArticleViewsColorArray = [];
 
         var config = {
             type: 'pie',
@@ -250,67 +266,6 @@ $("#States").change(function () {
             }
         };
 
-
-
-        //document.getElementById('randomizeData').addEventListener('click', function () {
-        //    config.data.datasets.forEach(function (dataset) {
-        //        dataset.data = dataset.data.map(function () {
-        //            return randomScalingFactor();
-        //        });
-        //    });
-
-        //    window.myPie.update();
-        //});
-
-        //var colorNames = Object.keys(window.chartColors);
-        //document.getElementById('addDataset').addEventListener('click', function () {
-        //    var newDataset = {
-        //        backgroundColor: [],
-        //        data: [],
-        //        label: 'New dataset ' + config.data.datasets.length,
-        //    };
-
-        //    for (var index = 0; index < config.data.labels.length; ++index) {
-        //        newDataset.data.push(randomScalingFactor());
-
-        //        var colorName = colorNames[index % colorNames.length];
-        //        var newColor = window.chartColors[colorName];
-        //        newDataset.backgroundColor.push(newColor);
-        //    }
-
-        //    config.data.datasets.push(newDataset);
-        //    window.myPie.update();
-        //});
-
-        //document.getElementById('removeDataset').addEventListener('click', function () {
-        //    config.data.datasets.splice(0, 1);
-        //    window.myPie.update();
-        //});
-            </script>
-            @* ***************** OS Types Graph END ************************@
-
-
-
-
-
-
-            @* ***************** Platform Types Graph START ************************@
-            <div class="GraphContainer" id="Platformchartcanvas-holder">
-                <canvas id="Platformchart-area"></canvas>
-            </div>
-
-            <script>
-        var myPlatformTypes = [];
-        var myPlatformTypesCountArray = [];
-        var myPlatformTypesColorArray = [];
-
-        @for (int i = 0; i < ViewBag.platformTypes.Length; i++)
-        {
-            @:myPlatformTypes.push("@ViewBag.platformTypes[i]");
-            @:myPlatformTypesCountArray.push("@ViewBag.platformTypesCountArray[i]");
-            @:myPlatformTypesColorArray.push("@ViewBag.platformTypesColorArray[i]");
-        }
-
         var config2 = {
             type: 'pie',
             data: {
@@ -333,134 +288,190 @@ $("#States").change(function () {
             }
         };
 
-            </script>
-            @* ***************** Platform Types Graph END ************************@
-
-
-            @* ***************** Locations Graph START ************************@
-            <div class="GraphContainer" id="Locationschartcanvas-holder" style="width:45%">
-                <canvas id="Locationschart-area"></canvas>
-            </div>
-
-            <script>
-        var myLocations = [];
-        var myLocationsCountArray = [];
-        var myLocationsColorArray = [];
-        var myDataSets = [];
-
-        @for (int i = 0; i < ViewBag.locations.Length; i++)
-        {
-            //if (@ViewBag.locations[i] != "No Location Data") {
-            @:myLocations.push("@ViewBag.locations[i]");
-            @:myLocationsCountArray.push("@ViewBag.locationsCountArray[i]");
-            @:myLocationsColorArray.push("@ViewBag.locationsColorArray[i]");
-            //}
-        }
-
-            var config3 = {
-                type: "bar",
-                data: {
-                    labels: myLocations,
-                    datasets: [
-                        {
-                            label: "Article Views",
-                            data: myLocationsCountArray,
-                            fill: false,
-                            backgroundColor: myLocationsColorArray,
-                            borderColor: myLocationsColorArray,
-                            borderWidth: 1
-                        }]
-                },
-                options: {
-                    scales: {
-                        yAxes: [
-                            { ticks: { beginAtZero: true } }]
-                    },
-                    responsive: true,
-                    legend: {
-                        position: 'top',
-                    },
-                    title: {
-                        display: true,
-                        text: 'Article Views by Location'
-                    }
-                }
-            };
-            </script>
-            @* ***************** Locations Types Graph END ************************@
-
-
-            @* ***************** Article Views Graph START ************************@
-            <div class="GraphContainer" id="Articlechartcanvas-holder" style="width:45%">
-                <canvas id="Articlechart-area"></canvas>
-            </div>
-
-            <script>
-        var myArticleViews = [];
-        var myArticleViewsCountArray = [];
-        var myArticleViewsColorArray = [];
-
-        @for (int i = 0; i < ViewBag.articles.Length; i++)
-        {
-            @:myArticleViews.push("@ViewBag.articles[i]");
-            @:myArticleViewsCountArray.push("@ViewBag.articlesCountArray[i]");
-            @:myArticleViewsColorArray.push("@ViewBag.articlesColorArray[i]");
-        }
-
-            var config4 = {
-                type: "horizontalBar",
-                data: {
-                    labels: myArticleViews,
+        var config3 = {
+            type: "bar",
+            data: {
+                labels: myLocations,
                 datasets: [
-                        {
-                            label: "Article Views",
-                            data: myArticleViewsCountArray,
-                            fill: false,
-                            backgroundColor: myArticleViewsColorArray,
-                            borderColor: myArticleViewsColorArray,
-                            borderWidth: 1
-                        }]
+                    {
+                        label: "Location Views",
+                        data: myLocationsCountArray,
+                        fill: false,
+                        backgroundColor: myLocationsColorArray,
+                        borderColor: myLocationsColorArray,
+                        borderWidth: 1
+                    }]
+            },
+            options: {
+                scales: {
+                    yAxes: [
+                        { ticks: { beginAtZero: true } }]
                 },
-                options: {
-                    scales: {
-                        yAxes: [
-                            { ticks: { beginAtZero: true } }]
-                    },
-                    responsive: true,
-                    legend: {
-                        position: 'top',
-                    },
-                    title: {
-                        display: true,
-                        text: 'Article Views'
-                    }
+                responsive: true,
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: 'Article Views by Location'
                 }
-            };
-            </script>
-            @* ***************** Article Views Graph END ************************@
-            <script>
+            }
+        };
 
-                window.onload = function () {
+        var config4 = {
+            type: "horizontalBar",
+            data: {
+                labels: myArticleViews,
+                datasets: [
+                    {
+                        label: "Article Views",
+                        data: myArticleViewsCountArray,
+                        fill: false,
+                        backgroundColor: myArticleViewsColorArray,
+                        borderColor: myArticleViewsColorArray,
+                        borderWidth: 1
+                    }]
+            },
+            options: {
+                scales: {
+                    yAxes: [
+                        { ticks: { beginAtZero: true } }]
+                },
+                responsive: true,
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: 'Article Views'
+                }
+            }
+        };
 
-                    var ctx = document.getElementById('OSchart-area').getContext('2d');
-                    window.myPie = new Chart(ctx, config);
+        function UpdateGraphs() {
+
+            UpdateOSTypesGraph();
+            UpdatePlatformGraph();
+            UpdateLocationsGraph();
+            UpdateArticleGraph();
+            window.myPie4.update({
+                duration: 800,
+                easing: 'easeOutBounce'
+            });
+            console.log("Graphs Updated");
+           
+        }
 
 
-                    var ctx2 = document.getElementById('Platformchart-area').getContext('2d');
-                    window.myPie = new Chart(ctx2, config2);
+        function UpdateOSTypesGraph() {
 
-                    var ctx3 = document.getElementById('Locationschart-area').getContext('2d');
-                    window.myPie = new Chart(ctx3, config3);
+            
 
-                    var ctx4 = document.getElementById('Articlechart-area').getContext('2d');
-                    window.myPie = new Chart(ctx4, config4);
+            @for (int i = 0; i < ViewBag.osTypes.Length; i++)
+            {
+                @:myOSTypesArray.push("@ViewBag.osTypes[i]");
+                @:myOSTypeCountArray.push("@ViewBag.osTypeCountArray[i]");
+                @:myOSTypeColorArray.push("@ViewBag.osTypeColorArray[i]");
+            }
+
+            
+            var ctx = document.getElementById('OSchart-area').getContext('2d');
+            window.myPie1 = new Chart(ctx, config);
+        }
+
+        function UpdatePlatformGraph() {
+
+           
+
+            @for (int i = 0; i < ViewBag.platformTypes.Length; i++)
+            {
+                @:myPlatformTypes.push("@ViewBag.platformTypes[i]");
+                @:myPlatformTypesCountArray.push("@ViewBag.platformTypesCountArray[i]");
+                @:myPlatformTypesColorArray.push("@ViewBag.platformTypesColorArray[i]");
+            }
+
+            
+            var ctx2 = document.getElementById('Platformchart-area').getContext('2d');
+            window.myPie2 = new Chart(ctx2, config2);
+        }
+
+        function UpdateLocationsGraph() {
+            
+            @for (int i = 0; i < ViewBag.locations.Length; i++)
+            {
+                //if (@ViewBag.locations[i] != "No Location Data") {
+                @:myLocations.push("@ViewBag.locations[i]");
+                @:myLocationsCountArray.push("@ViewBag.locationsCountArray[i]");
+                @:myLocationsColorArray.push("@ViewBag.locationsColorArray[i]");
+                //}
+            }
+                        
+            var ctx3 = document.getElementById('Locationschart-area').getContext('2d');
+            window.myPie3 = new Chart(ctx3, config3);
+        }
+
+
+        function UpdateArticleGraph() {                       
+
+            @for (int i = 0; i < ViewBag.articles.Length; i++)
+            {
+                @:myArticleViews.push("@ViewBag.articles[i]");
+                @:myArticleViewsCountArray.push("@ViewBag.articlesCountArray[i]");
+                @:myArticleViewsColorArray.push("@ViewBag.articlesColorArray[i]");
+            }
+
+            var ctx4 = document.getElementById('Articlechart-area').getContext('2d');
+            window.myPie4 = new Chart(ctx4, config4);
+        }
+
+
+        window.onload = function () {
+            UpdateGraphs();
+        };
+
+        $(document).ready(function () {
+
+
+            $('#UpdateGraphs').click(function () {
+                console.log('Updating Graphs');
+
+                var selectedMagazine = $("#Segments").val();
+                console.log("Filtering on:" + selectedMagazine);
+
+                dataToPass = {
+                    "magazine": selectedMagazine
                 };
 
-            </script>
+                //So we need to
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("UpdateGraphs", "ArticleReporting")",
+                    //contentType: 'application/json; charset=UTF-8',
+
+                    dataType: "json",
+                    data: dataToPass,//, articles: articles, groups: groups, locations: locations, disciplines: disciplines, branches: branches },
+                    success: function (response) {
+
+                        //var objData = jQuery.parseJSON(response);
+                        console.log("objData:" + response);
+                        config4.data.datasets[0] = response;
+                        window.myPie4.update({
+                            duration: 800,
+                            easing: 'easeOutBounce'
+                        });
+                       //UpdateGraphs();
+                    },
+                    error: function (response) {
+                        console.log("err:" + response);
+                    }
+                });
+        });
 
 
-        </div>
-    </div>
+
+    });
+
+    </script>
 
     <table class="table">
         <thead>

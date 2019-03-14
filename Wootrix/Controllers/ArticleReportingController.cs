@@ -20,7 +20,6 @@ namespace WootrixV2.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private WootrixV2.Models.User _user;
 
-
         public ArticleReportingController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
@@ -47,11 +46,36 @@ namespace WootrixV2.Controllers
             return View(await articlesRead.ToListAsync());
         }
 
+        [HttpPost]
+        public IActionResult UpdateGraphs(GraphFilters filters)
+        {
+            if (!string.IsNullOrWhiteSpace(filters.ToString()))
+            {           
+                _user = _context.User.FirstOrDefault(p => p.EmailAddress == _userManager.GetUserAsync(User).GetAwaiter().GetResult().Email);
+                var companyID = _user.CompanyID;
+
+                //We need to build the datasets for the graphs into the viewbag
+                var articlesRead = _context.ArticleReporting.Where(m => m.CompanyID == companyID && m.SegmentName == filters.magazine);
+                string[] articles = articlesRead.Select(d => d.ArticleName).Distinct().ToArray();
+                SetupViewsPerArticleReport(articlesRead);
+                return Json(articles);
+            }
+            return null;
+        }
+
+        public class GraphFilters
+        {
+            public string magazine { get; set; }
+            
+        }
+
+
+
         public void AddFilters( int companyID)
         {            
             
             ViewBag.Segments = _context.CompanySegment.Where(m => m.CompanyID == companyID).Select(m => m.Title).Distinct().ToList();
-            ViewBag.Articles = _context.SegmentArticle.Where(m => m.CompanyID == companyID).Select(m => m.Title).Distinct().ToList();
+            //ViewBag.Articles = _context.SegmentArticle.Where(m => m.CompanyID == companyID).Select(m => m.Title).Distinct().ToList();
             //ViewBag.TypeOfUser = _context.CompanyTypeOfUser.Where(m => m.CompanyID == companyID).Select(m => m.TypeOfUser).Distinct().ToList();
             //ViewBag.Topics = _context.CompanyTopics.Where(m => m.CompanyID == companyID).Select(m => m.Topic).Distinct().ToList();
             //ViewBag.Languages = _context.CompanyLanguages.Where(m => m.CompanyID == companyID).Select(m => m.LanguageName).Distinct().ToList();
